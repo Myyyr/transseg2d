@@ -31,8 +31,8 @@ from mmseg.apis import set_random_seed
 
 # Since we use ony one GPU, BN is used instead of SyncBN
 cfg.norm_cfg = dict(type='BN', requires_grad=True)
-cfg.model.backbone.norm_cfg = cfg.norm_cfg
-cfg.model.decode_head.norm_cfg = cfg.norm_cfg
+# cfg.model.backbone.norm_cfg = cfg.norm_cfg
+# cfg.model.decode_head.norm_cfg = cfg.norm_cfg
 
 #for i in [0,1,2,3]:
 #    cfg.model.auxiliary_head[i].norm_cfg = cfg.norm_cfg
