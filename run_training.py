@@ -15,7 +15,7 @@ from mmseg.apis import train_segmentor
 print("aqui")
 # config_file = '/users/a/araujofj/original_segformer/SegFormer/local_configs/segformer/B3/segformer.b3.512x512.lc.160k.py'
 
-config_file = "configs/swin/upernet_swin_base_patch4_window7_512x512_160k_ade20k.py"
+config_file = "configs/swin/upernet_swin_base_patch4_window7_512x512_160k_cityscapes.py"
 cfg = Config.fromfile(config_file)
 
 
