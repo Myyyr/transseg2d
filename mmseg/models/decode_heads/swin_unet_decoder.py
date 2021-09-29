@@ -5,6 +5,7 @@ from einops import rearrange
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
 from ..utils import *
+from ..builder import HEADS
 
 
 
