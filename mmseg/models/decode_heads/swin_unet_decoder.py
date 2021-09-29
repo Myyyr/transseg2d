@@ -47,7 +47,7 @@ class SwinUNetDecoder(BaseDecodeHead):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first", align_corners=None, **kwargs):
-        super().__init__()
+        super(SwinUNetDecoder, self).__init__()
 
         print("SwinTransformerSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
         depths_decoder,drop_path_rate,num_classes))
