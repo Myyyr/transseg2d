@@ -52,7 +52,7 @@ set_random_seed(0, deterministic=False)
 cfg.gpu_ids = [0]
 
 #batch size and workers
-cfg.data.samples_per_gpu = 8
+cfg.data.samples_per_gpu = 2
 cfg.data.workers_per_gpu=2
 
 print("config modified succesfully")
