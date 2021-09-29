@@ -62,7 +62,7 @@ class SwinUNetDecoder(nn.Module):
 
         # split image into non-overlapping patches
         self.patch_embed = PatchEmbed(
-            pretrain_img_size=pretrain_img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim,
+            img_size=pretrain_img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim,
             norm_layer=norm_layer if self.patch_norm else None)
         num_patches = self.patch_embed.num_patches
         patches_resolution = self.patch_embed.patches_resolution
