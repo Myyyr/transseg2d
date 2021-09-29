@@ -7,6 +7,8 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from ..utils.swin_unet_utils import *
 from ..builder import HEADS
 
+from .decode_head import BaseDecodeHead
+
 
 
 
@@ -14,7 +16,7 @@ from ..builder import HEADS
 
 
 @HEADS.register_module()
-class SwinUNetDecoder(nn.Module):
+class SwinUNetDecoder(BaseDecodeHead):
     r""" Swin Transformer
         A PyTorch impl of : `Swin Transformer: Hierarchical Vision Transformer using Shifted Windows`  -
           https://arxiv.org/pdf/2103.14030
