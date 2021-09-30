@@ -148,6 +148,7 @@ class SwinUNetEncoder(nn.Module):
 
     #Encoder and Bottleneck
     def forward_features(self, x):
+        Wh, Ww = x.size(2), x.size(3)
         x = self.patch_embed(x)
         if self.ape:
             x = x + self.absolute_pos_embed
@@ -155,8 +156,10 @@ class SwinUNetEncoder(nn.Module):
         x_downsample = []
 
         for layer in self.layers:
+            # x_downsample.append(x)
             x_downsample.append(x)
-            x = layer(x)
+            # x = layer(x)
+            x, Wh, Ww = layer(x, Wh, Ww)
 
         x = self.norm(x)  # B L C
   
@@ -192,7 +195,7 @@ class SwinUNetEncoder(nn.Module):
     def forward(self, x):
         
 
-        
+
         x, x_downsample = self.forward_features(x)
         # x = self.forward_up_features(x,x_downsample)
         # x = self.up_x4(x)

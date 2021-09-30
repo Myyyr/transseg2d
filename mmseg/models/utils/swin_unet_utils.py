@@ -430,7 +430,7 @@ class BasicLayer(nn.Module):
         else:
             self.downsample = None
 
-    def forward(self, x):
+    def forward(self, x, H, W):
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -456,9 +456,15 @@ class BasicLayer(nn.Module):
                 x = checkpoint.checkpoint(blk, x)
             else:
                 x = blk(x, attn_mask)
+        # if self.downsample is not None:
+        #     x = self.downsample(x)
+        # return x
         if self.downsample is not None:
-            x = self.downsample(x)
-        return x
+            x_down = self.downsample(x)
+            Wh, Ww = (H + 1) // 2, (W + 1) // 2
+            return x_down, Wh, Ww
+        else:
+            return x, H, W
 
     def extra_repr(self) -> str:
         return f"dim={self.dim}, input_resolution={self.input_resolution}, depth={self.depth}"
@@ -518,14 +524,40 @@ class BasicLayer_up(nn.Module):
         else:
             self.upsample = None
 
-    def forward(self, x):
+    def forward(self, x, H, W):
+        Hp = int(np.ceil(H / self.window_size)) * self.window_size
+        Wp = int(np.ceil(W / self.window_size)) * self.window_size
+        img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
+        h_slices = (slice(0, -self.window_size),
+                    slice(-self.window_size, -self.shift_size),
+                    slice(-self.shift_size, None))
+        w_slices = (slice(0, -self.window_size),
+                    slice(-self.window_size, -self.shift_size),
+                    slice(-self.shift_size, None))
+        cnt = 0
+        for h in h_slices:
+            for w in w_slices:
+                img_mask[:, h, w, :] = cnt
+                cnt += 1
+
+        mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
+        mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
+        attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
+        attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
+
         for blk in self.blocks:
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x = blk(x)
-        if self.upsample is not None:
-            x = self.upsample(x)
+                x = blk(x, attn_mask)
+        # if self.upsample is not None:
+        #     x = self.upsample(x)
+         if self.upsample is not None:
+            x_down = self.upsample(x)
+            Wh, Ww = (H) * 2, (W) * 2
+            return x_down, Wh, Ww
+        else:
+            return x, H, W
         return x
 
 class PatchEmbed(nn.Module):
