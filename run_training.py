@@ -40,7 +40,7 @@ cfg.norm_cfg = dict(type='BN', requires_grad=True)
 #cfg.model.decode_head.bn = cfg.norm_cfg
 
 # Set up working dir to save files and logs.
-cfg.work_dir = './work_dirs/setr'
+cfg.work_dir = './work_dirs/swindbg'
 
 #cfg.runner.max_iters = 200
 cfg.log_config.interval = 10
