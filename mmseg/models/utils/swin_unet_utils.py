@@ -411,6 +411,7 @@ class BasicLayer(nn.Module):
         self.input_resolution = input_resolution
         self.depth = depth
         self.use_checkpoint = use_checkpoint
+        self.window_size = window_size
 
         # build blocks
         self.blocks = nn.ModuleList([
@@ -505,6 +506,7 @@ class BasicLayer_up(nn.Module):
         self.input_resolution = input_resolution
         self.depth = depth
         self.use_checkpoint = use_checkpoint
+        self.window_size = window_size
 
         # build blocks
         self.blocks = nn.ModuleList([
