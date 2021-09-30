@@ -456,6 +456,7 @@ class BasicLayer(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         for blk in self.blocks:
+            blk.input_resolution = (H, W)
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
@@ -552,6 +553,7 @@ class BasicLayer_up(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         for blk in self.blocks:
+            blk.input_resolution = (H, W)
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
