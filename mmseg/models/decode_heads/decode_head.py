@@ -47,7 +47,7 @@ class BaseDecodeHead(nn.Module, metaclass=ABCMeta):
                  in_channels,
                  channels,
                  *,
-                 num_classes,
+                 num_classes=30,
                  dropout_ratio=0.1,
                  conv_cfg=None,
                  norm_cfg=None,
