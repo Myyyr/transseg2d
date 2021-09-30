@@ -223,6 +223,7 @@ class SwinTransformerBlock(nn.Module):
     def forward(self, x, mask_matrix):
         H, W = self.input_resolution
         B, L, C = x.shape
+        print(L, H, W)
         assert L == H * W, "input feature has wrong size"
 
         pad_l = pad_t = 0
