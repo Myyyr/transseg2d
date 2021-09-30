@@ -190,6 +190,9 @@ class SwinUNetEncoder(nn.Module):
     #     return x
 
     def forward(self, x):
+        
+
+        
         x, x_downsample = self.forward_features(x)
         # x = self.forward_up_features(x,x_downsample)
         # x = self.up_x4(x)
