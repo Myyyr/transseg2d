@@ -195,32 +195,32 @@ class SwinTransformerBlock(nn.Module):
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
-        if self.shift_size > 0:
-            # calculate attention mask for SW-MSA
-            H, W = self.input_resolution
-            img_mask = torch.zeros((1, H, W, 1))  # 1 H W 1
-            h_slices = (slice(0, -self.window_size),
-                        slice(-self.window_size, -self.shift_size),
-                        slice(-self.shift_size, None))
-            w_slices = (slice(0, -self.window_size),
-                        slice(-self.window_size, -self.shift_size),
-                        slice(-self.shift_size, None))
-            cnt = 0
-            for h in h_slices:
-                for w in w_slices:
-                    img_mask[:, h, w, :] = cnt
-                    cnt += 1
+        # if self.shift_size > 0:
+        #     # calculate attention mask for SW-MSA
+        #     H, W = self.input_resolution
+        #     img_mask = torch.zeros((1, H, W, 1))  # 1 H W 1
+        #     h_slices = (slice(0, -self.window_size),
+        #                 slice(-self.window_size, -self.shift_size),
+        #                 slice(-self.shift_size, None))
+        #     w_slices = (slice(0, -self.window_size),
+        #                 slice(-self.window_size, -self.shift_size),
+        #                 slice(-self.shift_size, None))
+        #     cnt = 0
+        #     for h in h_slices:
+        #         for w in w_slices:
+        #             img_mask[:, h, w, :] = cnt
+        #             cnt += 1
 
-            mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
-            mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
-            attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
-            attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
-        else:
-            attn_mask = None
+        #     mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
+        #     mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
+        #     attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
+        #     attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
+        # else:
+        #     attn_mask = None
 
-        self.register_buffer("attn_mask", attn_mask)
+        # self.register_buffer("attn_mask", attn_mask)
 
-    def forward(self, x):
+    def forward(self, x, mask_matrix):
         H, W = self.input_resolution
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
@@ -238,8 +238,10 @@ class SwinTransformerBlock(nn.Module):
         # cyclic shift
         if self.shift_size > 0:
             shifted_x = torch.roll(x, shifts=(-self.shift_size, -self.shift_size), dims=(1, 2))
+            attn_mask = mask_matrix
         else:
             shifted_x = x
+            attn_mask = None
 
         # partition windows
         x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
@@ -429,11 +431,16 @@ class BasicLayer(nn.Module):
             self.downsample = None
 
     def forward(self, x):
+        mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
+        mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
+        attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
+        attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
+
         for blk in self.blocks:
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x = blk(x)
+                x = blk(x, attn_mask)
         if self.downsample is not None:
             x = self.downsample(x)
         return x
@@ -546,7 +553,7 @@ class PatchEmbed(nn.Module):
             x = F.pad(x, (0, self.patch_size[1] - W % self.patch_size[1]))
         if H % self.patch_size[0] != 0:
             x = F.pad(x, (0, 0, 0, self.patch_size[0] - H % self.patch_size[0]))
-        
+
         x = self.proj(x).flatten(2).transpose(1, 2)  # B Ph*Pw C
         if self.norm is not None:
             x = self.norm(x)
