@@ -552,7 +552,7 @@ class BasicLayer_up(nn.Module):
                 x = blk(x, attn_mask)
         # if self.upsample is not None:
         #     x = self.upsample(x)
-         if self.upsample is not None:
+        if self.upsample is not None:
             x_down = self.upsample(x)
             Wh, Ww = (H) * 2, (W) * 2
             return x_down, Wh, Ww
