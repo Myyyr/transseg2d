@@ -204,9 +204,10 @@ class SwinTransformerBlock(nn.Module):
             mask_matrix: Attention mask for cyclic shift.
         """
         print(x.shape)
-        exit(0)
         B, L, C = x.shape
         H, W = self.H, self.W
+        print(H, W)
+        exit(0)
         assert L == H * W, "input feature has wrong size"
 
         shortcut = x
