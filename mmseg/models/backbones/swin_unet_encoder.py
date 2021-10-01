@@ -196,11 +196,11 @@ class SwinUNetEncoder(nn.Module):
         
 
 
-        x, x_downsample = self.forward_features(x)
+        x, x_downsample, Wh, Ww = self.forward_features(x)
         # x = self.forward_up_features(x,x_downsample)
         # x = self.up_x4(x)
 
-        return [x, x_downsample]
+        return [x, x_downsample, Wh, Ww]
 
     def flops(self):
         flops = 0

@@ -231,14 +231,12 @@ class SwinTransformerBlock(nn.Module):
         shortcut = x
         x = self.norm1(x)
         x = x.view(B, H, W, C)
-        print("----> stb 0", x.shape)
 
 
         pad_l = pad_t = 0
         pad_r = (self.window_size - W % self.window_size) % self.window_size
         pad_b = (self.window_size - H % self.window_size) % self.window_size
         x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
-        print("----> stb 1", x.shape)
 
         _, Hp, Wp, _ = x.shape
 
@@ -273,8 +271,6 @@ class SwinTransformerBlock(nn.Module):
             x = x[:, :H, :W, :].contiguous()
         x = x.view(B, H * W, C)
 
-        print("----> stb 2", x.shape)
-        print("----> stb 3", shortcut.shape)
 
         # FFN
         x = shortcut + self.drop_path(x)
