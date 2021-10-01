@@ -227,6 +227,10 @@ class SwinTransformerBlock(nn.Module):
         # L = 128 * 256
         print(L, H, W)
         assert L == H * W, "input feature has wrong size"
+        
+        shortcut = x
+        x = self.norm1(x)
+        x = x.view(B, H, W, C)
 
         pad_l = pad_t = 0
         pad_r = (self.window_size - W % self.window_size) % self.window_size
@@ -234,9 +238,6 @@ class SwinTransformerBlock(nn.Module):
         x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
         _, H, W, _ = x.shape
 
-        shortcut = x
-        x = self.norm1(x)
-        x = x.view(B, H, W, C)
 
         # cyclic shift
         if self.shift_size > 0:
