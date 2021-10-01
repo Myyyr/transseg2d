@@ -240,7 +240,7 @@ class SwinTransformerBlock(nn.Module):
         x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
         print("----> stb 1", x.shape)
 
-        _, H, W, _ = x.shape
+        _, Hp, Wp, _ = x.shape
 
 
 
@@ -261,7 +261,7 @@ class SwinTransformerBlock(nn.Module):
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
-        shifted_x = window_reverse(attn_windows, self.window_size, H, W)  # B H' W' C
+        shifted_x = window_reverse(attn_windows, self.window_size, Hp, Wp)  # B H' W' C
 
         # reverse cyclic shift
         if self.shift_size > 0:
@@ -269,6 +269,8 @@ class SwinTransformerBlock(nn.Module):
         else:
             x = shifted_x
 
+        if pad_r > 0 or pad_b > 0:
+            x = x[:, :H, :W, :].contiguous()
         x = x.view(B, H * W, C)
 
         print("----> stb 2", x.shape)
