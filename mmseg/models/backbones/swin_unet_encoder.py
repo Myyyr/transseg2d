@@ -150,8 +150,8 @@ class SwinUNetEncoder(nn.Module):
     def forward_features(self, x):
         print('--> ok 1', x.shape)
         x = self.patch_embed(x)
-        Wh, Ww = x.size(2), x.size(3)
         print('--> ok 2', x.shape)
+        Wh, Ww = x.size(2), x.size(3)
         if self.ape:
             x = x + self.absolute_pos_embed
         x = self.pos_drop(x)
