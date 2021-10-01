@@ -609,9 +609,17 @@ class PatchEmbed(nn.Module):
         if H % self.patch_size[0] != 0:
             x = F.pad(x, (0, 0, 0, self.patch_size[0] - H % self.patch_size[0]))
 
-        x = self.proj(x).flatten(2).transpose(1, 2)  # B Ph*Pw C
+        # x = self.proj(x).flatten(2).transpose(1, 2)  # B Ph*Pw C
+        # if self.norm is not None:
+        #     x = self.norm(x)
+
+        x = self.proj(x)  # B C Wh Ww
         if self.norm is not None:
+            Wh, Ww = x.size(2), x.size(3)
+            x = x.flatten(2).transpose(1, 2)
             x = self.norm(x)
+            x = x.transpose(1, 2).view(-1, self.embed_dim, Wh, Ww)
+
         return x
 
     def flops(self):

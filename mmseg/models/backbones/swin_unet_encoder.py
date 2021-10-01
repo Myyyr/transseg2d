@@ -154,7 +154,7 @@ class SwinUNetEncoder(nn.Module):
         Wh, Ww = x.size(2), x.size(3)
         if self.ape:
             x = x + self.absolute_pos_embed
-        x = self.pos_drop(x)
+        x = self.pos_drop(x.flatten(2).transpose(1, 2))
         x_downsample = []
         print('--> ok 3', x.shape)
 
