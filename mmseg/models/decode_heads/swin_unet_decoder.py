@@ -174,12 +174,12 @@ class SwinUNetDecoder(BaseDecodeHead):
         # Wh, Ww = x.size(2), x.size(3)
         for inx, layer_up in enumerate(self.layers_up):
             if inx == 0:
-                x = layer_up(x, Wh, Ww)
+                x, Wh, Ww = layer_up(x, Wh, Ww)
             else:
                 x = torch.cat([x,x_downsample[3-inx]],-1)
                 x = self.concat_back_dim[inx](x)
                 # x = layer_up(x)
-                x, Wh, Ww = layer(x, Wh, Ww)
+                x, Wh, Ww = layer_up(x, Wh, Ww)
 
         x = self.norm_up(x)  # B L C
   
