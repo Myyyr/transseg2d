@@ -363,10 +363,11 @@ class PatchExpand(nn.Module):
 
         x = x.view(B, H, W, C)
         x = rearrange(x, 'b h w (p1 p2 c)-> b (h p1) (w p2) c', p1=2, p2=2, c=C//4)
+        Wh, Ww = x.size(1), x.size(2)
         x = x.view(B,-1,C//4)
         x= self.norm(x)
 
-        return x
+        return x, Wh, Ww
 
 class FinalPatchExpand_X4(nn.Module):
     def __init__(self, input_resolution, dim, dim_scale=4, norm_layer=nn.LayerNorm):
@@ -378,11 +379,11 @@ class FinalPatchExpand_X4(nn.Module):
         self.output_dim = dim 
         self.norm = norm_layer(self.output_dim)
 
-    def forward(self, x):
+    def forward(self, x, H, W):
         """
         x: B, H*W, C
         """
-        H, W = self.input_resolution
+        # H, W = self.input_resolution
         x = self.expand(x)
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
