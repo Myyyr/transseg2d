@@ -316,11 +316,11 @@ class PatchMerging(nn.Module):
         self.reduction = nn.Linear(4 * dim, 2 * dim, bias=False)
         self.norm = norm_layer(4 * dim)
 
-    def forward(self, x):
+    def forward(self, x, H, W):
         """
         x: B, H*W, C
         """
-        H, W = self.input_resolution
+        # H, W = self.input_resolution
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
         assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
@@ -356,11 +356,11 @@ class PatchExpand(nn.Module):
         self.expand = nn.Linear(dim, 2*dim, bias=False) if dim_scale==2 else nn.Identity()
         self.norm = norm_layer(dim // dim_scale)
 
-    def forward(self, x):
+    def forward(self, x, H, W):
         """
         x: B, H*W, C
         """
-        H, W = self.input_resolution
+        # H, W = self.input_resolution
         x = self.expand(x)
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
@@ -478,7 +478,7 @@ class BasicLayer(nn.Module):
         #     x = self.downsample(x)
         # return x
         if self.downsample is not None:
-            x_down = self.downsample(x)
+            x_down = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
             return x_down, Wh, Ww
         else:
@@ -574,7 +574,7 @@ class BasicLayer_up(nn.Module):
         # if self.upsample is not None:
         #     x = self.upsample(x)
         if self.upsample is not None:
-            x_down = self.upsample(x)
+            x_down = self.upsample(x, H, W)
             Wh, Ww = (H) * 2, (W) * 2
             return x_down, Wh, Ww
         else:
