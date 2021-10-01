@@ -225,7 +225,7 @@ class SwinTransformerBlock(nn.Module):
         H, W = self.input_resolution
         B, L, C = x.shape
         # L = 128 * 256
-        print(L, H, W)
+        # print(L, H, W)
         assert L == H * W, "input feature has wrong size"
         
         shortcut = x
