@@ -51,7 +51,7 @@ cfg.checkpoint_config.interval = 2000
 # Set seed to facitate reproducing the result
 cfg.seed = 0
 set_random_seed(0, deterministic=False)
-cfg.gpu_ids = [1]
+cfg.gpu_ids = [2]
 
 #batch size and workers
 cfg.data.samples_per_gpu = 2
