@@ -163,7 +163,7 @@ class SwinUNetEncoder(nn.Module):
 
         x = self.norm(x)  # B L C
   
-        return x, x_downsample
+        return x, x_downsample, Wh, Ww
 
     #Dencoder and Skip connection
     # def forward_up_features(self, x, x_downsample):

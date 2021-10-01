@@ -168,10 +168,10 @@ class SwinUNetDecoder(BaseDecodeHead):
     #     return x, x_downsample
 
     #Dencoder and Skip connection
-    def forward_up_features(self, x, x_downsample):
-        print("### ok 0", x.shape)
-        exit(0)
-        Wh, Ww = x.size(2), x.size(3)
+    def forward_up_features(self, x, x_downsample, Wh, Ww):
+        # print("### ok 0", x.shape)
+        # exit(0)
+        # Wh, Ww = x.size(2), x.size(3)
         for inx, layer_up in enumerate(self.layers_up):
             if inx == 0:
                 x = layer_up(x)
@@ -200,7 +200,7 @@ class SwinUNetDecoder(BaseDecodeHead):
 
     def forward(self, x):
         # x, x_downsample = self.forward_features(x)
-        x, x_downsample = x
+        x, x_downsample, Wh, Ww = x
         x = self.forward_up_features(x,x_downsample)
         x = self.up_x4(x)
 
