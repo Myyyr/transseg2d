@@ -185,10 +185,10 @@ class SwinUNetDecoder(BaseDecodeHead):
 
         x = self.norm_up(x)  # B L C
   
-        return x
+        return x, Wh, Ww
 
-    def up_x4(self, x):
-        H, W = self.patches_resolution
+    def up_x4(self, x, H, W):
+        # H, W = self.patches_resolution
         B, L, C = x.shape
         assert L == H*W, "input features has wrong size"
 
@@ -203,8 +203,8 @@ class SwinUNetDecoder(BaseDecodeHead):
     def forward(self, x):
         # x, x_downsample = self.forward_features(x)
         x, x_downsample, Wh, Ww = x
-        x = self.forward_up_features(x,x_downsample, Wh, Ww)
-        x = self.up_x4(x)
+        x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww)
+        x = self.up_x4(x, Wh, Ww)
 
         return x
 
