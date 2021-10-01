@@ -169,15 +169,12 @@ class SwinUNetDecoder(BaseDecodeHead):
 
     #Dencoder and Skip connection
     def forward_up_features(self, x, x_downsample, Wh, Ww):
-        # print("### ok 0", x.shape)
         # exit(0)
         # Wh, Ww = x.size(2), x.size(3)
         for inx, layer_up in enumerate(self.layers_up):
             if inx == 0:
-                print("### ok 0", x.shape)
                 x, Wh, Ww = layer_up(x, Wh, Ww)
             else:
-                print("### ok 1", x.shape)
                 x = torch.cat([x,x_downsample[3-inx]],-1)
                 x = self.concat_back_dim[inx](x)
                 # x = layer_up(x)

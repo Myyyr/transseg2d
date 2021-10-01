@@ -573,10 +573,8 @@ class BasicLayer_up(nn.Module):
         if self.upsample is not None:
             x_down, Wh, Ww = self.upsample(x, H, W)
             # Wh, Ww = (H) * 2, (W) * 2
-            print("#### blu 0", Wh, Ww, x_down.shape)
             return x_down, Wh, Ww
         else:
-            print("#### blu 1", H, W, x.shape)
             return x, H, W
         # return x
 

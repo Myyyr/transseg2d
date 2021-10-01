@@ -68,6 +68,7 @@ class FCNHead(BaseDecodeHead):
 
     def forward(self, inputs):
         """Forward function."""
+        print("-------> input tyepe", type(inputs))
         x = self._transform_inputs(inputs)
         output = self.convs(x)
         if self.concat_input:
