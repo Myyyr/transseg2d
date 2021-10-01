@@ -575,7 +575,7 @@ class BasicLayer_up(nn.Module):
             return x_down, Wh, Ww
         else:
             return x, H, W
-        return x
+        # return x
 
 class PatchEmbed(nn.Module):
     r""" Image to Patch Embedding
