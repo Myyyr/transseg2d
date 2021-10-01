@@ -148,9 +148,9 @@ class SwinUNetEncoder(nn.Module):
 
     #Encoder and Bottleneck
     def forward_features(self, x):
-        Wh, Ww = x.size(2), x.size(3)
         print('--> ok 1', x.shape)
         x = self.patch_embed(x)
+        Wh, Ww = x.size(2), x.size(3)
         print('--> ok 2', x.shape)
         if self.ape:
             x = x + self.absolute_pos_embed
