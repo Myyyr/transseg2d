@@ -195,7 +195,7 @@ class SwinUNetEncoder(nn.Module):
     def forward(self, x):
         
 
-
+        #### Fusion of swin unet encoder/decoder + decoder=return x or some shit like this
         x, x_downsample, Wh, Ww = self.forward_features(x)
         # x = self.forward_up_features(x,x_downsample)
         # x = self.up_x4(x)
