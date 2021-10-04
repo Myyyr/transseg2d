@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/swin_unet.py', '../_base_/datasets/cityscapes.py',
+    '../_base_/models/swin_unet.py', '../_base_/datasets/ade20k.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
@@ -12,7 +12,7 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=30
+        num_classes=150
     ),
     decode_head=dict(
         embed_dim=128,
@@ -23,12 +23,12 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=30
+        num_classes=150
     )
     #,
     # auxiliary_head=dict(
     #     in_channels=512,
-    #     num_classes=30
+    #     num_classes=150
     # )
     )
 
