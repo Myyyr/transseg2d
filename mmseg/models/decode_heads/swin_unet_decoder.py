@@ -171,6 +171,7 @@ class SwinUNetDecoder(BaseDecodeHead):
     def forward_up_features(self, x, x_downsample, Wh, Ww, padswh):
         # exit(0)
         # Wh, Ww = x.size(2), x.size(3)
+        print("padswh", padswh)
         for inx, layer_up in enumerate(self.layers_up):
             padwh = padswh[-(inx+1)]
             if inx == 0:
