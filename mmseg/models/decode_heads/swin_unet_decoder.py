@@ -176,6 +176,7 @@ class SwinUNetDecoder(BaseDecodeHead):
             if -(inx+2) >= 0:
                 padwh = padswh[-(inx+2)]
             else: padwh = [0,0]
+            print("------->",inx, -(inx+2),padwh)
             if inx == 0:
                 x, Wh, Ww = layer_up(x, Wh, Ww, padwh)
             else:
