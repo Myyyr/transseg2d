@@ -488,7 +488,7 @@ class BasicLayer(nn.Module):
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
             return x_down, Wh, Ww, padwh
         else:
-            return x, H, W
+            return x, H, W, [0,0]
 
     def extra_repr(self) -> str:
         return f"dim={self.dim}, input_resolution={self.input_resolution}, depth={self.depth}"
