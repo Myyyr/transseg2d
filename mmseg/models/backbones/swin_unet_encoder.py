@@ -154,16 +154,18 @@ class SwinUNetEncoder(nn.Module):
             x = x + self.absolute_pos_embed
         x = self.pos_drop(x.flatten(2).transpose(1, 2))
         x_downsample = []
+        padswh = []
 
         for layer in self.layers:
             # x_downsample.append(x)
             x_downsample.append(x)
             # x = layer(x)
-            x, Wh, Ww = layer(x, Wh, Ww)
+            x, Wh, Ww, padwh = layer(x, Wh, Ww)
+            padswh.append(padwh)
 
         x = self.norm(x)  # B L C
   
-        return x, x_downsample, Wh, Ww
+        return x, x_downsample, Wh, Ww, padswh
 
     #Dencoder and Skip connection
     # def forward_up_features(self, x, x_downsample):
@@ -198,11 +200,11 @@ class SwinUNetEncoder(nn.Module):
         
 
         #### Fusion of swin unet encoder/decoder + decoder=return x or some shit like this
-        x, x_downsample, Wh, Ww = self.forward_features(x)
+        x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         # x = self.forward_up_features(x,x_downsample)
         # x = self.up_x4(x)
 
-        return [x, x_downsample, Wh, Ww]
+        return [x, x_downsample, Wh, Ww, padswh]
 
     def flops(self):
         flops = 0

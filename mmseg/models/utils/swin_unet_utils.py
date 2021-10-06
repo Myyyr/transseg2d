@@ -339,7 +339,7 @@ class PatchMerging(nn.Module):
         x = self.norm(x)
         x = self.reduction(x)
 
-        return x
+        return x, [W % 2, H % 2]
 
     def extra_repr(self) -> str:
         return f"input_resolution={self.input_resolution}, dim={self.dim}"
@@ -358,16 +358,19 @@ class PatchExpand(nn.Module):
         self.expand = nn.Linear(dim, 2*dim, bias=False) if dim_scale==2 else nn.Identity()
         self.norm = norm_layer(dim // dim_scale)
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, padwh):
         """
         x: B, H*W, C
         """
         # H, W = self.input_resolution
+
         x = self.expand(x)
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
-
         x = x.view(B, H, W, C)
+        
+        x = x[:,:(x.shape[1]-padwh[1]),:(x.shape[2]-padwh[0]),:]
+
         x = rearrange(x, 'b h w (p1 p2 c)-> b (h p1) (w p2) c', p1=2, p2=2, c=C//4)
         Wh, Ww = x.size(1), x.size(2)
         x = x.view(B,-1,C//4)
@@ -481,9 +484,9 @@ class BasicLayer(nn.Module):
         #     x = self.downsample(x)
         # return x
         if self.downsample is not None:
-            x_down = self.downsample(x, H, W)
+            x_down, padwh = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
-            return x_down, Wh, Ww
+            return x_down, Wh, Ww, padwh
         else:
             return x, H, W
 
@@ -547,7 +550,7 @@ class BasicLayer_up(nn.Module):
         else:
             self.upsample = None
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, padwh):
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -577,7 +580,7 @@ class BasicLayer_up(nn.Module):
         # if self.upsample is not None:
         #     x = self.upsample(x)
         if self.upsample is not None:
-            x_down, Wh, Ww = self.upsample(x, H, W)
+            x_down, Wh, Ww = self.upsample(x, H, W, padwh)
             # Wh, Ww = (H) * 2, (W) * 2
             return x_down, Wh, Ww
         else:
