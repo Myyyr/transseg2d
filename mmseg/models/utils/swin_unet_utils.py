@@ -375,7 +375,7 @@ class PatchExpand(nn.Module):
         x = x[:,:(x.shape[1]-padwh[1]),:(x.shape[2]-padwh[0]),:]
         print("#### expand a",x.shape)
         Wh, Ww = x.size(1), x.size(2)
-        x = x.view(B,-1,C//4)
+        x = x.contiguous().view(B,-1,C//4)
         x= self.norm(x)
 
         return x, Wh, Ww
