@@ -369,11 +369,11 @@ class PatchExpand(nn.Module):
         assert L == H * W, "input feature has wrong size"
         x = x.view(B, H, W, C)
         
+
+        x = rearrange(x, 'b h w (p1 p2 c)-> b (h p1) (w p2) c', p1=2, p2=2, c=C//4)
         print("#### expand b",x.shape)
         x = x[:,:(x.shape[1]-padwh[1]),:(x.shape[2]-padwh[0]),:]
         print("#### expand a",x.shape)
-
-        x = rearrange(x, 'b h w (p1 p2 c)-> b (h p1) (w p2) c', p1=2, p2=2, c=C//4)
         Wh, Ww = x.size(1), x.size(2)
         x = x.view(B,-1,C//4)
         x= self.norm(x)
