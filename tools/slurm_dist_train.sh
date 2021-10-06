@@ -13,10 +13,7 @@
 #SBATCH --array=0
 
 set -x
-cd $WORK
-cd transseg2d
-module purge
-module load pytorch-gpu-1.6.0
+
 
 CONFIG="configs/swin/upernet_swin_base_patch4_window7_512x512_160k_ade20k.py"
 GPUS=8
