@@ -317,7 +317,6 @@ class PatchMerging(nn.Module):
         x: B, H*W, C
         """
         # H, W = self.input_resolution
-        print(x.shape, H, W)
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
         # assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
@@ -327,7 +326,6 @@ class PatchMerging(nn.Module):
         pad_input = (H % 2 == 1) or (W % 2 == 1)
         if pad_input:
             x = F.pad(x, (0, 0, 0, W % 2, 0, H % 2))
-        print("pad x", x.shape)
 
         x0 = x[:, 0::2, 0::2, :]  # B H/2 W/2 C
         x1 = x[:, 1::2, 0::2, :]  # B H/2 W/2 C
@@ -371,9 +369,7 @@ class PatchExpand(nn.Module):
         
 
         x = rearrange(x, 'b h w (p1 p2 c)-> b (h p1) (w p2) c', p1=2, p2=2, c=C//4)
-        print("#### expand b",x.shape)
         x = x[:,:(x.shape[1]-padwh[1]),:(x.shape[2]-padwh[0]),:]
-        print("#### expand a",x.shape)
         Wh, Ww = x.size(1), x.size(2)
         x = x.contiguous().view(B,-1,C//4)
         x= self.norm(x)
