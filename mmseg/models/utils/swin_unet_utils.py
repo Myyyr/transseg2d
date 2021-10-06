@@ -317,7 +317,7 @@ class PatchMerging(nn.Module):
         x: B, H*W, C
         """
         # H, W = self.input_resolution
-        pritn(x.shape, H, W)
+        print(x.shape, H, W)
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
         assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
