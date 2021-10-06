@@ -172,7 +172,7 @@ class SwinUNetDecoder(BaseDecodeHead):
         # exit(0)
         # Wh, Ww = x.size(2), x.size(3)
         for inx, layer_up in enumerate(self.layers_up):
-            padwh = padswh[1-inx]
+            padwh = padswh[-(inx+1)]
             if inx == 0:
                 x, Wh, Ww = layer_up(x, Wh, Ww, padwh)
             else:
