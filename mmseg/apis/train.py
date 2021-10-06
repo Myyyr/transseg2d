@@ -94,6 +94,8 @@ def train_segmentor(model,
         eval_cfg['by_epoch'] = cfg.runner['type'] != 'IterBasedRunner'
         eval_hook = DistEvalHook if distributed else EvalHook
 
+        print("OK !!!")
+
         exit(0)
 
 
