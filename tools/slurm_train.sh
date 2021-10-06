@@ -2,6 +2,9 @@
 
 set -x
 
+conda activate open-mmlab
+
+
 PARTITION=$1
 JOB_NAME=$2
 CONFIG=$3
