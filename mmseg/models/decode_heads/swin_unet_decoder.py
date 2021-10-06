@@ -175,6 +175,7 @@ class SwinUNetDecoder(BaseDecodeHead):
             if inx == 0:
                 x, Wh, Ww = layer_up(x, Wh, Ww)
             else:
+                print("up cat", x.shape, x_downsample[3-inx].shape)
                 x = torch.cat([x,x_downsample[3-inx]],-1)
                 x = self.concat_back_dim[inx](x)
                 # x = layer_up(x)
