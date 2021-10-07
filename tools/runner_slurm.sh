@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=10           # nombre de coeurs CPU par tache (un quart du noeud ici)
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=50:00:00              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
+#SBATCH --qos=qos_gpu-t4
 #SBATCH --output=logs/swin_tiny_ade%j.out # output file name
 #SBATCH --error=logs/swin_tiny_ade%j.err  # error file name
 
