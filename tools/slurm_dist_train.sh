@@ -18,6 +18,6 @@ CONFIG="configs/swin/upernet_swin_base_patch4_window7_512x512_160k_ade20k.py"
 GPUS=8
 PORT=${PORT:-29500}
 
-PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
+PYTHONPATH="$(dirname $CONFIG)/..":$PYTHONPATH \
 srun python -m torch.distributed.launch --nproc_per_node=$GPUS --master_port=$PORT \
     $(dirname "$0")/train.py $CONFIG --launcher pytorch ${@:3}
