@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=swin_tiny_ade     # job name
-#SBATCH --ntasks=8                  # number of MP tasks
+#SBATCH --ntasks=4                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
@@ -20,7 +20,7 @@ module load cuda/10.1.2
 
 
 CONFIG="configs/orininal_swin/upernet_swin_tiny_patch4_window7_512x512_160k_ade20k.py"
-GPUS=8
+GPUS=4
 PORT=${PORT:-29500}
 
 
