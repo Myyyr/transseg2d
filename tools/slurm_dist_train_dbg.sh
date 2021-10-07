@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=swin_tiny_ade     # job name
-#SBATCH --ntasks=2                  # number of MP tasks
-#SBATCH --ntasks-per-node=2          # number of MPI tasks per node
-#SBATCH --gres=gpu:2                 # number of GPUs per node
+#SBATCH --ntasks=8                  # number of MP tasks
+#SBATCH --ntasks-per-node=4          # number of MPI tasks per node
+#SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=00:10:00              # maximum execution time (HH:MM:SS)
