@@ -15,7 +15,7 @@
 set -x
 
 module purge
-module load pytorch-gpu/py3/1.6.0
+module load cuda/10.1.2
 
 CONFIG="configs/swin/upernet_swin_base_patch4_window7_512x512_160k_ade20k.py"
 GPUS=8
