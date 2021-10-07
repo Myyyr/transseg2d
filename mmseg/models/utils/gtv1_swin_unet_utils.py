@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
-from einops import rearrange
+from einops import rearrange, repeat
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 import numpy as np
 
@@ -68,7 +68,7 @@ class WindowAttention(nn.Module):
         proj_drop (float, optional): Dropout ratio of output. Default: 0.0
     """
 
-    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
+    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., gt_num=1):
 
         super().__init__()
         self.dim = dim
@@ -76,7 +76,7 @@ class WindowAttention(nn.Module):
         self.num_heads = num_heads
         head_dim = dim // num_heads
 
-        self.global_token = torch.nn.Parameter(torch.randn(1,self.dim))
+        self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
         self.global_token.requires_grad = True
 
         self.scale = qk_scale or head_dim ** -0.5
@@ -109,10 +109,16 @@ class WindowAttention(nn.Module):
     def forward(self, x, mask=None):
         """
         Args:
-            x: input features with shape of (num_windows*B, N, C)
+            x: input features with shape of (num_windows*B, N_, C)
             mask: (0/-inf) mask with shape of (num_windows, Wh*Ww, Wh*Ww) or None
         """
+        B_, N_, C = x.shape
+
+        # Global token : shape of (G, C)
+        gt = repeat(self.global_token, "g c -> b g c", b=B_) # shape of (num_windows*B, G, C)
+        x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
+
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
@@ -137,6 +143,10 @@ class WindowAttention(nn.Module):
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
         x = self.proj(x)
         x = self.proj_drop(x)
+
+        # Remove Global Token
+        x = x[:,-N_:,:] # x of size (B_, N_, C)
+
         return x
 
     def extra_repr(self) -> str:
