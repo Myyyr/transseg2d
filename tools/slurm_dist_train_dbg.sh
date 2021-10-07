@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=swin_tiny_ade     # job name
-#SBATCH --ntasks=8                  # number of MP tasks
-#SBATCH --ntasks-per-node=4          # number of MPI tasks per node
-#SBATCH --gres=gpu:4                 # number of GPUs per node
+#SBATCH --ntasks=2                  # number of MP tasks
+#SBATCH --ntasks-per-node=2          # number of MPI tasks per node
+#SBATCH --gres=gpu:2                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=50:00:00              # maximum execution time (HH:MM:SS)
@@ -20,9 +20,5 @@ module load cuda/10.1.2
 
 
 CONFIG="configs/orininal_swin/upernet_swin_tiny_patch4_window7_512x512_160k_ade20k.py"
-GPUS=8
-PORT=${PORT:-29500}
 
-
-srun python -m torch.distributed.launch --nproc_per_node=$GPUS --master_port=$PORT \
-    tools/train.py $CONFIG --launcher pytorch ${@:3}
+srun python -u tools/train.py $CONFIG --launcher="slurm" ${@:3}
