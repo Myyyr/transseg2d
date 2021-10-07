@@ -14,7 +14,6 @@ set -x
 
 cd $WORK/transseg2d
 
-module purge
-module load cuda/10.1.2
+module pytorch-gpu/py3/1.8.0
 
 srun python testslurm.py
