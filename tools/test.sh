@@ -14,6 +14,6 @@ set -x
 
 cd $WORK/transseg2d
 
-module pytorch-gpu/py3/1.8.0
+module load pytorch-gpu/py3/1.8.0
 
 srun python testslurm.py
