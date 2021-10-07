@@ -17,9 +17,4 @@ cd $WORK/transseg2d
 module purge
 module load cuda/10.1.2
 
-CONFIG="configs/swin/upernet_swin_base_patch4_window7_512x512_160k_ade20k.py"
-GPUS=1
-PORT=${PORT:-29500}
-
-PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 srun python testslurm.py
