@@ -12,12 +12,11 @@ set -x
 conda activate open-mmlab
 
 
-PARTITION=$1
-JOB_NAME=$2
+
 CONFIG="configs/orininal_swin/upernet_swin_tiny_patch4_window7_512x512_160k_ade20k.py"
-GPUS=$3
-GPUS_PER_NODE=$4
-CPUS_PER_TASK=$5
+GPUS=$1
+GPUS_PER_NODE=$2
+CPUS_PER_TASK=$3
 
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 srun --gres=gpu:${GPUS_PER_NODE} \
