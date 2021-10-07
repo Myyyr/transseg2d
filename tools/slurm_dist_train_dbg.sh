@@ -21,5 +21,5 @@ module load cuda/10.1.2
 
 CONFIG="configs/orininal_swin/upernet_swin_tiny_patch4_window7_512x512_160k_ade20k.py"
 
-PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
+
 srun python -u tools/train.py ${CONFIG} --launcher="slurm"
