@@ -78,6 +78,7 @@ class WindowAttention(nn.Module):
 
         self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
         self.global_token.requires_grad = True
+        self.gt_num = gt_num
 
         self.scale = qk_scale or head_dim ** -0.5
 
@@ -126,10 +127,11 @@ class WindowAttention(nn.Module):
         attn = (q @ k.transpose(-2, -1))
 
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
-            self.window_size[0] * self.window_size[1], self.window_size[0] * self.window_size[1], -1)  # Wh*Ww,Wh*Ww,nH
+            self.window_size[0] * self.window_size[1] + self.gt_num, self.window_size[0] * self.window_size[1] + self.gt_num, -1)  # Wh*Ww,Wh*Ww,nH
         relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
         print("------> rpb",relative_position_bias.unsqueeze(0).shape)
         print("------> attn",attn.shape)
+        exit(0)
         attn = attn + relative_position_bias.unsqueeze(0)
 
         if mask is not None:
