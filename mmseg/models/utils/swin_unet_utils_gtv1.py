@@ -88,31 +88,31 @@ class WindowAttention(nn.Module):
 
         # get pair-wise relative position index for each token inside the window
         coords_h = torch.arange(self.window_size[0])
-        print("====> ch", coords_h.shape, coords_h.min(), coords_h.max())
+        # print("====> ch", coords_h.shape, coords_h.min(), coords_h.max())
         coords_w = torch.arange(self.window_size[1])
-        print("====> cw", coords_w.shape, coords_w.min(), coords_w.max())
+        # print("====> cw", coords_w.shape, coords_w.min(), coords_w.max())
         coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  # 2, Wh, Ww
-        print("====> chw, 1,2", coords.shape, coords[:,1,2])
+        # print("====> chw, 1,2", coords.shape, coords[:,1,2])
         coords_flatten = torch.flatten(coords, 1)  # 2, Wh*Ww
         coords_flatten = torch.cat([torch.tensor([[-1],[-1]]), coords_flatten], dim=1)
-        print("====> chwf, 1*7+2", coords_flatten.shape, coords_flatten[:,1*7+2])
-        print("#######", coords_flatten[:, :, None].shape)
-        print("#######", coords_flatten[:, None, :].shape)
+        # print("====> chwf, 1*7+2", coords_flatten.shape, coords_flatten[:,1*7+2])
+        # print("#######", coords_flatten[:, :, None].shape)
+        # print("#######", coords_flatten[:, None, :].shape)
         relative_coords = coords_flatten[:, :, None] - coords_flatten[:, None, :]  # 2, Wh*Ww, Wh*Ww
-        print("====> rc 1",relative_coords.shape)
+        # print("====> rc 1",relative_coords.shape)
         relative_coords = relative_coords.permute(1, 2, 0).contiguous()  # Wh*Ww, Wh*Ww, 2
-        print("====> rc 2",relative_coords.shape)
+        # print("====> rc 2",relative_coords.shape)
         relative_coords[:, :, 0] += self.window_size[0] - 1  # shift to start from 0
-        print("====> rc 3",relative_coords.shape)
+        # print("====> rc 3",relative_coords.shape)
         relative_coords[:, :, 1] += self.window_size[1] - 1
-        print("====> rc 4",relative_coords.shape)
+        # print("====> rc 4",relative_coords.shape)
         relative_coords[:, :, 0] *= 2 * self.window_size[1] - 1
-        print("====> rc 5",relative_coords.shape)
+        # print("====> rc 5",relative_coords.shape)
         relative_position_index = relative_coords.sum(-1)  # Wh*Ww, Wh*Ww
         self.register_buffer("relative_position_index", relative_position_index)
-        print("====> rpi",relative_position_index.shape)
-        print("====> rpbt", self.relative_position_bias_table.shape)
-        exit(0)
+        # print("====> rpi",relative_position_index.shape)
+        # print("====> rpbt", self.relative_position_bias_table.shape)
+        # exit(0)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
         self.attn_drop = nn.Dropout(attn_drop)
