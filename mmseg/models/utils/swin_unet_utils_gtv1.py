@@ -134,30 +134,30 @@ class WindowAttention(nn.Module):
         gt = repeat(self.global_token, "g c -> b g c", b=B_) # shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
-        print("#------> x",x.shape)
+        # print("#------> x",x.shape)
 
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
-        print("#------> qkv",qkv.shape)
+        # print("#------> qkv",qkv.shape)
         
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
-        print("#------> attn",attn.shape)
+        # print("#------> attn",attn.shape)
 
 
-        print("------> rpbtable",self.relative_position_bias_table.shape)
-        print("------> rpi",self.relative_position_index.shape)
-        print("------> rpbtable[rpi]",self.relative_position_bias_table[self.relative_position_index.view(-1)].shape)
+        # print("------> rpbtable",self.relative_position_bias_table.shape)
+        # print("------> rpi",self.relative_position_index.shape)
+        # print("------> rpbtable[rpi]",self.relative_position_bias_table[self.relative_position_index.view(-1)].shape)
 
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
             self.window_size[0] * self.window_size[1] +1, self.window_size[0] * self.window_size[1] +1, -1)  # Wh*Ww,Wh*Ww,nH
-        print("------> rpb",relative_position_bias.unsqueeze(0).shape)
+        # print("------> rpb",relative_position_bias.unsqueeze(0).shape)
         relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
-        print("------> rpb",relative_position_bias.unsqueeze(0).shape)
-        print("------> attn",attn.shape)
-        exit(0)
+        # print("------> rpb",relative_position_bias.unsqueeze(0).shape)
+        # print("------> attn",attn.shape)
+        # exit(0)
         attn = attn + relative_position_bias.unsqueeze(0)
 
         if mask is not None:
