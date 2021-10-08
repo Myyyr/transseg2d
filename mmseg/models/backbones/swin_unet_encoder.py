@@ -157,16 +157,19 @@ class SwinUNetEncoder(nn.Module):
                 nn.init.constant_(m.weight, 1.0)
 
         if isinstance(pretrained, str):
+            print("-----> GO TRY LOAD IT BRO")
             self.apply(_init_weights)
             logger = get_root_logger()
             load_checkpoint(self, pretrained, strict=False, logger=logger)
+            print("-----> ALL GET GOOD")
+            exit(0)
         elif pretrained is None:
             self.apply(_init_weights)
         else:
             raise TypeError('pretrained must be a str or None')
 
 
-            
+
     @torch.jit.ignore
     def no_weight_decay(self):
         return {'absolute_pos_embed'}
