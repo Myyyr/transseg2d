@@ -131,7 +131,7 @@ class WindowAttention(nn.Module):
         print("------> rpbtable[rpi]",self.relative_position_bias_table[self.relative_position_index.view(-1)].shape)
 
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
-            self.window_size[0] * self.window_size[1] + self.gt_num, self.window_size[0] * self.window_size[1] + self.gt_num, -1)  # Wh*Ww,Wh*Ww,nH
+            self.window_size[0] * self.window_size[1], self.window_size[0] * self.window_size[1], -1)  # Wh*Ww,Wh*Ww,nH
         print("------> rpb",relative_position_bias.unsqueeze(0).shape)
         relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
         print("------> rpb",relative_position_bias.unsqueeze(0).shape)
