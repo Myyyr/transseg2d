@@ -204,7 +204,7 @@ class SwinUNetDecoder(BaseDecodeHead):
         # x, x_downsample = self.forward_features(x)
         x, x_downsample, Wh, Ww, padswh = x
         # Wh, Ww, padswh = Wh.detach(), Ww.detach(), padswh.detach()
-        print(type(Wh), type(Ww), type(padswh[2]))
+        print(type(Wh), type(Ww), type(padswh[2][0]))
         exit(0)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
         x = self.up_x4(x, Wh, Ww)
