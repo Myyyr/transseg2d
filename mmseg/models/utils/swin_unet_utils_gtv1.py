@@ -94,17 +94,19 @@ class WindowAttention(nn.Module):
         coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  # 2, Wh, Ww
         print("====> chw, 1,2", coords.shape, coords[:,1,2])
         coords_flatten = torch.flatten(coords, 1)  # 2, Wh*Ww
-        print("====> chwf 0, 1*7+2", coords_flatten.shape, coords_flatten[:,1*7+2])
+        print("====> chwf, 1*7+2", coords_flatten.shape, coords_flatten[:,1*7+2])
+        print("#######", coords_flatten[:, :, None].shape)
+        print("#######", coords_flatten[:, None, :].shape)
         relative_coords = coords_flatten[:, :, None] - coords_flatten[:, None, :]  # 2, Wh*Ww, Wh*Ww
-        print("====> chwf 1",relative_coords.shape)
+        print("====> rc 1",relative_coords.shape)
         relative_coords = relative_coords.permute(1, 2, 0).contiguous()  # Wh*Ww, Wh*Ww, 2
-        print("====> chwf 2",relative_coords.shape)
+        print("====> rc 2",relative_coords.shape)
         relative_coords[:, :, 0] += self.window_size[0] - 1  # shift to start from 0
-        print("====> chwf 3",relative_coords.shape)
+        print("====> rc 3",relative_coords.shape)
         relative_coords[:, :, 1] += self.window_size[1] - 1
-        print("====> chwf 4",relative_coords.shape)
+        print("====> rc 4",relative_coords.shape)
         relative_coords[:, :, 0] *= 2 * self.window_size[1] - 1
-        print("====> chwf 5",relative_coords.shape)
+        print("====> rc 5",relative_coords.shape)
         relative_position_index = relative_coords.sum(-1)  # Wh*Ww, Wh*Ww
         self.register_buffer("relative_position_index", relative_position_index)
         print("====> rpi",relative_position_index.shape)
