@@ -110,6 +110,7 @@ class WindowAttention(nn.Module):
         relative_position_index = relative_coords.sum(-1)  # Wh*Ww, Wh*Ww
         self.register_buffer("relative_position_index", relative_position_index)
         print("====> rpi",relative_position_index.shape)
+        print("====> rpbt", self.relative_position_bias_table.shape)
         exit(0)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
