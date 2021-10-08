@@ -128,6 +128,8 @@ class WindowAttention(nn.Module):
 
         print("------> rpbtable",self.relative_position_bias_table.shape)
         print("------> rpi",self.relative_position_index.shape)
+        print("------> rpbtable[rpi]",self.relative_position_bias_table[self.relative_position_index.view(-1)].shape)
+
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
             self.window_size[0] * self.window_size[1] + self.gt_num, self.window_size[0] * self.window_size[1] + self.gt_num, -1)  # Wh*Ww,Wh*Ww,nH
         print("------> rpb",relative_position_bias.unsqueeze(0).shape)
