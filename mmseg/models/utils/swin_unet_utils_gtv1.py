@@ -307,6 +307,7 @@ class SwinTransformerBlock(nn.Module):
         print("----> before mlp", x.shape)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
         print("----> after mlp")
+        exit(0)
 
         return x
 
