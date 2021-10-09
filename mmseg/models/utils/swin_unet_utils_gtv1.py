@@ -83,6 +83,8 @@ class WindowAttention(nn.Module):
 
         self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
         self.global_token.requires_grad = True
+        print("======> dtype ", self.global_token.dtype)
+        exit(0)
         self.gt_num = gt_num
 
         self.scale = qk_scale or head_dim ** -0.5
