@@ -20,7 +20,7 @@ module load cuda/10.1.2
 
 
 # CONFIG="configs/orininal_swin/upernet_swin_tiny_pt_patch4_window7_512x512_160k_ade20k.py"
-CONFIG="configs/swinunet/swinunet_tiny_patch4_window7_512x512_160k_ade20k.py"
+CONFIG="work_dirs/upernet_swin_tiny_pt_patch4_window7_512x512_160k_ade20k/upernet_swin_tiny_pt_patch4_window7_512x512_160k_ade20k.py"
 CHECK="work_dirs/upernet_swin_tiny_pt_patch4_window7_512x512_160k_ade20k/iter_160000.pth" 
 TMPDIR="/gpfsscratch/rech/arf/unm89rb/tmpdir"
 
