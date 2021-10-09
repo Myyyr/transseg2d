@@ -180,6 +180,7 @@ class WindowAttention(nn.Module):
         attn = self.attn_drop(attn)
 
         print("=====> atn v", attn.shape, v.shape )
+        print("=====> atn v", attn.dtype, v.dtype )
         exit(0)
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
         x = self.proj(x)
