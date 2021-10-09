@@ -283,7 +283,9 @@ class SwinTransformerBlock(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
         # W-MSA/SW-MSA
+        print("----> WE are here !")
         attn_windows = self.attn(x_windows, mask=attn_mask)  # nW*B, window_size*window_size, C
+        print("----> and now here !")
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
@@ -302,7 +304,9 @@ class SwinTransformerBlock(nn.Module):
 
         # FFN
         x = shortcut + self.drop_path(x)
+        print("----> before mlp", x.shape)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
+        print("----> after mlp")
 
         return x
 
