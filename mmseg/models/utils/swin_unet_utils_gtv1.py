@@ -181,8 +181,9 @@ class WindowAttention(nn.Module):
 
         print("=====> atn v", attn.shape, v.shape )
         print("=====> atn v", attn.dtype, v.dtype )
-        exit(0)
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
+        print("=====> x", x.shape)
+        exit(0)
         x = self.proj(x)
         x = self.proj_drop(x)
 
