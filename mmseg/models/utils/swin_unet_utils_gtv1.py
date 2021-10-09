@@ -9,6 +9,7 @@ import numpy as np
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()
+        self.in_features=in_features
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
         self.fc1 = nn.Linear(in_features, hidden_features)
@@ -17,7 +18,8 @@ class Mlp(nn.Module):
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
-        print(x.shape)
+        print("##### inside mlp", x.shape, self.in_features)
+        exit(0)
         x = self.fc1(x)
         x = self.act(x)
         x = self.drop(x)
