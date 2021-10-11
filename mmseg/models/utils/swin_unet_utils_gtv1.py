@@ -173,16 +173,16 @@ class WindowAttention(nn.Module):
 
         if mask is not None:
             nW = mask.shape[0]
-            print("-----> mask",mask.unsqueeze(1).unsqueeze(0).shape, mask.min(), mask.max())
-            print("-----> attn 0",attn.shape)
-            print("-----> attn 1",attn.view(B_ // nW, nW, self.num_heads, N, N).shape)
-            print("-----> attn 1.1",attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:].shape)
+            # print("-----> mask",mask.unsqueeze(1).unsqueeze(0).shape, mask.min(), mask.max())
+            # print("-----> attn 0",attn.shape)
+            # print("-----> attn 1",attn.view(B_ // nW, nW, self.num_heads, N, N).shape)
+            # print("-----> attn 1.1",attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:].shape)
             attn_ = attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:] + mask.unsqueeze(1).unsqueeze(0)
-            print("-----> attn_ 2",attn_.shape)
-            print("-----> attn_ 2.1",attn_.view(-1, self.num_heads, N_, N_).shape)
+            # print("-----> attn_ 2",attn_.shape)
+            # print("-----> attn_ 2.1",attn_.view(-1, self.num_heads, N_, N_).shape)
             attn[:,:,self.gt_num:,self.gt_num:] = attn_.view(-1, self.num_heads, N_, N_)
-            print("-----> attn 3",attn.shape)
-            exit(0)
+            # print("-----> attn 3",attn.shape)
+            # exit(0)
             attn = self.softmax(attn)
         else:
             attn = self.softmax(attn)
