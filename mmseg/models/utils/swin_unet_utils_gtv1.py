@@ -509,10 +509,14 @@ class BasicLayer(nn.Module):
                 cnt += 1
 
         mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
+        print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
+        print("###### mask_windows 1 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
+        print("###### attn_mask 2 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
-
+        print("###### attn_mask 3 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
+        exit(0)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
