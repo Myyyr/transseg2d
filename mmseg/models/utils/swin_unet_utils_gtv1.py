@@ -512,6 +512,7 @@ class BasicLayer(nn.Module):
         for i in range(mask_windows.shape[0]):
             if mask_windows[i,...].min().value() == -100:
                 print(mask_windows[0,:,:,0])
+                exit(0)
         print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
         print("###### mask_windows 1 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
