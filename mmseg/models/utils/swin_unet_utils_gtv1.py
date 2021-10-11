@@ -373,9 +373,13 @@ class PatchMerging(nn.Module):
         # H, W = self.input_resolution
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
-        assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
+        # assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
 
         x = x.view(B, H, W, C)
+
+        pad_input = (H % 2 == 1) or (W % 2 == 1)
+        if pad_input:
+            x = F.pad(x, (0, 0, 0, W % 2, 0, H % 2))
 
         x0 = x[:, 0::2, 0::2, :]  # B H/2 W/2 C
         x1 = x[:, 1::2, 0::2, :]  # B H/2 W/2 C
@@ -387,7 +391,7 @@ class PatchMerging(nn.Module):
         x = self.norm(x)
         x = self.reduction(x)
 
-        return x
+        return x, [W % 2, H % 2]
 
     def extra_repr(self) -> str:
         return f"input_resolution={self.input_resolution}, dim={self.dim}"
@@ -406,19 +410,22 @@ class PatchExpand(nn.Module):
         self.expand = nn.Linear(dim, 2*dim, bias=False) if dim_scale==2 else nn.Identity()
         self.norm = norm_layer(dim // dim_scale)
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, padwh):
         """
         x: B, H*W, C
         """
         # H, W = self.input_resolution
+
         x = self.expand(x)
         B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
-
         x = x.view(B, H, W, C)
+        
+
         x = rearrange(x, 'b h w (p1 p2 c)-> b (h p1) (w p2) c', p1=2, p2=2, c=C//4)
+        x = x[:,:(x.shape[1]-padwh[1]),:(x.shape[2]-padwh[0]),:]
         Wh, Ww = x.size(1), x.size(2)
-        x = x.view(B,-1,C//4)
+        x = x.contiguous().view(B,-1,C//4)
         x= self.norm(x)
 
         return x, Wh, Ww
@@ -515,18 +522,10 @@ class BasicLayer(nn.Module):
                 cnt += 1
 
         mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
-        # for i in range(mask_windows.shape[0]):
-        #     if mask_windows[i,...].min().item() != mask_windows[i,...].max().item():
-        #         print(mask_windows[i,:,:,0])
-        #         exit(0)
-        # print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
-        # print("###### mask_windows 1 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
-        # print("###### attn_mask 2 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
-        # print("###### attn_mask 3 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
-        # exit(0)
+
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
@@ -537,11 +536,11 @@ class BasicLayer(nn.Module):
         #     x = self.downsample(x)
         # return x
         if self.downsample is not None:
-            x_down = self.downsample(x, H, W)
+            x_down, padwh = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
-            return x_down, Wh, Ww
+            return x_down, Wh, Ww, padwh
         else:
-            return x, H, W
+            return x, H, W, [0,0]
 
     def extra_repr(self) -> str:
         return f"dim={self.dim}, input_resolution={self.input_resolution}, depth={self.depth}"
@@ -603,7 +602,7 @@ class BasicLayer_up(nn.Module):
         else:
             self.upsample = None
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, padwh):
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -633,7 +632,7 @@ class BasicLayer_up(nn.Module):
         # if self.upsample is not None:
         #     x = self.upsample(x)
         if self.upsample is not None:
-            x_down, Wh, Ww = self.upsample(x, H, W)
+            x_down, Wh, Ww = self.upsample(x, H, W, padwh)
             # Wh, Ww = (H) * 2, (W) * 2
             return x_down, Wh, Ww
         else:
@@ -700,4 +699,3 @@ class PatchEmbed(nn.Module):
         if self.norm is not None:
             flops += Ho * Wo * self.embed_dim
         return flops
-
