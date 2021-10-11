@@ -510,7 +510,7 @@ class BasicLayer(nn.Module):
 
         mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
         for i in range(mask_windows.shape[0]):
-            if mask_windows[i,...].min().item() == mask_windows[i,...].max().item():
+            if mask_windows[i,...].min().item() != mask_windows[i,...].max().item():
                 print(mask_windows[0,:,:,0])
                 exit(0)
         print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
