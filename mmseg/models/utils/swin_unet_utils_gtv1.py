@@ -26,7 +26,7 @@ class Mlp(nn.Module):
         print("##### inisde mima", x.min(), x.max())
         print("##### inside acdr", x.shape)
         x = self.fc2(x)
-        print("##### inside mlp 1", x.shape, self.in_features)
+        print("##### inside mlp 2", x.shape, self.in_features)
         exit(0)
         x = self.drop(x)
         return x
@@ -91,7 +91,7 @@ class WindowAttention(nn.Module):
 
         # define a parameter table of relative position bias
         self.relative_position_bias_table = nn.Parameter(
-            torch.zeros((2 * window_size[0] - 1) * (2 * window_size[1] - 1), num_heads))  # 2*Wh-1 * 2*Ww-1, nH
+            torch.zeros((2 * window_size[0] - 1) * (2 * window_size[1] - 1) + 1, num_heads))  # 2*Wh-1 * 2*Ww-1, nH
 
         # get pair-wise relative position index for each token inside the window
         coords_h = torch.arange(self.window_size[0])
