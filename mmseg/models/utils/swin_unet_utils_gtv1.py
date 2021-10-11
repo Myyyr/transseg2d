@@ -294,7 +294,7 @@ class SwinTransformerBlock(nn.Module):
         # partition windows
         x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
-        print("=====> xwin",x_windows.shape, x_windows.min(), x.windows.max())
+        print("=====> xwin",x_windows.shape, x_windows.min(), x_windows.max())
         exit(0)
         x_windows = torch.cat
         # W-MSA/SW-MSA
