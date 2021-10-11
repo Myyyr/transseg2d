@@ -297,7 +297,7 @@ class SwinTransformerBlock(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
         # print("=====> mask_matrix",mask_matrix.shape, mask_matrix.min(), mask_matrix.max())
         # exit(0)
-        x_windows = torch.cat
+        # x_windows = torch.cat
         # W-MSA/SW-MSA
         # print("----> WE are here !")
         attn_windows = self.attn(x_windows, mask=attn_mask)  # nW*B, window_size*window_size, C
