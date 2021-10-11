@@ -139,7 +139,7 @@ class WindowAttention(nn.Module):
         print("=======> attn", attn.shape)
         print("=======> rpb ", relative_position_bias.unsqueeze(0).shape)
 
-        attn = attn + relative_position_bias.unsqueeze(0)
+        attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
         if mask is not None:
             nW = mask.shape[0]
