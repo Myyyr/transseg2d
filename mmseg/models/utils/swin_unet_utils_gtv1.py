@@ -18,14 +18,15 @@ class Mlp(nn.Module):
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
-        # print("##### inside mlp 0", x.shape, self.in_features)
+        print("##### inside mlp 0", x.shape, self.in_features)
         x = self.fc1(x)
-        # print("##### inside mlp 1", x.shape, self.in_features)
-        # exit(0)
-
+        print("##### inside mlp 1", x.shape, self.in_features)
         x = self.act(x)
         x = self.drop(x)
+        print("##### inside acdr", x.shape, x.min(), x.max())
         x = self.fc2(x)
+        print("##### inside mlp 1", x.shape, self.in_features)
+        exit(0)
         x = self.drop(x)
         return x
 
