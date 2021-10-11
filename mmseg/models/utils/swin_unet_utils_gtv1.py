@@ -509,6 +509,7 @@ class BasicLayer(nn.Module):
                 cnt += 1
 
         mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
+        print(mask_windows[0,:,:,0])
         print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
         print("###### mask_windows 1 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
