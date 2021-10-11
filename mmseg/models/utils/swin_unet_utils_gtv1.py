@@ -175,6 +175,7 @@ class WindowAttention(nn.Module):
             nW = mask.shape[0]
             print("-----> mask",mask.unsqueeze(1).unsqueeze(0).shape, mask.min(), mask.max())
             print("-----> attn",attn.unsqueeze(1).unsqueeze(0).shape)
+            print("-----> attn",attn.view(B_ // nW, nW, self.num_heads, N, N).unsqueeze(1).unsqueeze(0).shape)
             exit(0)
             attn = attn.view(B_ // nW, nW, self.num_heads, N, N) + mask.unsqueeze(1).unsqueeze(0)
             attn = attn.view(-1, self.num_heads, N, N)
