@@ -141,11 +141,11 @@ class WindowAttention(nn.Module):
 
         if mask is not None:
             nW = mask.shape[0]
-            print("=======> attn 0", attn.shape)
-            print("=======> attn 1", attn.view(B_ // nW, nW, self.num_heads, N, N).shape)
-            print("=======> attn 1", attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,self.gt_num:,self.gt_num:].shape)
-            print("=======> mask  ",mask.unsqueeze(1).unsqueeze(0).shape)
-            attn_ = attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,self.gt_num:,self.gt_num:] + mask.unsqueeze(1).unsqueeze(0)
+            # print("=======> attn 0", attn.shape)
+            # print("=======> attn 1", attn.view(B_ // nW, nW, self.num_heads, N, N).shape)
+            # print("=======> attn 2", attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:].shape)
+            # print("=======> mask  ",mask.unsqueeze(1).unsqueeze(0).shape)
+            attn_ = attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:] + mask.unsqueeze(1).unsqueeze(0)
             attn[:,:,self.gt_num:,self.gt_num:] = attn_.view(-1, self.num_heads, N, N)
             attn = self.softmax(attn)
         else:
