@@ -137,7 +137,7 @@ class WindowAttention(nn.Module):
         
 
         print("=======> attn", attn.shape)
-        print("=======> rpb ", relative_position_bias.unsqueeze.shape)
+        print("=======> rpb ", relative_position_bias.unsqueeze(0).shape)
 
         attn = attn + relative_position_bias.unsqueeze(0)
 
