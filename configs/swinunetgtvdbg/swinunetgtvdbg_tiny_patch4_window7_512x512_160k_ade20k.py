@@ -12,7 +12,8 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=150
+        num_classes=150, 
+        gt_num=1
     ),
     decode_head=dict(
         embed_dim=96,
@@ -23,7 +24,8 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=150
+        num_classes=150, 
+        gt_num=1
     )
     #,
     # auxiliary_head=dict(

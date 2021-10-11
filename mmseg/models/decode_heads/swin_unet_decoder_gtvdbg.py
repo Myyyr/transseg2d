@@ -46,7 +46,7 @@ class SwinUNetDecoderGTvdbg(BaseDecodeHead):
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, final_upsample="expand_first", align_corners=None, **kwargs):
+                 use_checkpoint=False, final_upsample="expand_first", align_corners=None, gt_num=1, **kwargs):
         super(SwinUNetDecoderGTvdbg, self).__init__(**kwargs)
 
         print("SwinTransformerSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
@@ -120,7 +120,7 @@ class SwinUNetDecoderGTvdbg(BaseDecodeHead):
                                 drop_path=dpr[sum(depths[:(self.num_layers-1-i_layer)]):sum(depths[:(self.num_layers-1-i_layer) + 1])],
                                 norm_layer=norm_layer,
                                 upsample=PatchExpand if (i_layer < self.num_layers - 1) else None,
-                                use_checkpoint=use_checkpoint)
+                                use_checkpoint=use_checkpoint, gt_num=gt_num)
             self.layers_up.append(layer_up)
             self.concat_back_dim.append(concat_linear)
 
