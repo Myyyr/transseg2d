@@ -115,7 +115,7 @@ class WindowAttention(nn.Module):
             x: input features with shape of (num_windows*B, N, C)
             mask: (0/-inf) mask with shape of (num_windows, Wh*Ww, Wh*Ww) or None
         """
-        B_, N, C = x.shape
+        B_, N_, C = x.shape
 
         # add global tokens
         gt = repeat(self.global_token, "g c -> b g c", b=B_) # shape of (num_windows*B, G, C)
