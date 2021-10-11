@@ -99,7 +99,7 @@ class WindowAttention(nn.Module):
         coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  # 2, Wh, Ww
         # print("====> chw, 1,2", coords.shape, coords[:,1,2])
         coords_flatten = torch.flatten(coords, 1)  # 2, Wh*Ww
-        coords_flatten = torch.cat([torch.tensor([[-1],[-1]]), coords_flatten], dim=1)
+        coords_flatten = torch.cat([torch.tensor([[self.window_size[0]-1],[self.window_size[1]]]), coords_flatten], dim=1)
         # print("====> chwf, 1*7+2", coords_flatten.shape, coords_flatten[:,1*7+2])
         # print("#######", coords_flatten[:, :, None].shape)
         # print("#######", coords_flatten[:, None, :].shape)
