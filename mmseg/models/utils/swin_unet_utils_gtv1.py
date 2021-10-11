@@ -174,6 +174,7 @@ class WindowAttention(nn.Module):
         if mask is not None:
             nW = mask.shape[0]
             print("-----> mask",mask.unsqueeze(1).unsqueeze(0).shape, mask.min(), mask.max())
+            print("-----> attn",attn.unsqueeze(1).unsqueeze(0).shape)
             exit(0)
             attn = attn.view(B_ // nW, nW, self.num_heads, N, N) + mask.unsqueeze(1).unsqueeze(0)
             attn = attn.view(-1, self.num_heads, N, N)
@@ -294,8 +295,8 @@ class SwinTransformerBlock(nn.Module):
         # partition windows
         x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
-        print("=====> mask_matrix",mask_matrix.shape, mask_matrix.min(), mask_matrix.max())
-        exit(0)
+        # print("=====> mask_matrix",mask_matrix.shape, mask_matrix.min(), mask_matrix.max())
+        # exit(0)
         x_windows = torch.cat
         # W-MSA/SW-MSA
         # print("----> WE are here !")
@@ -509,18 +510,18 @@ class BasicLayer(nn.Module):
                 cnt += 1
 
         mask_windows = window_partition(img_mask, self.window_size)  # nW, window_size, window_size, 1
-        for i in range(mask_windows.shape[0]):
-            if mask_windows[i,...].min().item() != mask_windows[i,...].max().item():
-                print(mask_windows[i,:,:,0])
+        # for i in range(mask_windows.shape[0]):
+        #     if mask_windows[i,...].min().item() != mask_windows[i,...].max().item():
+        #         print(mask_windows[i,:,:,0])
         #         exit(0)
-        print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
+        # print("###### mask_windows 0 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
-        print("###### mask_windows 1 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
+        # print("###### mask_windows 1 ", mask_windows.shape, mask_windows.min(), mask_windows.max())
         attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
-        print("###### attn_mask 2 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
+        # print("###### attn_mask 2 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
-        print("###### attn_mask 3 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
-        exit(0)
+        # print("###### attn_mask 3 ", attn_mask.shape, attn_mask.min(), attn_mask.max())
+        # exit(0)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
