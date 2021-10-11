@@ -10,9 +10,10 @@ from .unet import UNet
 from .swin_transformer import SwinTransformer
 from .swin_unet_encoder import SwinUNetEncoder
 from .swin_unet_encoder_gtv1 import SwinUNetEncoderGTv1
+from .swin_unet_encoder_gtvdbg import SwinUNetEncoderGTvdbg
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
     'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer', 
-    'SwinUNetEncoder', 'SwinUNetEncoderGTv1'
+    'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTvdbg'
 ]
