@@ -91,7 +91,7 @@ class WindowAttention(nn.Module):
 
         # define a parameter table of relative position bias
         self.relative_position_bias_table = nn.Parameter(
-            torch.zeros((2 * window_size[0] - 1) * (2 * window_size[1] - 1) + 1, num_heads))  # 2*Wh-1 * 2*Ww-1, nH
+            torch.zeros((2 * window_size[0] - 1) * (2 * window_size[1] - 1), num_heads))  # 2*Wh-1 * 2*Ww-1, nH
 
         # get pair-wise relative position index for each token inside the window
         coords_h = torch.arange(self.window_size[0])
@@ -101,7 +101,7 @@ class WindowAttention(nn.Module):
         coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  # 2, Wh, Ww
         # print("====> chw, 1,2", coords.shape, coords[:,1,2])
         coords_flatten = torch.flatten(coords, 1)  # 2, Wh*Ww
-        coords_flatten = torch.cat([torch.tensor([[self.window_size[0]-1],[self.window_size[1]]]), coords_flatten], dim=1)
+        # coords_flatten = torch.cat([torch.tensor([[self.window_size[0]-1],[self.window_size[1]]]), coords_flatten], dim=1)
         # print("====> chwf, 1*7+2", coords_flatten.shape, coords_flatten[:,1*7+2])
         # print("#######", coords_flatten[:, :, None].shape)
         # print("#######", coords_flatten[:, None, :].shape)
@@ -163,9 +163,9 @@ class WindowAttention(nn.Module):
             self.window_size[0] * self.window_size[1] +1, self.window_size[0] * self.window_size[1] +1, -1)  # Wh*Ww,Wh*Ww,nH
         # print("------> rpb",relative_position_bias.unsqueeze(0).shape)
         relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
-        # print("------> rpb",relative_position_bias.unsqueeze(0).shape)
-        # print("------> attn",attn.shape)
-        # exit(0)
+        print("------> rpb",relative_position_bias.unsqueeze(0).shape)
+        print("------> attn",attn.shape)
+        exit(0)
         attn = attn + relative_position_bias.unsqueeze(0)
         # print("------> rpb",relative_position_bias.unsqueeze(0).shape)
         # print("------> attn",attn.shape)
