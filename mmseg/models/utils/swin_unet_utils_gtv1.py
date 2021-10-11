@@ -179,12 +179,12 @@ class WindowAttention(nn.Module):
 
         attn = self.attn_drop(attn)
 
-        print("=====> atn v", attn.shape, v.shape )
-        print("=====> atn v", attn.dtype, v.dtype )
+        # print("=====> atn v", attn.shape, v.shape )
+        # print("=====> atn v", attn.dtype, v.dtype )
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
         # https://stackoverflow.com/questions/51691563/cuda-runtime-error-59-device-side-assert-triggered
-        print("=====> x", x.shape)
-        exit(0)
+        # print("=====> x", x.shape)
+        # exit(0)
         x = self.proj(x)
         x = self.proj_drop(x)
 
