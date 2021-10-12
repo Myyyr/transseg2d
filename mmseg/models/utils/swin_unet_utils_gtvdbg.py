@@ -203,8 +203,8 @@ class WindowAttention(nn.Module):
         print("############ DEBUG #############")
         print("x a shape",x.shape)
         print("x a mean ",x.mean())
-        print("x 0 mean ",x[:,:,0,:].mean())
-        print("x 1 mean ",x[:,:,1,:].mean())
+        print("x 0 mean ",x[:,0,:].mean())
+        print("x 1 mean ",x[:,1,:].mean())
         print("################################")
         exit(0)
 
