@@ -162,6 +162,7 @@ class WindowAttention(nn.Module):
 
         ### mask global token 
         print("############ DEBUG #############")
+        print("|| start")
         print("attn a shape",attn.shape)
         print("attn a mean ",attn.mean())
         print("attn 0 mean ",attn[:,:,0,:].mean())
@@ -171,6 +172,7 @@ class WindowAttention(nn.Module):
         attn[:,:,:self.gt_num,:] -= M
         attn[:,:,self.gt_num:,:self.gt_num] -= M
         print("############ DEBUG #############")
+        print("|| mask")
         print("attn a shape",attn.shape)
         print("attn a mean ",attn.mean())
         print("attn 0 mean ",attn[:,:,0,:].mean())
@@ -189,6 +191,7 @@ class WindowAttention(nn.Module):
             attn = self.softmax(attn)
 
         print("############ DEBUG #############")
+        print("|| softmax")
         print("attn a shape",attn.shape)
         print("attn a mean ",attn.mean())
         print("attn 0 mean ",attn[:,:,0,:].mean())
@@ -198,6 +201,7 @@ class WindowAttention(nn.Module):
         attn = self.attn_drop(attn)
 
         print("############ DEBUG #############")
+        print("|| dropout")
         print("attn a shape",attn.shape)
         print("attn a mean ",attn.mean())
         print("attn 0 mean ",attn[:,:,0,:].mean())
@@ -211,10 +215,11 @@ class WindowAttention(nn.Module):
         x = self.proj_drop(x)
 
         print("############ DEBUG #############")
+        print("|| out")
         print("x a shape",x.shape)
         print("x a mean ",x.mean())
         print("x 0 mean ",x[:,0,:].mean())
-        print("x 1 mean ",x[:,1,:].mean())
+        print("x 1 mean ",x[:,-N_:,:].mean())
         print("################################")
         exit(0)
 
