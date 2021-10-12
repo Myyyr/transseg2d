@@ -167,7 +167,7 @@ class WindowAttention(nn.Module):
         print("attn 0 mean ",attn[:,:,0,:].mean())
         print("attn 1 mean ",attn[:,:,1,1:].mean())
         print("################################")
-        M = 1000
+        M = 1e5
         attn[:,:,:self.gt_num,:] -= M
         attn[:,:,self.gt_num:,:self.gt_num] -= M
         print("############ DEBUG #############")
