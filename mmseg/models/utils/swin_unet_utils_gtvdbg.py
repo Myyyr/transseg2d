@@ -197,6 +197,12 @@ class WindowAttention(nn.Module):
 
         attn = self.attn_drop(attn)
 
+        print("############ DEBUG #############")
+        print("(attn @ v) a shape",(attn @ v).shape)
+        print("(attn @ v).transpose(1, 2) a mean ",(attn @ v).transpose(1, 2).shape)
+        print("(attn @ v).transpose(1, 2).reshape(B_, N, C) 0 mean ",(attn @ v).transpose(1, 2).reshape(B_, N, C).shape)
+        print("################################")
+
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
         x = self.proj(x)
         x = self.proj_drop(x)
