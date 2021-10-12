@@ -13,7 +13,7 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150, 
-        gt_num=10
+        gt_num=1
     ),
     decode_head=dict(
         embed_dim=96,
@@ -25,7 +25,7 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150, 
-        gt_num=10
+        gt_num=1
     )
     #,
     # auxiliary_head=dict(
