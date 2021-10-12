@@ -123,6 +123,19 @@ class WindowAttention(nn.Module):
         B_, N, C = x.shape
 
 
+        print("############ DEBUG #############")
+        print("x shape",x.shape)
+        print("x mean ",x.mean())
+        for i,param in enumerate(self.qkv.parameters()):
+            print(i,"--> mean",param.mean())
+            print(i,"--> std ",param.std())
+        print("qkv(x) shape",self.qkv(x).shape)
+        print("qkv(x) mean ",self.qkv(x).mean())
+
+        print("################################")
+        exit(0)
+
+
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
