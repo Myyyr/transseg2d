@@ -118,7 +118,7 @@ class WindowAttention(nn.Module):
         B_, N_, C = x.shape
 
         # add global tokens
-        gt = repeat(self.global_token, "g c -> b g c", b=B_) # shape of (num_windows*B, G, C)
+        gt = repeat(self.global_token, "g c -> b g c", b=B_) - 100# shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
 
