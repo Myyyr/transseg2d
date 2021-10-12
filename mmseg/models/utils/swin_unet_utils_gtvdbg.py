@@ -167,7 +167,8 @@ class WindowAttention(nn.Module):
         print("attn 0 mean ",attn[:,:,0,:].mean())
         print("attn 1 mean ",attn[:,:,1,:].mean())
         print("################################")
-        attn[:,:,:self.gt_num,:self.gt_num] -= 100
+        attn[:,:,:self.gt_num,:] = -100
+        attn[:,:,:,:self.gt_num] = -100
         print("############ DEBUG #############")
         print("attn a shape",attn.shape)
         print("attn a mean ",attn.mean())
