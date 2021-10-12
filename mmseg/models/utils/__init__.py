@@ -7,6 +7,7 @@ from .swin_unet_utils import *
 from .swin_unet_utils_gtv1 import *
 from .swin_unet_utils_gtv2 import *
 from .swin_unet_utils_gtvdbg import *
+from .swin_unet_utils_gtvdbg2 import *
 
 __all__ = [
     'ResLayer', 'SelfAttentionBlock', 'make_divisible', 'InvertedResidual',
