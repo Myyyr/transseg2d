@@ -124,14 +124,20 @@ class WindowAttention(nn.Module):
 
 
         print("############ DEBUG #############")
-        print("x shape",x.shape)
-        print("x mean ",x.mean())
+        print("x a shape",x.shape)
+        print("x a mean ",x.mean())
+        print("x a std  ",x.std())
+        print("x 0 mean ",x[:,0,:].mean())
+        print("x 0 std  ",x[:,0,:].std())
+        print("x 1 mean ",x[:,1,:].mean())
+        print("x 1 std  ",x[:,1,:].std())
         for i,param in enumerate(self.qkv.parameters()):
             print(i,"--> mean",param.mean())
             print(i,"--> std ",param.std())
         print("qkv(x) shape",self.qkv(x).shape)
-        print("qkv(x) mean ",self.qkv(x).mean())
-
+        print("qkv(x) a mean ",self.qkv(x).mean())
+        print("qkv(x) 0 mean ",self.qkv(x)[:,0,:].mean())
+        print("qkv(x) 1 mean ",self.qkv(x)[:,1,:].mean())
         print("################################")
         exit(0)
 
