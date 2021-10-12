@@ -160,25 +160,9 @@ class WindowAttention(nn.Module):
         attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
 
-        ### mask global token 
-        print("############ DEBUG #############")
-        print("|| start")
-        print("attn a shape",attn.shape)
-        print("attn a mean ",attn.mean())
-        print("attn 0 mean ",attn[:,:,0,:].mean())
-        print("attn 1 mean ",attn[:,:,1,1:].mean())
-        print("################################")
-        M = 1e5
+        ### mask global token         M = 1e5
         attn[:,:,:self.gt_num,:] -= M
         attn[:,:,self.gt_num:,:self.gt_num] -= M
-        print("############ DEBUG #############")
-        print("|| mask")
-        print("attn a shape",attn.shape)
-        print("attn a mean ",attn.mean())
-        print("attn 0 mean ",attn[:,:,0,:].mean())
-        print("attn 1 mean ",attn[:,:,1,1:].mean())
-        print("################################")
-
 
 
         if mask is not None:
@@ -190,46 +174,17 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
-        print("############ DEBUG #############")
-        print("|| softmax")
-        print("attn a shape",attn.shape)
-        print("attn a mean ",attn.mean())
-        print("attn 0 mean ",attn[:,:,0,:].mean())
-        print("attn 1 mean ",attn[:,:,1,1:].mean())
-        print("################################")
-
         attn = self.attn_drop(attn)
 
-        print("############ DEBUG #############")
-        print("|| dropout")
-        print("attn a shape",attn.shape)
-        print("attn a mean ",attn.mean())
-        print("attn 0 mean ",attn[:,:,0,:].mean())
-        print("attn 1 mean ",attn[:,:,1,1:].mean())
-        print("################################")
+
+
 
        
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
-        print("############ DEBUG #############")
-        print("|| av")
-        print("x a shape",x.shape)
-        print("x a mean ",x.mean())
-        print("x 0 mean ",x[:,0,:].mean())
-        print("x 1 mean ",x[:,-N_:,:].mean())
-        print("################################")
-
         x = self.proj(x)
         x = self.proj_drop(x)
-
-        print("############ DEBUG #############")
-        print("|| proj")
-        print("x a shape",x.shape)
-        print("x a mean ",x.mean())
-        print("x 0 mean ",x[:,0,:].mean())
-        print("x 1 mean ",x[:,-N_:,:].mean())
-        print("################################")
-        exit(0)
+        # exit(0)
 
         # Remove Global Token
         x = x[:,-N_:,:] # x of size (B_, N_, C)
