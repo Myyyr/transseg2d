@@ -160,7 +160,8 @@ class WindowAttention(nn.Module):
         attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
 
-        ### mask global token         M = 1e5
+        ### mask global token         
+        M = 1e5
         attn[:,:,:self.gt_num,:] -= M
         attn[:,:,self.gt_num:,:self.gt_num] -= M
 
