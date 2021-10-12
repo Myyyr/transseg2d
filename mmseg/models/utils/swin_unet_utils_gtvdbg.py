@@ -211,11 +211,19 @@ class WindowAttention(nn.Module):
        
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
+        print("############ DEBUG #############")
+        print("|| av")
+        print("x a shape",x.shape)
+        print("x a mean ",x.mean())
+        print("x 0 mean ",x[:,0,:].mean())
+        print("x 1 mean ",x[:,-N_:,:].mean())
+        print("################################")
+
         x = self.proj(x)
         x = self.proj_drop(x)
 
         print("############ DEBUG #############")
-        print("|| out")
+        print("|| proj")
         print("x a shape",x.shape)
         print("x a mean ",x.mean())
         print("x 0 mean ",x[:,0,:].mean())
