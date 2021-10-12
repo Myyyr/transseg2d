@@ -12,7 +12,7 @@ from .swin_unet_encoder import SwinUNetEncoder
 from .swin_unet_encoder_gtv1 import SwinUNetEncoderGTv1
 from .swin_unet_encoder_gtv2 import SwinUNetEncoderGTv2
 from .swin_unet_encoder_gtvdbg import SwinUNetEncoderGTvdbg
-from .swin_unet_encoder_gtvdbg import SwinUNetEncoderGTvdbg2
+from .swin_unet_encoder_gtvdbg2 import SwinUNetEncoderGTvdbg2
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',

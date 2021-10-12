@@ -23,7 +23,7 @@ from .swin_unet_decoder import SwinUNetDecoder
 from .swin_unet_decoder_gtv1 import SwinUNetDecoderGTv1
 from .swin_unet_decoder_gtv2 import SwinUNetDecoderGTv2
 from .swin_unet_decoder_gtvdbg import SwinUNetDecoderGTvdbg
-from .swin_unet_decoder_gtvdbg import SwinUNetDecoderGTvdbg2
+from .swin_unet_decoder_gtvdbg2 import SwinUNetDecoderGTvdbg2
 __all__ = [
     'FCNHead', 'PSPHead', 'ASPPHead', 'PSAHead', 'NLHead', 'GCHead', 'CCHead',
     'UPerHead', 'DepthwiseSeparableASPPHead', 'ANNHead', 'DAHead', 'OCRHead',
