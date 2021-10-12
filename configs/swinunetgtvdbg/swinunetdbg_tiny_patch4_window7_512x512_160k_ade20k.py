@@ -1,34 +1,34 @@
 _base_ = [
-    '../_base_/models/swin_unet.py', '../_base_/datasets/cityscapes.py',
+    '../_base_/models/swin_unet.py', '../_base_/datasets/ade20kdbg.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
     backbone=dict(
-        embed_dim=128,
-        depths=[2, 2, 18, 2],
-        num_heads=[4, 8, 16, 32],
+        embed_dim=96,
+        depths=[2, 2, 6, 2],
+        num_heads=[3, 6, 12, 24],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=30
+        num_classes=150
     ),
     decode_head=dict(
-        embed_dim=128,
-        depths=[2, 2, 18, 2],
-        num_heads=[4, 8, 16, 32],
+        embed_dim=96,
+        depths=[2, 2, 6, 2],
+        num_heads=[3, 6, 12, 24],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=30
+        num_classes=150
     )
     #,
     # auxiliary_head=dict(
     #     in_channels=512,
-    #     num_classes=30
+    #     num_classes=150
     # )
     )
 
@@ -45,4 +45,7 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=2)
+data=dict(samples_per_gpu=6)
+
+
+
