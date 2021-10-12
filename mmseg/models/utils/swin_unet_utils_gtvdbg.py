@@ -118,28 +118,28 @@ class WindowAttention(nn.Module):
         B_, N_, C = x.shape
 
         # add global tokens
-        gt = repeat(self.global_token, "g c -> b g c", b=B_) - 100# shape of (num_windows*B, G, C)
+        gt = repeat(self.global_token, "g c -> b g c", b=B_)# shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
 
 
-        print("############ DEBUG #############")
-        print("x a shape",x.shape)
-        print("x a mean ",x.mean())
-        print("x a std  ",x.std())
-        print("x 0 mean ",x[:,0,:].mean())
-        print("x 0 std  ",x[:,0,:].std())
-        print("x 1 mean ",x[:,1,:].mean())
-        print("x 1 std  ",x[:,1,:].std())
-        for i,param in enumerate(self.qkv.parameters()):
-            print(i,"--> mean",param.mean())
-            print(i,"--> std ",param.std())
-        print("qkv(x) shape",self.qkv(x).shape)
-        print("qkv(x) a mean ",self.qkv(x).mean())
-        print("qkv(x) 0 mean ",self.qkv(x)[:,0,:].mean())
-        print("qkv(x) 1 mean ",self.qkv(x)[:,1,:].mean())
-        print("################################")
-        exit(0)
+        # print("############ DEBUG #############")
+        # print("x a shape",x.shape)
+        # print("x a mean ",x.mean())
+        # print("x a std  ",x.std())
+        # print("x 0 mean ",x[:,0,:].mean())
+        # print("x 0 std  ",x[:,0,:].std())
+        # print("x 1 mean ",x[:,1,:].mean())
+        # print("x 1 std  ",x[:,1,:].std())
+        # for i,param in enumerate(self.qkv.parameters()):
+        #     print(i,"--> mean",param.mean())
+        #     print(i,"--> std ",param.std())
+        # print("qkv(x) shape",self.qkv(x).shape)
+        # print("qkv(x) a mean ",self.qkv(x).mean())
+        # print("qkv(x) 0 mean ",self.qkv(x)[:,0,:].mean())
+        # print("qkv(x) 1 mean ",self.qkv(x)[:,1,:].mean())
+        # print("################################")
+        # exit(0)
 
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
@@ -147,6 +147,7 @@ class WindowAttention(nn.Module):
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
+
 
 
 
@@ -158,6 +159,18 @@ class WindowAttention(nn.Module):
 
         attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
+
+        ### mask global token 
+        print("############ DEBUG #############")
+        print("attn a shape",attn.shape)
+        print("attn a mean ",attn.mean())
+        print("attn 0 mean ",attn[:,:,0,:].mean())
+        print("attn 1 mean ",attn[:,:,1,:].mean())
+        print("################################")
+        attn[:,:,:self.gt_num,:self.gt_num] -= 100
+
+
+
         if mask is not None:
             nW = mask.shape[0]
             attn_ = attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:] + mask.unsqueeze(1).unsqueeze(0)
@@ -167,12 +180,26 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
+        print("############ DEBUG #############")
+        print("attn a shape",attn.shape)
+        print("attn a mean ",attn.mean())
+        print("attn 0 mean ",attn[:,:,0,:].mean())
+        print("attn 1 mean ",attn[:,:,1,:].mean())
+        print("################################")
+
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
         x = self.proj(x)
         x = self.proj_drop(x)
 
+        print("############ DEBUG #############")
+        print("x a shape",x.shape)
+        print("x a mean ",x.mean())
+        print("x 0 mean ",x[:,:,0,:].mean())
+        print("x 1 mean ",x[:,:,1,:].mean())
+        print("################################")
+        exit(0)
 
         # Remove Global Token
         x = x[:,-N_:,:] # x of size (B_, N_, C)
