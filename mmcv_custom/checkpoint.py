@@ -376,9 +376,7 @@ def load_checkpoint_decoder(model,
     Returns:
         dict or OrderedDict: The loaded checkpoint.
     """
-    print("---------> WE START GOOD")
     checkpoint = _load_checkpoint(filename, map_location)
-    print("---------> WE LOAD GOOD")
 
     # OrderedDict is a subclass of dict
     if not isinstance(checkpoint, dict):
@@ -395,7 +393,6 @@ def load_checkpoint_decoder(model,
     if list(state_dict.keys())[0].startswith('module.'):
         state_dict = {k[7:]: v for k, v in state_dict.items()}
 
-    print("---------> WE 0 GOOD")
 
     # for MoBY, load model of online branch
     if sorted(list(state_dict.keys()))[0].startswith('encoder'):
@@ -411,30 +408,18 @@ def load_checkpoint_decoder(model,
         else:
             state_dict['absolute_pos_embed'] = absolute_pos_embed.view(N2, H, W, C2).permute(0, 3, 1, 2)
 
-    print("---------> WE 1 GOOD")
 
     # interpolate position bias table if needed
     relative_position_bias_table_keys = [k for k in state_dict.keys() if "relative_position_bias_table" in k]
-    for ii in relative_position_bias_table_keys:
-        print(ii)
+
     for table_key in relative_position_bias_table_keys:
-        print("######", table_key)
         table_pretrained = state_dict[table_key]
         new_table_key=table_key.replace("layers", "layers_up")
 
 
         new_table_key=new_table_key[:10]+str(3-int(table_key[7]))+new_table_key[11:]
         if new_table_key in model.state_dict().keys():
-            print(new_table_key)
-
-            print("###### a")
-            print("="*20)
-            for i in list(model.state_dict().keys()):
-                if "elative_position_bias_tab" in i:
-                    print(i)
-            print("="*20)
             table_current = model.state_dict()[new_table_key]
-            print("###### b")
             L1, nH1 = table_pretrained.size()
             L2, nH2 = table_current.size()
             if nH1 != nH2:
@@ -449,11 +434,8 @@ def load_checkpoint_decoder(model,
                     state_dict[new_table_key] = table_pretrained_resized.view(nH2, L2).permute(1, 0)
 
     # load state_dict
-    print("---------> WERE ARE GOOD")
     load_state_dict(model, state_dict, strict, logger)
-    print("---------> WERE ARE REALY GOOD")
 
-    exit(0)
     return checkpoint
 
 
