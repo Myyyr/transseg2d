@@ -419,6 +419,9 @@ def load_checkpoint_decoder(model,
         print("######", table_key)
         table_pretrained = state_dict[table_key]
         print("###### a")
+        print("="*20)
+        print(model.state_dict().keys())
+        print("="*20)
         table_current = model.state_dict()[table_key]
         print("###### b")
         L1, nH1 = table_pretrained.size()
