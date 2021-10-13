@@ -421,7 +421,9 @@ def load_checkpoint_decoder(model,
         table_key=table_key.replace("layers", "layers_up")
         print("###### a")
         print("="*20)
-        print(model.state_dict().keys())
+        for i in list(model.state_dict().keys()):
+            if "elative_position_bias_tab" in i:
+                print(i)
         print("="*20)
         table_current = model.state_dict()[table_key]
         print("###### b")
