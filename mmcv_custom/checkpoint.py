@@ -376,7 +376,10 @@ def load_checkpoint_decoder(model,
     Returns:
         dict or OrderedDict: The loaded checkpoint.
     """
+    print("---------> WE START GOOD")
     checkpoint = _load_checkpoint(filename, map_location)
+    print("---------> WE LOAD GOOD")
+
     # OrderedDict is a subclass of dict
     if not isinstance(checkpoint, dict):
         raise RuntimeError(
@@ -392,6 +395,8 @@ def load_checkpoint_decoder(model,
     if list(state_dict.keys())[0].startswith('module.'):
         state_dict = {k[7:]: v for k, v in state_dict.items()}
 
+    print("---------> WE 0 GOOD")
+
     # for MoBY, load model of online branch
     if sorted(list(state_dict.keys()))[0].startswith('encoder'):
         state_dict = {k.replace('encoder.', ''): v for k, v in state_dict.items() if k.startswith('encoder.')}
@@ -406,6 +411,8 @@ def load_checkpoint_decoder(model,
         else:
             state_dict['absolute_pos_embed'] = absolute_pos_embed.view(N2, H, W, C2).permute(0, 3, 1, 2)
 
+    print("---------> WE 1 GOOD")
+    
     # interpolate position bias table if needed
     relative_position_bias_table_keys = [k for k in state_dict.keys() if "relative_position_bias_table" in k]
     for table_key in relative_position_bias_table_keys:
