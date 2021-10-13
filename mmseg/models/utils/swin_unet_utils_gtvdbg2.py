@@ -180,7 +180,7 @@ class WindowAttention(nn.Module):
                 attn[:,:,self.gt_num:,self.gt_num:] = attn_.view(-1, self.num_heads, N_, N_)
             else:
                 attn = attn.view(B_ // nW, nW, self.num_heads, N, N) + mask.unsqueeze(1).unsqueeze(0)
-                attn = attn_.view(-1, self.num_heads, N_, N_)
+                attn = attn.view(-1, self.num_heads, N_, N_)
 
             attn = self.softmax(attn)
         else:
