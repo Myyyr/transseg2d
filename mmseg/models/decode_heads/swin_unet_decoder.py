@@ -11,7 +11,7 @@ from .decode_head import BaseDecodeHead
 
 
 from mmseg.utils import get_root_logger
-from mmcv_custom import load_checkpoint
+from mmcv_custom import load_checkpoint_decoder
 
 
 
@@ -166,7 +166,7 @@ class SwinUNetDecoder(BaseDecodeHead):
         if isinstance(pretrained, str):
             self.apply(_init_weights)
             logger = get_root_logger()
-            load_checkpoint(self, pretrained, strict=False, logger=logger)
+            load_checkpoint_decoder(self, pretrained, strict=False, logger=logger)
         elif pretrained is None:
             self.apply(_init_weights)
         else:
