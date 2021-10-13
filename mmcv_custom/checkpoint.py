@@ -423,7 +423,7 @@ def load_checkpoint_decoder(model,
         new_table_key=table_key.replace("layers", "layers_up")
 
 
-        new_table_key[10:11] = str(3-int(table_key[7]))
+        new_table_key=new_table_key[:10]+str(3-int(table_key[7]))+new_table_key[11:]
         print(new_table_key)
 
         print("###### a")
