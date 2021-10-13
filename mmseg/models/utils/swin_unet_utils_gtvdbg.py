@@ -168,10 +168,6 @@ class WindowAttention(nn.Module):
 
         attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
-        print("======================== DEBUG ========================")
-        print("attn")
-        print(attn[0,0,:5,:5])
-        print("=======================================================")
 
 
 
@@ -183,10 +179,6 @@ class WindowAttention(nn.Module):
         M = 1e5
         attn[:,:,:,:self.gt_num] -= M
 
-        print("======================== DEBUG ========================")
-        print("attn masked")
-        print(attn[0,0,:5,:5])
-        print("=======================================================")
 
 
 
@@ -200,10 +192,6 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
-        print("======================== DEBUG ========================")
-        print("soft attn")
-        print(attn[0,0,:5,:5])
-        print("=======================================================")
         attn = self.attn_drop(attn)
 
 
@@ -219,14 +207,9 @@ class WindowAttention(nn.Module):
         x = self.proj_drop(x)
         # exit(0)
 
-        # Remove Global Token
-        print("======================== DEBUG ========================")
-        print("End")
-        print(x.shape)
-        print(x[0,10:20,:10])
-        print("=======================================================")
+        # # Remove Global Token
 
-        exit(0)
+        # exit(0)
 
 
 
