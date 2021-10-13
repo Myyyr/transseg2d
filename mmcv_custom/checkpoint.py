@@ -415,6 +415,8 @@ def load_checkpoint_decoder(model,
 
     # interpolate position bias table if needed
     relative_position_bias_table_keys = [k for k in state_dict.keys() if "relative_position_bias_table" in k]
+    for ii in relative_position_bias_table_keys:
+        print(ii)
     for table_key in relative_position_bias_table_keys:
         print("######", table_key)
         table_pretrained = state_dict[table_key]
