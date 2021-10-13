@@ -153,7 +153,7 @@ class SwinUNetDecoder(BaseDecodeHead):
             pretrained (str, optional): Path to pre-trained weights.
                 Defaults to None.
         """
-
+        pretrained=None
         def _init_weights(m):
             if isinstance(m, nn.Linear):
                 trunc_normal_(m.weight, std=.02)
