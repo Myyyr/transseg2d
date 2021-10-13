@@ -424,28 +424,29 @@ def load_checkpoint_decoder(model,
 
 
         new_table_key=new_table_key[:10]+str(3-int(table_key[7]))+new_table_key[11:]
-        print(new_table_key)
+        if new_table_key in model.state_dict().keys()
+            print(new_table_key)
 
-        print("###### a")
-        print("="*20)
-        for i in list(model.state_dict().keys()):
-            if "elative_position_bias_tab" in i:
-                print(i)
-        print("="*20)
-        table_current = model.state_dict()[new_table_key]
-        print("###### b")
-        L1, nH1 = table_pretrained.size()
-        L2, nH2 = table_current.size()
-        if nH1 != nH2:
-            logger.warning(f"Error in loading {table_key}, pass")
-        else:
-            if L1 != L2:
-                S1 = int(L1 ** 0.5)
-                S2 = int(L2 ** 0.5)
-                table_pretrained_resized = F.interpolate(
-                     table_pretrained.permute(1, 0).view(1, nH1, S1, S1),
-                     size=(S2, S2), mode='bicubic')
-                state_dict[new_table_key] = table_pretrained_resized.view(nH2, L2).permute(1, 0)
+            print("###### a")
+            print("="*20)
+            for i in list(model.state_dict().keys()):
+                if "elative_position_bias_tab" in i:
+                    print(i)
+            print("="*20)
+            table_current = model.state_dict()[new_table_key]
+            print("###### b")
+            L1, nH1 = table_pretrained.size()
+            L2, nH2 = table_current.size()
+            if nH1 != nH2:
+                logger.warning(f"Error in loading {table_key}, pass")
+            else:
+                if L1 != L2:
+                    S1 = int(L1 ** 0.5)
+                    S2 = int(L2 ** 0.5)
+                    table_pretrained_resized = F.interpolate(
+                         table_pretrained.permute(1, 0).view(1, nH1, S1, S1),
+                         size=(S2, S2), mode='bicubic')
+                    state_dict[new_table_key] = table_pretrained_resized.view(nH2, L2).permute(1, 0)
 
     # load state_dict
     print("---------> WERE ARE GOOD")
