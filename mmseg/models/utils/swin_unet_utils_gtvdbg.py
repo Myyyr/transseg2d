@@ -145,26 +145,19 @@ class WindowAttention(nn.Module):
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
-        M = 1e5
-        q[:,:,:self.gt_num,:] -= M
-        k[:,:,:self.gt_num,:] -= M
-        v[:,:,:self.gt_num,:] -= M
+        # M = 1e5
+        # q[:,:,:self.gt_num,:] -= M
+        # k[:,:,:self.gt_num,:] -= M
+        # v[:,:,:self.gt_num,:] -= M
 
-        print("======================== DEBUG ========================")
-        print("q")
-        print(q[0,0,:5,:3])
-        print("=======================================================")
+        # print("======================== DEBUG ========================")
+        # print("q")
+        # print(q[0,0,:5,:3])
+        # print("=======================================================")
 
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
-
-        print("======================== DEBUG ========================")
-        print("attn")
-        print(attn[0,0,:5,:5])
-        print("=======================================================")
-
-
 
 
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
@@ -175,10 +168,26 @@ class WindowAttention(nn.Module):
 
         attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
+        print("======================== DEBUG ========================")
+        print("attn")
+        print(attn[0,0,:5,:5])
+        print("=======================================================")
+
+
+
         # ### mask global token         
         # M = 1e5
         # attn[:,:,:self.gt_num,:] -= M
         # attn[:,:,self.gt_num:,:self.gt_num] -= M
+        ### mask global token         
+        M = 1e5
+        attn[:,:,:,:self.gt_num] -= M
+
+        print("======================== DEBUG ========================")
+        print("attn masked")
+        print(attn[0,0,:5,:5])
+        print("=======================================================")
+
 
 
 
