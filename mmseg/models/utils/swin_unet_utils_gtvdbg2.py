@@ -123,6 +123,10 @@ class WindowAttention(nn.Module):
         B_, N_, C = x.shape
         if self.count_forward<self.max_forwad:
             tmp = x.sum(0).sum(0)
+            print(x.shape)
+            print(tmp.shape)
+            print(self.global_token.shape)
+            exit(0)
             self.global_token += tmp
             self.n_mean_emb += B_+N_
             self.count_forward+=1
