@@ -152,7 +152,7 @@ class WindowAttention(nn.Module):
 
         print("======================== DEBUG ========================")
         print("q")
-        print(q[0,:5,:3])
+        print(q[0,0,:5,:3])
         print("=======================================================")
 
 
@@ -161,7 +161,7 @@ class WindowAttention(nn.Module):
 
         print("======================== DEBUG ========================")
         print("attn")
-        print(attn[0,:5,:3])
+        print(attn[0,0,:5,:5])
         print("=======================================================")
 
 
@@ -193,7 +193,7 @@ class WindowAttention(nn.Module):
 
         print("======================== DEBUG ========================")
         print("soft attn")
-        print(attn[0,:5,:3])
+        print(attn[0,0,:5,:5])
         print("=======================================================")
         attn = self.attn_drop(attn)
 
