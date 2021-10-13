@@ -194,6 +194,11 @@ class WindowAttention(nn.Module):
         # exit(0)
 
         # Remove Global Token
+        print("============ DEBUG ============")
+        print(x[0,:5,:3])
+        print("===============================")
+
+        exit(0)
         x = x[:,-N_:,:] # x of size (B_, N_, C)
 
 
