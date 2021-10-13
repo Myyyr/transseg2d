@@ -6,6 +6,8 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
 from ..utils.swin_unet_utils_gtvdbg import *
 from ..builder import BACKBONES
+from mmseg.utils import get_root_logger
+from mmcv_custom import load_checkpoint
 
 
 @BACKBONES.register_module()
