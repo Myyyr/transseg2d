@@ -175,9 +175,13 @@ class WindowAttention(nn.Module):
 
         if mask is not None:
             nW = mask.shape[0]
-            attn_ = attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:] + mask.unsqueeze(1).unsqueeze(0)
+            if not self.count_forward<self.max_forwad:
+                attn_ = attn.view(B_ // nW, nW, self.num_heads, N, N)[:,:,:,self.gt_num:,self.gt_num:] + mask.unsqueeze(1).unsqueeze(0)
+                attn[:,:,self.gt_num:,self.gt_num:] = attn_.view(-1, self.num_heads, N_, N_)
+            else:
+                attn = attn.view(B_ // nW, nW, self.num_heads, N, N) + mask.unsqueeze(1).unsqueeze(0)
+                attn = attn_.view(-1, self.num_heads, N_, N_)
 
-            attn[:,:,self.gt_num:,self.gt_num:] = attn_.view(-1, self.num_heads, N_, N_)
             attn = self.softmax(attn)
         else:
             attn = self.softmax(attn)
