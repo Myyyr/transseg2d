@@ -420,14 +420,18 @@ def load_checkpoint_decoder(model,
     for table_key in relative_position_bias_table_keys:
         print("######", table_key)
         table_pretrained = state_dict[table_key]
-        table_key=table_key.replace("layers", "layers_up")
+        new_table_key=table_key.replace("layers", "layers_up")
+
+        new_table_key[10] = str(3-int(table_key[7]))
+        print(new_table_key)
+
         print("###### a")
         print("="*20)
         for i in list(model.state_dict().keys()):
             if "elative_position_bias_tab" in i:
                 print(i)
         print("="*20)
-        table_current = model.state_dict()[table_key]
+        table_current = model.state_dict()[new_table_key]
         print("###### b")
         L1, nH1 = table_pretrained.size()
         L2, nH2 = table_current.size()
@@ -440,7 +444,7 @@ def load_checkpoint_decoder(model,
                 table_pretrained_resized = F.interpolate(
                      table_pretrained.permute(1, 0).view(1, nH1, S1, S1),
                      size=(S2, S2), mode='bicubic')
-                state_dict[table_key] = table_pretrained_resized.view(nH2, L2).permute(1, 0)
+                state_dict[new_table_key] = table_pretrained_resized.view(nH2, L2).permute(1, 0)
 
     # load state_dict
     print("---------> WERE ARE GOOD")
