@@ -222,7 +222,8 @@ class WindowAttention(nn.Module):
         # Remove Global Token
         print("======================== DEBUG ========================")
         print("End")
-        print(x[0,:5,:3])
+        print(x.shape)
+        print(x[0,10:20,:10])
         print("=======================================================")
 
         exit(0)
