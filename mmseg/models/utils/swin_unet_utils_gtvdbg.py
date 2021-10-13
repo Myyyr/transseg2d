@@ -150,9 +150,19 @@ class WindowAttention(nn.Module):
         k[:,:,:self.gt_num,:] -= M
         v[:,:,:self.gt_num,:] -= M
 
+        print("======================== DEBUG ========================")
+        print("q")
+        print(q[0,:5,:3])
+        print("=======================================================")
+
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
+
+        print("======================== DEBUG ========================")
+        print("attn")
+        print(attn[0,:5,:3])
+        print("=======================================================")
 
 
 
@@ -181,7 +191,13 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
+        print("======================== DEBUG ========================")
+        print("soft attn")
+        print(attn[0,:5,:3])
+        print("=======================================================")
         attn = self.attn_drop(attn)
+
+
 
 
 
@@ -194,9 +210,10 @@ class WindowAttention(nn.Module):
         # exit(0)
 
         # Remove Global Token
-        print("============ DEBUG ============")
+        print("======================== DEBUG ========================")
+        print("End")
         print(x[0,:5,:3])
-        print("===============================")
+        print("=======================================================")
 
         exit(0)
         x = x[:,-N_:,:] # x of size (B_, N_, C)
