@@ -450,8 +450,10 @@ def load_checkpoint_decoder(model,
 
     # load state_dict
     print("---------> WERE ARE GOOD")
-    exit(0)
     load_state_dict(model, state_dict, strict, logger)
+    print("---------> WERE ARE REALY GOOD")
+
+    exit(0)
     return checkpoint
 
 
