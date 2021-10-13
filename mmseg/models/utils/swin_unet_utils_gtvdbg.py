@@ -145,6 +145,12 @@ class WindowAttention(nn.Module):
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
+        M = 1e5
+        q[:,:,:self.gt_num,:] -= M
+        k[:,:,:self.gt_num,:] -= M
+        v[:,:,:self.gt_num,:] -= M
+
+
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
 
@@ -159,11 +165,11 @@ class WindowAttention(nn.Module):
 
         attn[:,:,self.gt_num:,self.gt_num:] = attn[:,:,self.gt_num:,self.gt_num:] + relative_position_bias.unsqueeze(0)
 
+        # ### mask global token         
+        # M = 1e5
+        # attn[:,:,:self.gt_num,:] -= M
+        # attn[:,:,self.gt_num:,:self.gt_num] -= M
 
-        ### mask global token         
-        M = 1e5
-        attn[:,:,:self.gt_num,:] -= M
-        attn[:,:,self.gt_num:,:self.gt_num] -= M
 
 
         if mask is not None:
