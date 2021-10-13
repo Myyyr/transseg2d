@@ -205,6 +205,7 @@ class WindowAttention(nn.Module):
        
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
+        x = x[:,-N_:,:] # x of size (B_, N_, C)
         x = self.proj(x)
         x = self.proj_drop(x)
         # exit(0)
@@ -216,7 +217,6 @@ class WindowAttention(nn.Module):
         print("=======================================================")
 
         exit(0)
-        x = x[:,-N_:,:] # x of size (B_, N_, C)
 
 
 
