@@ -126,7 +126,7 @@ class WindowAttention(nn.Module):
             print(x.shape)
             print(tmp.shape)
             print(self.global_token.shape)
-            self.global_token[0, :] = tmp
+            self.global_token = repeat(tmp, 'c -> g c', g=self.gt_num)
             exit(0)
             self.n_mean_emb += B_+N_
             self.count_forward+=1
