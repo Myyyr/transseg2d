@@ -84,7 +84,7 @@ class WindowAttention(nn.Module):
         self.count_forward=0
         self.max_forwad=1500
         self.n_mean_emb = 0
-        # self.mean_emb   = torch.zeros(self.dim)
+        self.mean_emb   = torch.zeros(self.dim)
 
 
         self.scale = qk_scale or head_dim ** -0.5
@@ -123,11 +123,7 @@ class WindowAttention(nn.Module):
         B_, N_, C = x.shape
         if self.count_forward<self.max_forwad:
             tmp = x.sum(0).sum(0)
-            print(x.shape)
-            print(tmp.shape)
-            print(self.global_token.shape)
-            self.global_token += torch.nn.Parameter(repeat(tmp, 'c -> g c', g=self.gt_num))
-            exit(0)
+            self.mean_emb += tmp
             self.n_mean_emb += B_+N_
             self.count_forward+=1
 
@@ -172,6 +168,7 @@ class WindowAttention(nn.Module):
         #     self.global_token.requires_grad = True
 
         if self.count_forward==self.max_forwad:
+            self.global_token = torch.Parameter(repeat(self.mean_emb, 'c -> g c', g=self.gt_num))
             self.global_token /= self.n_mean_emb
             self.global_token.requires_grad = True
 
