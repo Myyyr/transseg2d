@@ -412,12 +412,15 @@ def load_checkpoint_decoder(model,
             state_dict['absolute_pos_embed'] = absolute_pos_embed.view(N2, H, W, C2).permute(0, 3, 1, 2)
 
     print("---------> WE 1 GOOD")
-    
+
     # interpolate position bias table if needed
     relative_position_bias_table_keys = [k for k in state_dict.keys() if "relative_position_bias_table" in k]
     for table_key in relative_position_bias_table_keys:
+        print("######", table_key)
         table_pretrained = state_dict[table_key]
+        print("###### a")
         table_current = model.state_dict()[table_key]
+        print("###### b")
         L1, nH1 = table_pretrained.size()
         L2, nH2 = table_current.size()
         if nH1 != nH2:
