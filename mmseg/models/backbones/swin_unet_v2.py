@@ -17,7 +17,7 @@ class SwinUnetV2(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first", **kwargs):
-        super(SwinUnet, self).__init__()
+        super().__init__()
         self.num_classes = num_classes
         # self.zero_head = zero_head
         # self.config = config
