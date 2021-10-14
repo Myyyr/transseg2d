@@ -9,6 +9,13 @@ from ..builder import BACKBONES
 from mmseg.utils import get_root_logger
 from mmcv_custom import load_checkpoint
 
+import copy
+import logging
+import math
+
+from os.path import join as pjoin
+
+
 @BACKBONES.register_module()
 class SwinUNetV2(nn.Module):
     def __init__(self, pretrain_img_size=224, patch_size=4, in_chans=3, num_classes=1000,
