@@ -3,27 +3,12 @@ import torch.nn as nn
 import torch.utils.checkpoint as checkpoint
 from einops import rearrange
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
-# from __future__ import absolute_import
-# from __future__ import division
-# from __future__ import print_function
-
-import copy
-import logging
-import math
-
-from os.path import join as pjoin
-
-import torch
-import torch.nn as nn
-import numpy as np
-
-from torch.nn import CrossEntropyLoss, Dropout, Softmax, Linear, Conv2d, LayerNorm
-from torch.nn.modules.utils import _pair
-# from scipy import ndimage
-
 
 from ..utils.swin_unet_utils import *
 from ..builder import BACKBONES
+from mmseg.utils import get_root_logger
+from mmcv_custom import load_checkpoint
+
 
 class SwinTransformerSys(nn.Module):
     r""" Swin Transformer
