@@ -19,7 +19,7 @@ import numpy as np
 
 from torch.nn import CrossEntropyLoss, Dropout, Softmax, Linear, Conv2d, LayerNorm
 from torch.nn.modules.utils import _pair
-from scipy import ndimage
+# from scipy import ndimage
 
 
 from ..utils.swin_unet_utils import *
