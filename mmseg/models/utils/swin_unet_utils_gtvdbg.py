@@ -123,38 +123,12 @@ class WindowAttention(nn.Module):
         B_, N, C = x.shape
 
 
-        # print("############ DEBUG #############")
-        # print("x a shape",x.shape)
-        # print("x a mean ",x.mean())
-        # print("x a std  ",x.std())
-        # print("x 0 mean ",x[:,0,:].mean())
-        # print("x 0 std  ",x[:,0,:].std())
-        # print("x 1 mean ",x[:,1,:].mean())
-        # print("x 1 std  ",x[:,1,:].std())
-        # for i,param in enumerate(self.qkv.parameters()):
-        #     print(i,"--> mean",param.mean())
-        #     print(i,"--> std ",param.std())
-        # print("qkv(x) shape",self.qkv(x).shape)
-        # print("qkv(x) a mean ",self.qkv(x).mean())
-        # print("qkv(x) 0 mean ",self.qkv(x)[:,0,:].mean())
-        # print("qkv(x) 1 mean ",self.qkv(x)[:,1,:].mean())
-        # print("################################")
-        # exit(0)
 
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
-        # M = 1e5
-        # q[:,:,:self.gt_num,:] -= M
-        # k[:,:,:self.gt_num,:] -= M
-        # v[:,:,:self.gt_num,:] -= M
-
-        # print("======================== DEBUG ========================")
-        # print("q")
-        # print(q[0,0,:5,:3])
-        # print("=======================================================")
-
+      
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
@@ -176,8 +150,8 @@ class WindowAttention(nn.Module):
         # attn[:,:,:self.gt_num,:] -= M
         # attn[:,:,self.gt_num:,:self.gt_num] -= M
         ### mask global token         
-        M = 1e5
-        attn[:,:,:,:self.gt_num] -= M
+        # M = 1e5
+        # attn[:,:,:,:self.gt_num] -= M
 
 
 
