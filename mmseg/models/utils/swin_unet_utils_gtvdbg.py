@@ -78,7 +78,7 @@ class WindowAttention(nn.Module):
         head_dim = dim // num_heads
 
         self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
-        self.global_token.requires_grad = False
+        self.global_token.requires_grad = True
         self.gt_num = gt_num
 
 
