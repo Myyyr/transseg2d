@@ -23,7 +23,7 @@ class SwinUNetV2GTV3(nn.Module):
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, final_upsample="expand_first", **kwargs):
+                 use_checkpoint=False, final_upsample="expand_first", gt_num=1, **kwargs):
         super().__init__()
         self.num_classes = num_classes
         # self.zero_head = zero_head
@@ -48,7 +48,7 @@ class SwinUNetV2GTV3(nn.Module):
                                 ape=ape,
                                 patch_norm=patch_norm,
                                 use_checkpoint=use_checkpoint,
-                                final_upsample=final_upsample)
+                                final_upsample=final_upsample, gt_num=gt_num)
 
     def forward(self, x):
         if x.size()[1] == 1:
