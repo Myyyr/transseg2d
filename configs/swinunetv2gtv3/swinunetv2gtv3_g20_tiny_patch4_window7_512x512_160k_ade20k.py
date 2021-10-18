@@ -24,8 +24,7 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=150, 
-        gt_num=20
+        num_classes=150
     )
     #,
     # auxiliary_head=dict(
