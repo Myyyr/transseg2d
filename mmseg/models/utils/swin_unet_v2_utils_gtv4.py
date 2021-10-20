@@ -161,7 +161,7 @@ class WindowAttention(nn.Module):
         attn = self.attn_drop(attn)     
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
-        gt = x[:,:N_,:]
+        gt = x[:,:-N_,:]
         x = x[:,-N_:,:] # x of size (B_, N_, C)
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -271,7 +271,6 @@ class SwinTransformerBlock(nn.Module):
         print(gt.shape)
         gt = gt.view(B, nw, ngt, C)
         print(gt.shape)
-        
         gt = gt.mean(dim=1)
         print(gt.shape)
         exit(0)
