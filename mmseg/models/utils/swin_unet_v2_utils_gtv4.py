@@ -270,6 +270,9 @@ class SwinTransformerBlock(nn.Module):
         nw = tmp//B
         gt = gt.view(B, nw, ngt, C).mean(dim=1)
 
+        print(gt.shape)
+        exit(0)
+
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
         shifted_x = window_reverse(attn_windows, self.window_size, Hp, Wp)  # B H' W' C
