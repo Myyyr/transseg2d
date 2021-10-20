@@ -233,7 +233,6 @@ class SwinTransformerBlock(nn.Module):
 
     def forward(self, x, mask_matrix, gt):
         H, W = self.input_resolution
-        print()
         B, L, C = x.shape
         # L = 128 * 256
         # print(L, H, W)
@@ -290,7 +289,7 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
-        return x
+        return x, gt
 
     def extra_repr(self) -> str:
         return f"dim={self.dim}, input_resolution={self.input_resolution}, num_heads={self.num_heads}, " \
