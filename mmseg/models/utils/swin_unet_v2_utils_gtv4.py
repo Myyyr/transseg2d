@@ -272,6 +272,7 @@ class SwinTransformerBlock(nn.Module):
         gt = gt.view(B, nw, ngt, C)
         print(gt.shape)
         gt = gt.mean(dim=1)
+        gt = repeat(gt, "b g c -> (b n) g c",n=nw)
         print(gt.shape)
         exit(0)
 
