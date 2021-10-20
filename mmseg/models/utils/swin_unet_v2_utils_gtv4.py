@@ -268,7 +268,7 @@ class SwinTransformerBlock(nn.Module):
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
         tmp, ngt, c = gt.shape
         nw = tmp//B
-        gt = gt.view(B, nw, nGt, C).mean(dim=1)
+        gt = gt.view(B, nw, ngt, C).mean(dim=1)
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
