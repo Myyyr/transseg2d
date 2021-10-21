@@ -281,8 +281,8 @@ class SwinTransformerBlock(nn.Module):
         gt = self.projgru(gt)
         # gt = gt.mean(dim=1)
         # gt = gt[:, torch.randperm(nw), :, :]
-        gt = rearrange(gt, "b n (g c) -> (b n) g c",g=ngt, c=C)
-        # gt = repeat(gt, "b g c -> (b n) g c",n=nw)
+        gt = rearrange(gt, "b (g c) -> b g c",g=ngt, c=C)
+        gt = repeat(gt, "b g c -> (b n) g c",n=nw)
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
