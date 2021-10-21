@@ -210,6 +210,7 @@ class SwinTransformerBlock(nn.Module):
                  act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, first=True):
         super().__init__()
         self.dim = dim
+        self.gt_num = gt_num
         self.input_resolution = input_resolution
         self.num_heads = num_heads
         self.window_size = window_size
@@ -277,6 +278,7 @@ class SwinTransformerBlock(nn.Module):
         bigt, _ = self.gru(gt)
         gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
         print(gt.shape)
+        print(self.dim, self.gt_num)
         exit(0)
         gt = self.projgru(gt)
         # gt = gt.mean(dim=1)
