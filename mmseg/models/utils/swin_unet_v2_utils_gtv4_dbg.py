@@ -175,15 +175,20 @@ class WindowAttention(nn.Module):
         print("std",  attn[:,:,self.gt_num:,:self.gt_num].std())
         print("max",  attn[:,:,self.gt_num:,:self.gt_num].max())
         print("######################################################")
-        exit(0)
+
+        torch.save(attn, "work_dirs/viz/attn.pt")
 
         attn = self.attn_drop(attn)     
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
+        torch.save(x, "work_dirs/viz/v.pt")
+        exit(0)
+
         gt = x[:,:-N_,:]
         x = x[:,-N_:,:] # x of size (B_, N_, C)
         x = self.proj(x)
         x = self.proj_drop(x)
+        exit(0)
 
         return x, gt
 
@@ -886,6 +891,7 @@ class SwinTransformerSys(nn.Module):
         return x
 
     def forward(self, x):
+        torch.save(x, "work_dirs/viz/x.pt")
         # x, x_downsample = self.forward_features(x)
         x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
