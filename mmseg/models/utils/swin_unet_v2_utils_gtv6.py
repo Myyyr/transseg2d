@@ -7,7 +7,8 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 import numpy as np
 
 from einops import repeat
-# MERGING STRAT : MEAN
+# MERGING STRAT : GRU
+
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()
@@ -161,10 +162,11 @@ class WindowAttention(nn.Module):
         attn = self.attn_drop(attn)     
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
-        gt = x[:,:-N_,:]
-        x = x[:,-N_:,:] # x of size (B_, N_, C)
         x = self.proj(x)
         x = self.proj_drop(x)
+
+        gt = x[:,:-N_,:]
+        x = x[:,-N_:,:] # x of size (B_, N_, C)
 
         return x, gt
 
@@ -229,6 +231,9 @@ class SwinTransformerBlock(nn.Module):
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
+        self.gru = torch.nn.GRU(dim*gt_num, 2*dim*gt_num, 2,batch_first=True, bidirectional=True)
+        self.projgru = torch.nn.Linear(2*dim*gt_num, dim*gt_num)
+
  
 
     def forward(self, x, mask_matrix, gt):
@@ -268,9 +273,14 @@ class SwinTransformerBlock(nn.Module):
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
         tmp, ngt, c = gt.shape
         nw = tmp//B
-        gt = gt.view(B, nw, ngt, C)
-        gt = gt.mean(dim=1)
-        gt = repeat(gt, "b g c -> (b n) g c",n=nw)
+        gt = gt.view(B, nw, ngt*C)
+        bigt, _ = self.gru(gt)
+        gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
+        gt = self.projgru(gt)
+        # gt = gt.mean(dim=1)
+        # gt = gt[:, torch.randperm(nw), :, :]
+        gt = rearrange(gt, "b n (g c) -> (b n) g c",g=ngt, c=C)
+        # gt = repeat(gt, "b g c -> (b n) g c",n=nw)
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
