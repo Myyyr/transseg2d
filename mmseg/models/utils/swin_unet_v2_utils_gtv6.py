@@ -277,9 +277,7 @@ class SwinTransformerBlock(nn.Module):
         gt = gt.view(B, nw, ngt*C)
         bigt, _ = self.gru(gt)
         gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
-        print(gt.shape)
-        print(self.dim, self.gt_num)
-        exit(0)
+
         gt = self.projgru(gt)
         # gt = gt.mean(dim=1)
         # gt = gt[:, torch.randperm(nw), :, :]
