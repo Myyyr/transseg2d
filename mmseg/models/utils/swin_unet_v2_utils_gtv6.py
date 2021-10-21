@@ -233,7 +233,7 @@ class SwinTransformerBlock(nn.Module):
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         self.gru = torch.nn.GRU(dim*gt_num, 2*dim*gt_num, 2,batch_first=True, bidirectional=True)
-        self.projgru = torch.nn.Linear(2*dim*gt_num, dim*gt_num)
+        self.projgru = torch.nn.Linear(2*2*dim*gt_num, dim*gt_num)
 
  
 
