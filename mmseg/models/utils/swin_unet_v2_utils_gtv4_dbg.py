@@ -158,6 +158,16 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
+        print("\n######################## INFO ########################")
+        print("=> attn 0")
+        print("shape", self.attn.shape)
+        print("min", self.attn[:,:,:,:self.gt_num].min())
+        print("mean", self.attn[:,:,:,:self.gt_num].mean())
+        print("std", self.attn[:,:,:,:self.gt_num].std())
+        print("max", self.attn[:,:,:,:self.gt_num].max())
+        print("######################################################")
+        exit(0)
+
         attn = self.attn_drop(attn)     
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
@@ -478,7 +488,6 @@ class BasicLayer(nn.Module):
         print("std", self.global_token.std())
         print("max", self.global_token.max())
         print("######################################################")
-        exit(0)
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
