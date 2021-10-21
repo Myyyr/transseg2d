@@ -470,8 +470,14 @@ class BasicLayer(nn.Module):
             self.downsample = None
 
     def forward(self, x, H, W):
-        print("x", x.shape)
-        print("gt", self.global_token.shape)
+        print("\n######################## INFO ########################")
+        print("=> GT")
+        print("shape", self.global_token.shape)
+        print("min", self.global_token.min())
+        print("mean", self.global_token.mean())
+        print("std", self.global_token.std())
+        print("max", self.global_token.max())
+        print("######################################################")
         exit(0)
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
