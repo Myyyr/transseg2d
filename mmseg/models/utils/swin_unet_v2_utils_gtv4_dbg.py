@@ -166,6 +166,15 @@ class WindowAttention(nn.Module):
         print("std", attn[:,:,:,:self.gt_num].std())
         print("max", attn[:,:,:,:self.gt_num].max())
         print("######################################################")
+
+        print("\n######################## INFO ########################")
+        print("=> attn 0")
+        print("shape", attn.shape)
+        print("min",  attn[:,:,self.gt_num:,:self.gt_num].min())
+        print("mean", attn[:,:,self.gt_num:,:self.gt_num].mean())
+        print("std",  attn[:,:,self.gt_num:,:self.gt_num].std())
+        print("max",  attn[:,:,self.gt_num:,:self.gt_num].max())
+        print("######################################################")
         exit(0)
 
         attn = self.attn_drop(attn)     
