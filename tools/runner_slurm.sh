@@ -40,14 +40,14 @@ module load cuda/10.1.2
 # CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g1_tiny_patch4_window7_512x512_160k_ade20k.py"
 # CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
 
-CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g5_small_patch4_window7_512x512_160k_ade20k.py"
-# CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g5_base_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g5_small_patch4_window7_512x512_160k_ade20k.py"
+CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g5_base_patch4_window7_512x512_160k_ade20k.py"
 # CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g5_tiny_patch4_window7_769x769_160k_cityscapes.py"
 # CONFIG="configs/swinunetv2gtv3/swinunetv2gtv3_g5_tiny_patch4_window7_769x769_160k_cityscapes.py"
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
-PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_small_patch4_window7_224.pth"
+PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
