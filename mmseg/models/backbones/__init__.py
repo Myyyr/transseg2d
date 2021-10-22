@@ -15,6 +15,7 @@ from .swin_unet_v2_gtv4 import SwinUNetV2GTV4
 from .swin_unet_v2_gtv4_dbg import SwinUNetV2GTV4DBG
 from .swin_unet_v2_gtv5 import SwinUNetV2GTV5
 from .swin_unet_v2_gtv6 import SwinUNetV2GTV6
+from .swin_unet_v2_gtv7 import SwinUNetV2GTV7
 from .no_swin_unet_v2 import NoSwinUNetV2
 from .swin_unet_encoder_gtv1 import SwinUNetEncoderGTv1
 from .swin_unet_encoder_gtv2 import SwinUNetEncoderGTv2
@@ -27,5 +28,5 @@ __all__ = [
     'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer', 
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG', 
-    'SwinUNetV2GTV5', 'SwinUNetV2GTV6'
+    'SwinUNetV2GTV5', 'SwinUNetV2GTV6', 'SwinUNetV2GTV7'
 ]
