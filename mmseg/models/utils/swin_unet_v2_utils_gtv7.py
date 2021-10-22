@@ -366,8 +366,8 @@ class SwinTransformerBlock(nn.Module):
         # gt = gt[:, torch.randperm(nw), :, :]
         gt = rearrange(gt, "b n (g c) -> (b n) g c",g=ngt, c=C)
 
-        print(gt.shape)
-        exit(0)
+        # print(gt.shape)
+        # exit(0)
         # gt = repeat(gt, "b g c -> (b n) g c",n=nw)
 
         # merge windows
