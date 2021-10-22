@@ -121,6 +121,11 @@ class ClassicWindowAttention(nn.Module):
         relative_position_bias = self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
             self.window_size[0] * self.window_size[1], self.window_size[0] * self.window_size[1], -1)  # Wh*Ww,Wh*Ww,nH
         relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
+        print("############# INFO #############")
+        print("# rpb",relative_position_bias.unsqueeze(0).shape)
+        print("# attn",attn.hsape)
+        print("################################")
+        exit(0)
         attn = attn + relative_position_bias.unsqueeze(0)
 
         if mask is not None:
