@@ -162,10 +162,10 @@ class WindowAttention(nn.Module):
         attn = self.attn_drop(attn)     
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
-        gt = x[:,:-N_,:]
-        x = x[:,-N_:,:] # x of size (B_, N_, C)
         x = self.proj(x)
         x = self.proj_drop(x)
+        gt = x[:,:-N_,:]
+        x = x[:,-N_:,:] # x of size (B_, N_, C)
 
         return x, gt
 
