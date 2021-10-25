@@ -17,6 +17,8 @@ from mmseg.utils import get_root_logger
 from ..builder import BACKBONES
 
 
+from einops import repeat, rearrange
+
 class Mlp(nn.Module):
     """ Multilayer perceptron."""
 
