@@ -82,9 +82,9 @@ class UPerHead(BaseDecodeHead):
         output = self.bottleneck(psp_outs)
 
         return output
-        
+
     def init_weights(self, pretrained=None):
-        self.init_weights()
+        super().init_weights()
 
     def forward(self, inputs):
         """Forward function."""
