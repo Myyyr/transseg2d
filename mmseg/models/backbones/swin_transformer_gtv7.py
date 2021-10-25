@@ -441,7 +441,7 @@ class BasicLayer(nn.Module):
         self.use_checkpoint = use_checkpoint
 
 
-        self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
+        self.global_token = torch.nn.Parameter(torch.randn(gt_num,dim))
         self.global_token.requires_grad = True
 
         # build blocks
