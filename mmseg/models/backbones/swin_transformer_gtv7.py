@@ -734,5 +734,5 @@ class SwinTransformerGTV7(nn.Module):
 
     def train(self, mode=True):
         """Convert the model into training mode while keep layers freezed."""
-        super(SwinTransformer, self).train(mode)
+        super(SwinTransformerGTV7, self).train(mode)
         self._freeze_stages()
