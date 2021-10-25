@@ -278,7 +278,7 @@ class SwinTransformerBlock(nn.Module):
         self.norm1 = norm_layer(dim)
         self.attn = WindowAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
+            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
@@ -443,7 +443,7 @@ class BasicLayer(nn.Module):
 
         self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
         self.global_token.requires_grad = True
-        
+
         # build blocks
         self.blocks = nn.ModuleList([
             SwinTransformerBlock(
@@ -494,13 +494,14 @@ class BasicLayer(nn.Module):
         mask_windows = mask_windows.view(-1, self.window_size * self.window_size)
         attn_mask = mask_windows.unsqueeze(1) - mask_windows.unsqueeze(2)
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
-
+        
+        gt = self.global_token
         for blk in self.blocks:
             blk.H, blk.W = H, W
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
-                x = blk(x, attn_mask)
+                x, gt = blk(x, attn_mask, gt)
         if self.downsample is not None:
             x_down = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
@@ -553,7 +554,7 @@ class PatchEmbed(nn.Module):
 
 
 @BACKBONES.register_module()
-class SwinTransformer(nn.Module):
+class SwinTransformerGTV7(nn.Module):
     """ Swin Transformer backbone.
         A PyTorch impl of : `Swin Transformer: Hierarchical Vision Transformer using Shifted Windows`  -
           https://arxiv.org/pdf/2103.14030
@@ -601,7 +602,7 @@ class SwinTransformer(nn.Module):
                  patch_norm=True,
                  out_indices=(0, 1, 2, 3),
                  frozen_stages=-1,
-                 use_checkpoint=False):
+                 use_checkpoint=False, gt_num=1):
         super().__init__()
 
         self.pretrain_img_size = pretrain_img_size
@@ -647,7 +648,7 @@ class SwinTransformer(nn.Module):
                 drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                 norm_layer=norm_layer,
                 downsample=PatchMerging if (i_layer < self.num_layers - 1) else None,
-                use_checkpoint=use_checkpoint)
+                use_checkpoint=use_checkpoint, gt_num=gt_num)
             self.layers.append(layer)
 
         num_features = [int(embed_dim * 2 ** i) for i in range(self.num_layers)]
