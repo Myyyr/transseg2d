@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=s27g10tade     # job name
+#SBATCH --job-name=s28g10tade     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=18:00:00              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/s27g10tade%j.out # output file name
-#SBATCH --error=logs/s27g10tade%j.err  # error file name
+#SBATCH --time=00:05:00              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/s28g10tade%j.out # output file name
+#SBATCH --error=logs/s28g10tade%j.err  # error file name
 
 set -x
 
@@ -53,7 +53,9 @@ module load cuda/10.1.2
 # CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
 CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
 
-
+# CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g1_tiny_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
+CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
 
 PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
