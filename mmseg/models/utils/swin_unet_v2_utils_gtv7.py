@@ -313,7 +313,7 @@ class SwinTransformerBlock(nn.Module):
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         
-        self.gt_attn = ClassicAttention(dim=dim, window_size=(45, 45), num_heads=num_heads, 
+        self.gt_attn = ClassicAttention(dim=dim*gt_num, window_size=(45, 45), num_heads=num_heads, 
                                             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
                                             proj_drop=drop)
 
