@@ -30,5 +30,5 @@ __all__ = [
     'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer', 
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG', 
-    'SwinUNetV2GTV5', 'SwinUNetV2GTV6', 'SwinUNetV2GTV7', 'SwinTransformerGTV7', 'SwinTransformerGTV8'
+    'SwinUNetV2GTV5', 'SwinUNetV2GTV6', 'SwinUNetV2GTV7', 'SwinTransformerGTV7', 'SwinUNetV2GTV7'
 ]
