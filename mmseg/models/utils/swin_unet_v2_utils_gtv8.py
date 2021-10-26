@@ -356,7 +356,8 @@ class SwinTransformerBlock(nn.Module):
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
         tmp, ngt, c = gt.shape
         nw = tmp//B
-        gt = gt.view(B, nw*ngt, C)
+        gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
+        # gt = gt.view(B, nw*ngt, C)
         # bigt, _ = self.gru(gt)
         # gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
         gt = self.gt_attn(gt, pe)
