@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=s28g5tadec     # job name
+#SBATCH --job-name=s28g10tadec     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=18:00:00              # maximum execution time (HH:MM:SS)
+#SBATCH --time=19:59:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/s28g5tadec%j.out # output file name
-#SBATCH --error=logs/s28g5tadec%j.err  # error file name
+#SBATCH --output=logs/s28g10tadec%j.out # output file name
+#SBATCH --error=logs/s28g10tadec%j.err  # error file name
 
 set -x
 
@@ -22,9 +22,9 @@ module load python/3.7.10
 # RESUME="work_dirs/swinunet_tiny_patch4_window7_512x512_160k_ade20k/iter_128000.pth"
 # RESUME="work_dirs/swinunetgtv1_tiny_patch4_window7_512x512_160k_ade20k/iter_32000.pth"
 # RESUME="work_dirs/swinunetgtv2_tiny_patch4_window7_512x512_160k_ade20k/iter_32000.pth"
-# RESUME="work_dirs/swinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k/iter_32000.pth"
+RESUME="work_dirs/swinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
 # RESUME="work_dirs/swinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
-RESUME="work_dirs/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
+# RESUME="work_dirs/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
 
 # CONFIG="configs/orininal_swin/upernet_swin_tiny_pt_patch4_window7_512x512_160k_ade20k.py"
 # CONFIG="configs/swinunet/swinunet_tiny_patch4_window7_512x512_160k_ade20k.py"
@@ -58,8 +58,8 @@ RESUME="work_dirs/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k/late
 # CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
 
 # CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k.py"
-CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
-# CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
+CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
 
 # CONFIG="configs/swinunetv2crossattentionupsample/swinunetv2_cross_attention_upsample_tiny_patch4_window7_512x512_160k_ade20k.py"
 
