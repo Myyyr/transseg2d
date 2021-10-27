@@ -15,6 +15,13 @@ from mmseg.datasets import build_dataset
 from mmseg.models import build_segmentor
 from mmseg.utils import collect_env, get_root_logger
 
+import torch
+torch.manual_seed(0)
+import random
+random.seed(0)
+import numpy as np
+np.random.seed(0)
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a segmentor')
