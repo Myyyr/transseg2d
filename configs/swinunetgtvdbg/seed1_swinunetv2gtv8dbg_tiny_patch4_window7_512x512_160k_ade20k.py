@@ -47,10 +47,3 @@ lr_config = dict(_delete_=True, policy='poly',
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
 data=dict(samples_per_gpu=16)
-import torch
-torch.manual_seed(0)
-import random
-random.seed(0)
-import numpy as np
-np.random.seed(0)
-
