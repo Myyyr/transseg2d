@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=s28g5sade     # job name
+#SBATCH --job-name=s28g5bade     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,9 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=00:04:59              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/s28g5sade%j.out # output file name
-#SBATCH --error=logs/s28g5sade%j.err  # error file name
+#SBATCH --output=logs/s28g5bade%j.out # output file name
+#SBATCH --error=logs/s28g5bade%j.err  # error file name
+#SBATCH -C v100-32g 
 
 set -x
 
@@ -65,8 +66,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
 # CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k.py"
 
-CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_small_patch4_window7_512x512_160k_ade20k.py"
-# CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_base_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_small_patch4_window7_512x512_160k_ade20k.py"
+CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_base_patch4_window7_512x512_160k_ade20k.py"
 
 
 # CONFIG="configs/swinupergtv8/upernet_swin_gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
@@ -77,8 +78,8 @@ CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_small_patch4_window7_512x512_16
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
-PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_small_patch4_window7_224.pth"
+PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
