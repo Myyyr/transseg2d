@@ -117,8 +117,8 @@ class ClassicAttention(nn.Module):
         # print("\n\n-------------------------------------------- INFO --------------------------------------------")
         # print("pe", pe.shape)
         # print("x", x.shape)
-        # strt = m//2-N//2
-        # pe = pe[strt:strt+N,:]
+        strt = m//2-N//2
+        pe = pe[strt:strt+N,:]
         # print("pe'", pe.shape)
         # print("strt, N", strt, strt+N)
         # print("----------------------------------------------------------------------------------------------\n\n")
