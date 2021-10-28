@@ -114,14 +114,14 @@ class ClassicAttention(nn.Module):
         B_, N, C = x.shape
 
         m = pe.shape[0]
-        print("\n\n-------------------------------------------- INFO --------------------------------------------")
-        print("pe", pe.shape)
-        print("x", x.shape)
-        strt = m//2-N//2
-        pe = pe[strt:strt+N,:]
-        print("pe'", pe.shape)
-        print("strt, N", strt, strt+N)
-        print("----------------------------------------------------------------------------------------------\n\n")
+        # print("\n\n-------------------------------------------- INFO --------------------------------------------")
+        # print("pe", pe.shape)
+        # print("x", x.shape)
+        # strt = m//2-N//2
+        # pe = pe[strt:strt+N,:]
+        # print("pe'", pe.shape)
+        # print("strt, N", strt, strt+N)
+        # print("----------------------------------------------------------------------------------------------\n\n")
         x = x + pe
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
