@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:04:59              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
+#SBATCH --time=50:00:00              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t4
 #SBATCH --output=logs/s28g5bade%j.out # output file name
 #SBATCH --error=logs/s28g5bade%j.err  # error file name
 #SBATCH -C v100-32g 
