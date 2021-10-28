@@ -339,7 +339,7 @@ class SwinTransformerBlock(nn.Module):
         nw = tmp//B
         gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
         gt = self.gt_attn(gt, pe)
-        gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=C)
+        gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
