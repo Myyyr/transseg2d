@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
+#SBATCH --time=00:05:00              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/s2tade%j.out # output file name
 #SBATCH --error=logs/s2tade%j.err  # error file name
 
@@ -76,7 +76,8 @@ module load python/3.7.10
 # CONFIG="configs/swinupergtv8/upernet_swin_gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
 
 # --------------------------------------------- 
-CONFIG="configs/swinunetv2/swinunetv2_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/swinunetv2/swinunetv2_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 
 
 
