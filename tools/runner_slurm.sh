@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=s28g1tade     # job name
+#SBATCH --job-name=s27g1tade     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -25,6 +25,9 @@ module load python/3.7.10
 # RESUME="work_dirs/swinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
 # RESUME="work_dirs/swinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
 # RESUME="work_dirs/swinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k/latest.pth"
+# RESUME="work_dirs/swinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k_good/latest.pth"
+
+
 
 # CONFIG="configs/orininal_swin/upernet_swin_tiny_pt_patch4_window7_512x512_160k_ade20k.py"
 # CONFIG="configs/swinunet/swinunet_tiny_patch4_window7_512x512_160k_ade20k.py"
@@ -78,12 +81,13 @@ module load python/3.7.10
 # --------------------------------------------- 
 # CONFIG="configs/swinunetv2/swinunetv2_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 
 
 
 
 
-PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
