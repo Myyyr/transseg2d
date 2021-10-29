@@ -101,7 +101,7 @@ class ClassicAttention(nn.Module):
 
         m = pe.shape[0]
         strt = m//2-N//2
-        pe = self.pe[strt:strt+N,:]
+        pe = pe[strt:strt+N,:]
         x = x + pe
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
