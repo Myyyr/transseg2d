@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/s28g1tade%j.out # output file name
-#SBATCH --error=logs/s28g1tade%j.err  # error file name
+#SBATCH --output=logs/s27g1tade%j.out # output file name
+#SBATCH --error=logs/s27g1tade%j.err  # error file name
 
 set -x
 
