@@ -80,8 +80,8 @@ class ClassicAttention(nn.Module):
         head_dim = dim // num_heads
         self.scale = qk_scale or head_dim ** -0.5
 
-        self.pe = nn.Parameter(torch.zeros(window_size[0]*window_size[1], dim))
-        trunc_normal_(self.pe, std=.02)
+        # self.pe = nn.Parameter(torch.zeros(window_size[0]*window_size[1], dim))
+        # trunc_normal_(self.pe, std=.02)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
         self.attn_drop = nn.Dropout(attn_drop)
@@ -91,7 +91,7 @@ class ClassicAttention(nn.Module):
         self.softmax = nn.Softmax(dim=-1)
 
 
-    def forward(self, x):
+    def forward(self, x, pe):
         """
         Args:
             x: input features with shape of (num_windows*B, N, C)
@@ -319,7 +319,7 @@ class SwinTransformerBlock(nn.Module):
 
  
 
-    def forward(self, x, mask_matrix, gt):
+    def forward(self, x, mask_matrix, gt, pe):
         H, W = self.input_resolution
         B, L, C = x.shape
         # L = 128 * 256
@@ -359,7 +359,7 @@ class SwinTransformerBlock(nn.Module):
         gt = gt.view(B, nw, ngt*C)
         # bigt, _ = self.gru(gt)
         # gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
-        gt = self.gt_attn(gt)
+        gt = self.gt_attn(gt, pe)
 
         # gt = self.projgru(gt)
         # gt = gt.mean(dim=1)
@@ -536,7 +536,8 @@ class BasicLayer(nn.Module):
 
     def __init__(self, dim, input_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., norm_layer=nn.LayerNorm, downsample=None, use_checkpoint=False, gt_num=1):
+                 drop_path=0., norm_layer=nn.LayerNorm, downsample=None, use_checkpoint=False, gt_num=1
+                 , id_layer=0):
 
         super().__init__()
         self.dim = dim
@@ -560,6 +561,10 @@ class BasicLayer(nn.Module):
                                  drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
                                  norm_layer=norm_layer, gt_num=gt_num)
             for i in range(depth)])
+
+        ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
+        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        trunc_normal_(self.pe, std=.02)
 
         # patch merging layer
         if downsample is not None:
@@ -594,7 +599,7 @@ class BasicLayer(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x, gt= blk(x, attn_mask, gt)
+                x, gt= blk(x, attn_mask, gt, self.pe)
         # if self.downsample is not None:
         #     x = self.downsample(x)
         # return x
@@ -637,7 +642,8 @@ class BasicLayer_up(nn.Module):
 
     def __init__(self, dim, input_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., norm_layer=nn.LayerNorm, upsample=None, use_checkpoint=False, gt_num=1):
+                 drop_path=0., norm_layer=nn.LayerNorm, upsample=None, use_checkpoint=False, gt_num=1
+                 ,id_layer=0):
 
         super().__init__()
         self.dim = dim
@@ -661,6 +667,10 @@ class BasicLayer_up(nn.Module):
                                  drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
                                  norm_layer=norm_layer, gt_num=gt_num)
             for i in range(depth)])
+
+        ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
+        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        trunc_normal_(self.pe, std=.02)
 
         # patch merging layer
         if upsample is not None:
@@ -695,7 +705,7 @@ class BasicLayer_up(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x, gt = blk(x, attn_mask, gt)
+                x, gt = blk(x, attn_mask, gt, self.pe)
         # if self.upsample is not None:
         #     x = self.upsample(x)
         if self.upsample is not None:
@@ -846,7 +856,7 @@ class SwinTransformerSys(nn.Module):
                                drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                                norm_layer=norm_layer,
                                downsample=PatchMerging if (i_layer < self.num_layers - 1) else None,
-                               use_checkpoint=use_checkpoint, gt_num=gt_num)
+                               use_checkpoint=use_checkpoint, gt_num=gt_num, ,id_layer=i_layer)
             self.layers.append(layer)
         
         # build decoder layers
@@ -871,7 +881,7 @@ class SwinTransformerSys(nn.Module):
                                 drop_path=dpr[sum(depths[:(self.num_layers-1-i_layer)]):sum(depths[:(self.num_layers-1-i_layer) + 1])],
                                 norm_layer=norm_layer,
                                 upsample=PatchExpand if (i_layer < self.num_layers - 1) else None,
-                                use_checkpoint=use_checkpoint, gt_num=gt_num)
+                                use_checkpoint=use_checkpoint, gt_num=gt_num,id_layer=self.num_layers-1-i_layer)
             self.layers_up.append(layer_up)
             self.concat_back_dim.append(concat_linear)
 
