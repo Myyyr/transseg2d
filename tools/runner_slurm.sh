@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=s2tade     # job name
+#SBATCH --job-name=s28g1tade     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=00:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/s2tade%j.out # output file name
-#SBATCH --error=logs/s2tade%j.err  # error file name
+#SBATCH --output=logs/s28g1tade%j.out # output file name
+#SBATCH --error=logs/s28g1tade%j.err  # error file name
 
 set -x
 

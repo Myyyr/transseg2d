@@ -99,7 +99,7 @@ class ClassicAttention(nn.Module):
         """
         B_, N, C = x.shape
 
-        m = self.pe.shape[0]
+        m = pe.shape[0]
         strt = m//2-N//2
         pe = self.pe[strt:strt+N,:]
         x = x + pe
