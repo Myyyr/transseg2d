@@ -856,7 +856,7 @@ class SwinTransformerSys(nn.Module):
                                drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                                norm_layer=norm_layer,
                                downsample=PatchMerging if (i_layer < self.num_layers - 1) else None,
-                               use_checkpoint=use_checkpoint, gt_num=gt_num, ,id_layer=i_layer)
+                               use_checkpoint=use_checkpoint, gt_num=gt_num,id_layer=i_layer)
             self.layers.append(layer)
         
         # build decoder layers
