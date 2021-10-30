@@ -662,8 +662,8 @@ class BasicLayer_up(nn.Module):
                                  norm_layer=norm_layer, gt_num=gt_num)
             for i in range(depth)])
 
-        ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
-        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        ws_pe = (45//2**id_layer, 45//2**id_layer)
+        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim*gt_num))
         trunc_normal_(self.pe, std=.02)
 
         # patch merging layer
