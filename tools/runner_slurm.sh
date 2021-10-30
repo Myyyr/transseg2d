@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=s24g1tadeg     # job name
+#SBATCH --job-name=s25g1tadeg     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/s24g1tadeg%j.out # output file name
-#SBATCH --error=logs/s24g1tadeg%j.err  # error file name
+#SBATCH --output=logs/s25g1tadeg%j.out # output file name
+#SBATCH --error=logs/s25g1tadeg%j.err  # error file name
 
 set -x
 
@@ -99,8 +99,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_base_patch4_window7_512x512_160k_ade20k_good.py"
 # CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
 
-CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
-# CONFIG="configs/swinunetv2gtv5/swinunetv2gtv5_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/swinunetv2gtv4/swinunetv2gtv4_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinunetv2gtv5/swinunetv2gtv5_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 
 
 
