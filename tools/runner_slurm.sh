@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=s2sadeg     # job name
+#SBATCH --job-name=s2badeg     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/s2sadeg%j.out # output file name
-#SBATCH --error=logs/s2sadeg%j.err  # error file name
+#SBATCH --output=logs/s2badeg%j.out # output file name
+#SBATCH --error=logs/s2badeg%j.err  # error file name
 
 set -x
 
@@ -85,8 +85,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv7/swinunetv2gtv7_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 # --------------------------------------------- 
 # CONFIG="configs/swinunetv2/swinunetv2_tiny_patch4_window7_512x512_160k_ade20k_good.py"
-CONFIG="configs/swinunetv2/swinunetv2_small_patch4_window7_512x512_160k_ade20k_good.py"
-# CONFIG="configs/swinunetv2/swinunetv2_base_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/swinunetv2/swinunetv2_small_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinunetv2/swinunetv2_base_patch4_window7_512x512_160k_ade20k_good.py"
 # CONFIG="configs/swinunetv2/swinunetv2_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
 
 # CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
@@ -98,8 +98,8 @@ CONFIG="configs/swinunetv2/swinunetv2_small_patch4_window7_512x512_160k_ade20k_g
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
-PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_small_patch4_window7_224.pth"
+PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
