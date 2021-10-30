@@ -9,6 +9,7 @@
 #SBATCH --qos=qos_gpu-t3
 #SBATCH --output=logs/s27g10tadeg%j.out # output file name
 #SBATCH --error=logs/s27g10tadeg%j.err  # error file name
+#SBATCH -C v100-32g
 
 set -x
 
