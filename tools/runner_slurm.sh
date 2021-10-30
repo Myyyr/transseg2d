@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=s2tcitg     # job name
+#SBATCH --job-name=sutadeg     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/s2tcitg%j.out # output file name
-#SBATCH --error=logs/s2tcitg%j.err  # error file name
+#SBATCH --output=logs/sutadeg%j.out # output file name
+#SBATCH --error=logs/sutadeg%j.err  # error file name
 
 set -x
 
