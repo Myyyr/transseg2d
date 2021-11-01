@@ -8,8 +8,10 @@ from .resnet import ResNet, ResNetV1c, ResNetV1d
 from .resnext import ResNeXt
 from .unet import UNet
 from .swin_transformer import SwinTransformer
+from .no_swin_transformer import NoSwinTransformer
 from .swin_transformer_gtv7 import SwinTransformerGTV7
 from .swin_transformer_gtv8 import SwinTransformerGTV8
+from .no_swin_transformer_gtv8 import NoSwinTransformerGTV8
 from .swin_unet_encoder import SwinUNetEncoder
 from .swin_unet_v2 import SwinUNetV2
 from .swin_unet_v2_gtv3 import SwinUNetV2GTV3
@@ -32,9 +34,9 @@ from .swin_unet_v2_cross_attention_upsample import SwinUNetV2CrossAttentionUpsam
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
-    'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer', 
+    'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer','NoSwinTransformer', 
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG', 
     'SwinUNetV2GTV5', 'SwinUNetV2GTV6', 'SwinUNetV2GTV7', 'SwinTransformerGTV7','SwinTransformerGTV8', 'SwinUNetV2GTV7', 'SwinUNetV2CrossAttentionUpsample',
-    'SwinUNetV2CrossAttention', 'SwinUNetV2GTV8'
+    'SwinUNetV2CrossAttention', 'SwinUNetV2GTV8','NoSwinTransformerGTV8'
 ]
