@@ -4,21 +4,21 @@ _base_ = [
 ]
 model = dict(
     backbone=dict(
-        embed_dim=128,
+        embed_dim=96,
         depths=[2, 2, 18, 2],
-        num_heads=[4, 8, 16, 32],
+        num_heads=[3, 6, 12, 24],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150, 
-        gt_num=1
+        gt_num=10
     ),
     decode_head=dict(
-        embed_dim=128,
+        embed_dim=96,
         depths=[2, 2, 18, 2],
-        num_heads=[4, 8, 16, 32],
+        num_heads=[3, 6, 12, 24],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
