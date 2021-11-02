@@ -127,7 +127,7 @@ CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g10_small_patch4_window7_512x512_1
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
 
-RESUME="work_dirs/swinunetv2gtv8_g1_tiny_patch4_window7_769x769_160k_cityscapes_good/latest.pth"
+RESUME="work_dirs/swinunetv2gtv8_g10_small_patch4_window7_512x512_160k_ade20k_good/latest.pth"
 
 
 
