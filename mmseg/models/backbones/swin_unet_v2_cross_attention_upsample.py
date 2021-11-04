@@ -25,6 +25,7 @@ class SwinUNetV2CrossAttentionUpsample(nn.Module):
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first",
                  use_cross_attention_by_layer=[True, True, True, True],
+                 residual_patch_expand=True,
                  **kwargs):
         super().__init__()
         self.num_classes = num_classes
@@ -51,7 +52,8 @@ class SwinUNetV2CrossAttentionUpsample(nn.Module):
                                                                   patch_norm=patch_norm,
                                                                   use_checkpoint=use_checkpoint,
                                                                   final_upsample=final_upsample,
-                                                                  use_cross_attention_by_layer=use_cross_attention_by_layer)
+                                                                  use_cross_attention_by_layer=use_cross_attention_by_layer,
+                                                                  residual_patch_expand=residual_patch_expand)
 
         
     def forward(self, x):

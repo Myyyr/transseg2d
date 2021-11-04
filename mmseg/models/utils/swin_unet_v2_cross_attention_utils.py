@@ -138,7 +138,7 @@ class CrossAttentionBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, skip_connection_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True):
         super().__init__()
         self.dim = dim
         self.input_resolution = input_resolution
@@ -157,6 +157,8 @@ class CrossAttentionBlock(nn.Module):
         self.proj_shortcut = nn.Linear(dim, dim // 2)
         self.upsample_shortcut = nn.UpsamplingBilinear2d(scale_factor=(2,2))
         self.expand = PatchExpand(input_resolution, dim)
+
+        self.residual_patch_expand = residual_patch_expand
         
         self.norm1 = norm_layer(dim)
         self.attn = WindowCrossAttention(
@@ -191,14 +193,18 @@ class CrossAttentionBlock(nn.Module):
 
 
 
-        #shortcut = self.proj_shortcut(x)
-        #shortcut = shortcut.view(B, H, W, C_d).permute(0,3,1,2)
-        #shortcut = self.upsample_shortcut(shortcut).permute(0,2,3,1)
-        shortcut, Wh, Ww = self.expand(x, H, W, padwh)
-        # if padwh[0] != 0 or padwh[1] != 0:
-        #     shortcut = shortcut[:,:(shortcut.shape[1]-padwh[1]),:(shortcut.shape[2]-padwh[0]),:]
-        #     shortcut = shortcut.contiguous()
-        # shortcut = shortcut.view(B, L_d, C_d)
+        if self.residual_patch_expand:
+            print('Patch_Expand')
+            shortcut, Wh, Ww = self.expand(x, H, W, padwh)
+        else:
+            print('Bilinear')
+            shortcut = self.proj_shortcut(x)
+            shortcut = shortcut.view(B, H, W, C_d).permute(0,3,1,2)
+            shortcut = self.upsample_shortcut(shortcut).permute(0,2,3,1)
+            if padwh[0] != 0 or padwh[1] != 0:
+                shortcut = shortcut[:,:(shortcut.shape[1]-padwh[1]),:(shortcut.shape[2]-padwh[0]),:]
+                shortcut = shortcut.contiguous()
+            shortcut = shortcut.view(B, L_d, C_d)
 
         
         x = self.norm1(x)
@@ -302,7 +308,7 @@ class BasicLayer_up_Xattn(nn.Module):
     def __init__(self, dim, input_resolution, skip_connection_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., norm_layer=nn.LayerNorm, upsample=None, use_checkpoint=False,
-                 use_cross_attention=False):
+                 use_cross_attention=False, residual_patch_expand=True):
 
         super().__init__()
         self.dim = dim
@@ -313,6 +319,7 @@ class BasicLayer_up_Xattn(nn.Module):
         self.window_size = window_size
         self.shift_size = window_size // 2
         self.use_cross_attention = use_cross_attention
+        self.residual_patch_expand = residual_patch_expand
 
         # build blocks
         self.blocks = nn.ModuleList()
@@ -326,7 +333,8 @@ class BasicLayer_up_Xattn(nn.Module):
                                             qkv_bias=qkv_bias, qk_scale=qk_scale,
                                             drop=drop, attn_drop=attn_drop,
                                             drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
-                                            norm_layer=norm_layer)
+                                            norm_layer=norm_layer,
+                                            residual_patch_expand=residual_patch_expand)
             else:
                 layer = SwinTransformerBlock(dim=dim // 2, input_resolution=[x * 2 for x in input_resolution],
                                              num_heads=num_heads, window_size=window_size,
@@ -423,7 +431,8 @@ class SwinTransformerCrossAttentionSys(nn.Module):
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, final_upsample="expand_first", **kwargs):
+                 use_checkpoint=False, final_upsample="expand_first",
+                 residual_patch_expand=True, **kwargs):
         super().__init__()
 
         print("SwinTransformerCrossAttentionSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
@@ -496,7 +505,8 @@ class SwinTransformerCrossAttentionSys(nn.Module):
                                            drop_path=dpr[sum(depths[:(self.num_layers-1-i_layer-1)]):sum(depths[:(self.num_layers-1-i_layer-1) + 1])],
                                            norm_layer=norm_layer,
                                            upsample=None,
-                                           use_checkpoint=use_checkpoint)
+                                           use_checkpoint=use_checkpoint,
+                                           residual_patch_expand=residual_patch_expand)
                 
             self.layers_up.append(layer_up)
             self.concat_back_dim.append(concat_linear)
@@ -663,7 +673,8 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, final_upsample="expand_first", use_cross_attention_by_layer=[True, True, True, True], **kwargs):
+                 use_checkpoint=False, final_upsample="expand_first", use_cross_attention_by_layer=[True, True, True, True],
+                 residual_patch_expand=True, **kwargs):
 
         super().__init__()
 
@@ -680,6 +691,7 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
         self.mlp_ratio = mlp_ratio
         self.final_upsample = final_upsample
         self.use_cross_attention_by_layer = use_cross_attention_by_layer
+        self.residual_patch_expand = residual_patch_expand
 
         # split image into non-overlapping patches
         self.patch_embed = PatchEmbed(
@@ -754,7 +766,8 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
                                                            drop=drop_rate,
                                                            attn_drop=attn_drop_rate,
                                                            drop_path=dpr[sum(depths[:(self.num_layers-1-i_layer)]):sum(depths[:(self.num_layers-1-i_layer) + 1])],
-                                                           norm_layer=norm_layer)
+                                                           norm_layer=norm_layer,
+                                                           residual_patch_expand=self.residual_patch_expand)
             patch_expand = PatchExpand(input_resolution=(patches_resolution[0] // (2 ** (self.num_layers-1-i_layer)),
                                                          patches_resolution[1] // (2 ** (self.num_layers-1-i_layer))),
                                        dim=int(embed_dim * 2 ** (self.num_layers-1-i_layer + 1)),
