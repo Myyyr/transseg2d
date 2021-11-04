@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=suptadegzc     # job name
+#SBATCH --job-name=s28g1tadegzc     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/suptadegzc%j.out # output file name
-#SBATCH --error=logs/suptadegzc%j.err  # error file name
+#SBATCH --output=logs/s28g1tadegzc%j.out # output file name
+#SBATCH --error=logs/s28g1tadegzc%j.err  # error file name
 
 set -x
 
@@ -122,9 +122,9 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2/zswinunetv2_base_patch4_window7_512x512_160k_ade20k_good.py"
 # CONFIG="configs/swinunetv2/zswinunetv2_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
 
-CONFIG="configs/orininal_swin/zupernet_swin_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/orininal_swin/zupernet_swin_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 
-# CONFIG="configs/swinunetv2gtv8/zswinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinunetv2gtv8/zswinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 # CONFIG="configs/swinunetv2gtv8/zswinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 # CONFIG="configs/swinunetv2gtv8/zswinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 
@@ -138,7 +138,7 @@ CONFIG="configs/orininal_swin/zupernet_swin_tiny_patch4_window7_512x512_160k_ade
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
 
-RESUME="work_dirs/zupernet_swin_tiny_patch4_window7_512x512_160k_ade20k_good/latest.pth"
+RESUME="work_dirs/zswinunetv2gtv8_g1_tiny_patch4_window7_512x512_160k_ade20k_good/latest.pth"
 
 
 
