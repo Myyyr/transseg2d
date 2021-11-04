@@ -7,7 +7,7 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 import numpy as np
 
 from einops import repeat
-
+# MERGING STRAT : MEAN
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()
@@ -123,7 +123,7 @@ class WindowAttention(nn.Module):
         # add global tokens
         # if gt==None:
         #     gt = self.global_token
-        if len(gt.shape != 3):
+        if len(gt.shape) != 3:
             gt = repeat(gt, "g c -> b g c", b=B_)# shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
@@ -158,13 +158,37 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
+        print("\n######################## INFO ########################")
+        print("=> attn 0")
+        print("shape", attn.shape)
+        print("min", attn[:,:,:,:self.gt_num].min())
+        print("mean", attn[:,:,:,:self.gt_num].mean())
+        print("std", attn[:,:,:,:self.gt_num].std())
+        print("max", attn[:,:,:,:self.gt_num].max())
+        print("######################################################")
+
+        print("\n######################## INFO ########################")
+        print("=> attn 0")
+        print("shape", attn.shape)
+        print("min",  attn[:,:,self.gt_num:,:self.gt_num].min())
+        print("mean", attn[:,:,self.gt_num:,:self.gt_num].mean())
+        print("std",  attn[:,:,self.gt_num:,:self.gt_num].std())
+        print("max",  attn[:,:,self.gt_num:,:self.gt_num].max())
+        print("######################################################")
+
+        torch.save(attn, "work_dirs/viz/attn.pt")
+
         attn = self.attn_drop(attn)     
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
-        gt = x[:,:N_,:]
+        torch.save(x, "work_dirs/viz/v.pt")
+        exit(0)
+
+        gt = x[:,:-N_,:]
         x = x[:,-N_:,:] # x of size (B_, N_, C)
         x = self.proj(x)
         x = self.proj_drop(x)
+        exit(0)
 
         return x, gt
 
@@ -222,7 +246,7 @@ class SwinTransformerBlock(nn.Module):
         self.norm1 = norm_layer(dim)
         self.attn = WindowAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num, first)
+            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
@@ -268,7 +292,9 @@ class SwinTransformerBlock(nn.Module):
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
         tmp, ngt, c = gt.shape
         nw = tmp//B
-        gt = gt.view(B, nw, nGt, C).mean(dim=1)
+        gt = gt.view(B, nw, ngt, C)
+        gt = gt.mean(dim=1)
+        gt = repeat(gt, "b g c -> (b n) g c",n=nw)
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
@@ -289,7 +315,7 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
-        return x
+        return x, gt
 
     def extra_repr(self) -> str:
         return f"dim={self.dim}, input_resolution={self.input_resolution}, num_heads={self.num_heads}, " \
@@ -468,6 +494,14 @@ class BasicLayer(nn.Module):
             self.downsample = None
 
     def forward(self, x, H, W):
+        print("\n######################## INFO ########################")
+        print("=> GT")
+        print("shape", self.global_token.shape)
+        print("min", self.global_token.min())
+        print("mean", self.global_token.mean())
+        print("std", self.global_token.std())
+        print("max", self.global_token.max())
+        print("######################################################")
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -857,6 +891,7 @@ class SwinTransformerSys(nn.Module):
         return x
 
     def forward(self, x):
+        torch.save(x, "work_dirs/viz/x.pt")
         # x, x_downsample = self.forward_features(x)
         x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)

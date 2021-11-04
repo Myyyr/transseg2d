@@ -53,7 +53,6 @@ class SwinUNetV2CrossAttentionUpsample(nn.Module):
                                                                   final_upsample=final_upsample,
                                                                   use_cross_attention_by_layer=use_cross_attention_by_layer)
 
-
         
     def forward(self, x):
         if x.size()[1] == 1:

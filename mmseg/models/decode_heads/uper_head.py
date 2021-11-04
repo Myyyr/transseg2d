@@ -83,6 +83,9 @@ class UPerHead(BaseDecodeHead):
 
         return output
 
+    def init_weights(self, pretrained=None):
+        super().init_weights()
+
     def forward(self, inputs):
         """Forward function."""
 

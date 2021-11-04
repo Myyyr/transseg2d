@@ -157,6 +157,7 @@ class CrossAttentionBlock(nn.Module):
         self.proj_shortcut = nn.Linear(dim, dim // 2)
         self.upsample_shortcut = nn.UpsamplingBilinear2d(scale_factor=(2,2))
         self.expand = PatchExpand(input_resolution, dim)
+        
         self.norm1 = norm_layer(dim)
         self.attn = WindowCrossAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
@@ -187,6 +188,7 @@ class CrossAttentionBlock(nn.Module):
             #import pdb; pdb.set_trace()
         # assert H_d == 2*H
         # assert W_d == 2*W 
+
 
 
         #shortcut = self.proj_shortcut(x)
@@ -662,6 +664,7 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first", use_cross_attention_by_layer=[True, True, True, True], **kwargs):
+
         super().__init__()
 
         print("SwinTransformerCrossAttentionUpsamplingSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
@@ -752,12 +755,10 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
                                                            attn_drop=attn_drop_rate,
                                                            drop_path=dpr[sum(depths[:(self.num_layers-1-i_layer)]):sum(depths[:(self.num_layers-1-i_layer) + 1])],
                                                            norm_layer=norm_layer)
-
             patch_expand = PatchExpand(input_resolution=(patches_resolution[0] // (2 ** (self.num_layers-1-i_layer)),
                                                          patches_resolution[1] // (2 ** (self.num_layers-1-i_layer))),
                                        dim=int(embed_dim * 2 ** (self.num_layers-1-i_layer + 1)),
                                        dim_scale=2)
-                                                           
                 
             self.layers_up.append(layer_up)
             self.concat_back_dim.append(concat_linear)
@@ -832,11 +833,11 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
             upsampling_blk = self.layers_cross_attention_up[inx]
             upsampling_blk.input_resolution = (Wh, Ww)
             upsampling_blk.skip_connection_resolution = (Wh_d, Ww_d)
-
             if self.use_cross_attention_by_layer[inx]:
                 x, Wh, Ww = upsampling_blk(x, skip_co, Wh, Ww, Wh_d, Ww_d, padwh)
             else:
                 x, Wh, Ww = self.layers_patch_expand[inx](x, Wh, Ww, padwh)
+
             x = torch.cat([x, skip_co],-1)
             x = self.concat_back_dim[inx](x)
             x, Wh, Ww = layer_up(x, Wh, Ww, padwh)

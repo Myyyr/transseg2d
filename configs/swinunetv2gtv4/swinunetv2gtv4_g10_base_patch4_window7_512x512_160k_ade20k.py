@@ -1,24 +1,24 @@
 _base_ = [
-    '../_base_/models/swin_unet_v2_gtv4.py', '../_base_/datasets/ade20kdbg.py',
+    '../_base_/models/swin_unet_v2_gtv4.py', '../_base_/datasets/ade20k.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
     backbone=dict(
-        embed_dim=96,
-        depths=[2, 2, 6, 2],
-        num_heads=[3, 6, 12, 24],
+        embed_dim=128,
+        depths=[2, 2, 18, 2],
+        num_heads=[4, 8, 16, 32],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=150,
-        gt_num=1
+        num_classes=150, 
+        gt_num=5
     ),
     decode_head=dict(
-        embed_dim=96,
-        depths=[2, 2, 6, 2],
-        num_heads=[3, 6, 12, 24],
+        embed_dim=128,
+        depths=[2, 2, 18, 2],
+        num_heads=[4, 8, 16, 32],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
@@ -46,7 +46,7 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=16)
+data=dict(samples_per_gpu=2)
 
 
 

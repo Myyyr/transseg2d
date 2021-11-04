@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/swin_unet_v2_gtv4.py', '../_base_/datasets/ade20kdbg.py',
+    '../_base_/models/swin_unet_v2_gtv8.py', '../_base_/datasets/ade20kdbg.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
@@ -47,6 +47,5 @@ lr_config = dict(_delete_=True, policy='poly',
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
 data=dict(samples_per_gpu=16)
-
 
 
