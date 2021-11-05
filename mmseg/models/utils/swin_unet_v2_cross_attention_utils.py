@@ -194,10 +194,8 @@ class CrossAttentionBlock(nn.Module):
 
 
         if self.residual_patch_expand:
-            print('Patch_Expand')
             shortcut, Wh, Ww = self.expand(x, H, W, padwh)
         else:
-            print('Bilinear')
             shortcut = self.proj_shortcut(x)
             shortcut = shortcut.view(B, H, W, C_d).permute(0,3,1,2)
             shortcut = self.upsample_shortcut(shortcut).permute(0,2,3,1)
