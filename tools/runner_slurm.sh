@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=16:05:00              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
+#SBATCH --time=00:05:00              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/s28g10tcitgzc%j.out # output file name
 #SBATCH --error=logs/s28g10tcitgzc%j.err  # error file name
 
@@ -130,7 +130,7 @@ CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g10_tiny_patch4_window7_769x769_16
 
 
 
-# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
@@ -138,10 +138,10 @@ CONFIG="configs/swinunetv2gtv8/swinunetv2gtv8_g10_tiny_patch4_window7_769x769_16
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
 
-RESUME="work_dirs/swinunetv2gtv8_g10_tiny_patch4_window7_769x769_160k_cityscapes_good/latest.pth"
+# RESUME="work_dirs/swinunetv2gtv8_g10_tiny_patch4_window7_769x769_160k_cityscapes_good/latest.pth"
 
 
 
 
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic ${@:3}
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic ${@:3}
