@@ -14,7 +14,7 @@ model = dict(
         use_checkpoint=False,
         num_classes=150,
         use_cross_attention_by_layer=[True, True, True, True],
-        residual_patch_expand=False,
+        residual_patch_expand=True,
     ),
     decode_head=dict(
         embed_dim=96,

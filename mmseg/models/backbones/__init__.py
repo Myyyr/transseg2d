@@ -30,13 +30,12 @@ from .swin_unet_encoder_gtvdbg3 import SwinUNetEncoderGTvdbg3
 
 from .swin_unet_v2_cross_attention import SwinUNetV2CrossAttention
 from .swin_unet_v2_cross_attention_upsample import SwinUNetV2CrossAttentionUpsample
-
+from .swin_unet_v2_bilinear_upsampling import SwinUNetV2BilinearUpsampling
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
     'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer','NoSwinTransformer', 
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
-    , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG', 
-    'SwinUNetV2GTV5', 'SwinUNetV2GTV6', 'SwinUNetV2GTV7', 'SwinTransformerGTV7','SwinTransformerGTV8', 'SwinUNetV2GTV7', 'SwinUNetV2CrossAttentionUpsample',
-    'SwinUNetV2CrossAttention', 'SwinUNetV2GTV8','NoSwinTransformerGTV8'
+    , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG',
+    'SwinUNetV2CrossAttention', 'SwinUNetV2CrossAttentionUpsample', 'SwinUNetV2BilinearUpsampling',
 ]

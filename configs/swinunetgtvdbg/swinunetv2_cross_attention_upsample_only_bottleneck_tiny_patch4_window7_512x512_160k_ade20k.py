@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/swin_unet_v2_cross_attention_upsample.py', '../_base_/datasets/ade20k.py',
+    '../_base_/models/swin_unet_v2_cross_attention_upsample.py', '../_base_/datasets/ade20kdbg.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
@@ -13,8 +13,7 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150,
-        use_cross_attention_by_layer=[True, True, True, True],
-        residual_patch_expand=False,
+        use_cross_attention_by_layer=[True, False, False, False]
     ),
     decode_head=dict(
         embed_dim=96,
@@ -47,7 +46,4 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=2)
-
-
-
+data=dict(samples_per_gpu=16)

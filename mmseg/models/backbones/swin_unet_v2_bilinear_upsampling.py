@@ -4,7 +4,7 @@ import torch.utils.checkpoint as checkpoint
 from einops import rearrange
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
-from ..utils.swin_unet_v2_cross_attention_utils import SwinTransformerCrossAttentionUpsampleSys
+from ..utils.swin_unet_v2_bilinear_upsampling_utils import *
 from ..builder import BACKBONES
 from mmseg.utils import get_root_logger
 from mmcv_custom import load_checkpoint
@@ -17,45 +17,39 @@ from os.path import join as pjoin
 
 
 @BACKBONES.register_module()
-class SwinUNetV2CrossAttentionUpsample(nn.Module):
+class SwinUNetV2BilinearUpsampling(nn.Module):
     def __init__(self, pretrain_img_size=224, patch_size=4, in_chans=3, num_classes=1000,
                  embed_dim=96, depths=[2, 2, 2, 2], depths_decoder=[1, 2, 2, 2], num_heads=[3, 6, 12, 24],
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, final_upsample="expand_first",
-                 use_cross_attention_by_layer=[True, True, True, True],
-                 residual_patch_expand=True,
-                 **kwargs):
+                 use_checkpoint=False, final_upsample="expand_first", **kwargs):
         super().__init__()
         self.num_classes = num_classes
         # self.zero_head = zero_head
         # self.config = config
 
-        self.swin_unet = SwinTransformerCrossAttentionUpsampleSys(pretrain_img_size=pretrain_img_size,
-                                                                  patch_size=patch_size,
-                                                                  in_chans=in_chans,
-                                                                  num_classes=self.num_classes,
-                                                                  embed_dim=embed_dim,
-                                                                  depths=depths,
-                                                                  depths_decoder=depths_decoder,
-                                                                  num_heads=num_heads,
-                                                                  window_size=window_size,
-                                                                  mlp_ratio=mlp_ratio,
-                                                                  qkv_bias=qkv_bias,
-                                                                  qk_scale=qk_scale,
-                                                                  drop_rate=drop_rate,
-                                                                  attn_drop_rate=attn_drop_rate,
-                                                                  drop_path_rate=drop_path_rate,
-                                                                  norm_layer=norm_layer,
-                                                                  ape=ape,
-                                                                  patch_norm=patch_norm,
-                                                                  use_checkpoint=use_checkpoint,
-                                                                  final_upsample=final_upsample,
-                                                                  use_cross_attention_by_layer=use_cross_attention_by_layer,
-                                                                  residual_patch_expand=residual_patch_expand)
+        self.swin_unet = SwinTransformerBilinearUpsamplingSys(pretrain_img_size=pretrain_img_size,
+                                                              patch_size=patch_size,
+                                                              in_chans=in_chans,
+                                                              num_classes=self.num_classes,
+                                                              embed_dim=embed_dim,
+                                                              depths=depths,
+                                                              depths_decoder=depths_decoder,
+                                                              num_heads=num_heads,
+                                                              window_size=window_size,
+                                                              mlp_ratio=mlp_ratio,
+                                                              qkv_bias=qkv_bias,
+                                                              qk_scale=qk_scale,
+                                                              drop_rate=drop_rate,
+                                                              attn_drop_rate=attn_drop_rate,
+                                                              drop_path_rate=drop_path_rate,
+                                                              norm_layer=norm_layer,
+                                                              ape=ape,
+                                                              patch_norm=patch_norm,
+                                                              use_checkpoint=use_checkpoint,
+                                                              final_upsample=final_upsample)
 
-        
     def forward(self, x):
         if x.size()[1] == 1:
             x = x.repeat(1,3,1,1)
@@ -85,7 +79,7 @@ class SwinUNetV2CrossAttentionUpsample(nn.Module):
             full_dict = copy.deepcopy(pretrained_dict)
             for k, v in pretrained_dict.items():
                 if "layers." in k:
-                    current_layer_num = 2-int(k[7:8])
+                    current_layer_num = 3-int(k[7:8])
                     current_k = "layers_up." + str(current_layer_num) + k[8:]
                     full_dict.update({current_k:v})
             for k in list(full_dict.keys()):
@@ -98,5 +92,4 @@ class SwinUNetV2CrossAttentionUpsample(nn.Module):
             # print(msg)
         else:
             print("none pretrain")
-
 
