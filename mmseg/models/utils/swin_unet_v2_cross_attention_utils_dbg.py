@@ -263,6 +263,8 @@ class CrossAttentionBlock(nn.Module):
         # x = x + self.drop_path(self.mlp(self.norm2(x)))
 
         x = shortcut
+        print("\n\n\n\nok\n\n\n\n")
+        exit(0)
 
         return x, H_d, W_d
 
