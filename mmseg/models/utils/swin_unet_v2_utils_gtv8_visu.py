@@ -810,9 +810,6 @@ class SwinTransformerSys(nn.Module):
                  use_checkpoint=False, final_upsample="expand_first", gt_num=1, **kwargs):
         super().__init__()
 
-        print("\n\n\n\nHERE\n\n\n")
-        exit(0)
-
         print("SwinTransformerSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
         depths_decoder,drop_path_rate,num_classes))
 
