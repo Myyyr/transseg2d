@@ -138,7 +138,7 @@ class CrossAttentionBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, skip_connection_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True, cutscut=True):
         super().__init__()
         self.dim = dim
         self.input_resolution = input_resolution
@@ -169,6 +169,7 @@ class CrossAttentionBlock(nn.Module):
         self.norm2 = norm_layer(dim // 2)
         mlp_hidden_dim = int(dim // 2 * mlp_ratio)
         self.mlp = Mlp(in_features=dim // 2, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        self.cutscut = cutscut
 
  
 
@@ -259,10 +260,11 @@ class CrossAttentionBlock(nn.Module):
 
 
         # FFN
-        # x = self.drop_path(x) + shortcut
-        # x = x + self.drop_path(self.mlp(self.norm2(x)))
-
-        x = shortcut
+        if not self.cutscut:
+            x = self.drop_path(x) + shortcut
+            x = x + self.drop_path(self.mlp(self.norm2(x)))
+        else:
+            x = shortcut
         # print("\n\n\n\nok\n\n\n\n")
         # exit(0)
 
@@ -310,7 +312,7 @@ class BasicLayer_up_Xattn(nn.Module):
     def __init__(self, dim, input_resolution, skip_connection_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., norm_layer=nn.LayerNorm, upsample=None, use_checkpoint=False,
-                 use_cross_attention=False, residual_patch_expand=True):
+                 use_cross_attention=False, residual_patch_expand=True, cutscut=True):
 
         super().__init__()
         self.dim = dim
@@ -336,7 +338,7 @@ class BasicLayer_up_Xattn(nn.Module):
                                             drop=drop, attn_drop=attn_drop,
                                             drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
                                             norm_layer=norm_layer,
-                                            residual_patch_expand=residual_patch_expand)
+                                            residual_patch_expand=residual_patch_expand, cutscut=cutscut)
             else:
                 layer = SwinTransformerBlock(dim=dim // 2, input_resolution=[x * 2 for x in input_resolution],
                                              num_heads=num_heads, window_size=window_size,
@@ -434,7 +436,7 @@ class SwinTransformerCrossAttentionSys(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first",
-                 residual_patch_expand=True, **kwargs):
+                 residual_patch_expand=True, cutscut=True,**kwargs):
         super().__init__()
 
         print("SwinTransformerCrossAttentionSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
@@ -508,7 +510,7 @@ class SwinTransformerCrossAttentionSys(nn.Module):
                                            norm_layer=norm_layer,
                                            upsample=None,
                                            use_checkpoint=use_checkpoint,
-                                           residual_patch_expand=residual_patch_expand)
+                                           residual_patch_expand=residual_patch_expand,cutscut=cutscut)
                 
             self.layers_up.append(layer_up)
             self.concat_back_dim.append(concat_linear)
