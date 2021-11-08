@@ -969,9 +969,7 @@ class SwinTransformerSys(nn.Module):
     def forward(self, x):
         # print("\n-------->x", x.shape, "<----------\n")
         # x, x_downsample = self.forward_features(x)
-        print('\n\n\n\nOKAY')
-        torch.save(x, "~/visu/img/x.pt")
-        print('OKAY !\n\n\n')
+        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/x.pt")
         exit(0)
         x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
