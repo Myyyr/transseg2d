@@ -241,6 +241,10 @@ class WindowAttention(nn.Module):
 
         attn = self.attn_drop(attn)     
 
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/att.pt")
+        exit(0)
+
+
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
         x = self.proj(x)
         x = self.proj_drop(x)
@@ -970,7 +974,7 @@ class SwinTransformerSys(nn.Module):
         # print("\n-------->x", x.shape, "<----------\n")
         # x, x_downsample = self.forward_features(x)
         torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/x.pt")
-        exit(0)
+        # exit(0)
         x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
         x = self.up_x4(x, Wh, Ww)
