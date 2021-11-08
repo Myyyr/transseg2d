@@ -810,6 +810,9 @@ class SwinTransformerSys(nn.Module):
                  use_checkpoint=False, final_upsample="expand_first", gt_num=1, **kwargs):
         super().__init__()
 
+        print("\n\n\n\nHERE\n\n\n")
+        exit(0)
+
         print("SwinTransformerSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
         depths_decoder,drop_path_rate,num_classes))
 
@@ -969,9 +972,9 @@ class SwinTransformerSys(nn.Module):
     def forward(self, x):
         # print("\n-------->x", x.shape, "<----------\n")
         # x, x_downsample = self.forward_features(x)
-        print('OKAY')
+        print('\n\n\n\nOKAY')
         torch.save(x, "~/visu/img/x.pt")
-        print('OKAY !')
+        print('OKAY !\n\n\n')
         exit(0)
         x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
