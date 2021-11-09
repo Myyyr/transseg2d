@@ -13,7 +13,8 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150,
-        use_cross_attention_by_layer=[True, False, False, False]
+        use_cross_attention_by_layer=[True, False, False, False],
+        residual_patch_expand=False
     ),
     decode_head=dict(
         embed_dim=96,

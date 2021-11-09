@@ -12,7 +12,9 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        num_classes=150
+        num_classes=150,
+        use_cross_attention_by_layer=[True, True, True, True],
+        residual_patch_expand=False
     ),
     decode_head=dict(
         embed_dim=96,
