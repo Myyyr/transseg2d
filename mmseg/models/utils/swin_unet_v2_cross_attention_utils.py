@@ -22,7 +22,7 @@ class WindowCrossAttention(nn.Module):
         proj_drop (float, optional): Dropout ratio of output. Default: 0.0
     """
 
-    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
+    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., channel_scale=2):
 
         super().__init__()
         self.dim = dim
@@ -30,6 +30,7 @@ class WindowCrossAttention(nn.Module):
         self.num_heads = num_heads
         head_dim = dim // num_heads
         self.scale = qk_scale or head_dim ** -0.5
+        self.channel_scale = channel_scale
 
         # define a parameter table of relative position bias
         self.relative_position_bias_table = nn.Parameter(
@@ -51,10 +52,10 @@ class WindowCrossAttention(nn.Module):
         self.register_buffer("relative_position_index", relative_position_index)
 
         self.proj_kv = nn.Linear(dim, dim * 2, bias=qkv_bias)
-        self.proj_q = nn.Linear(dim // 2, dim, bias=qkv_bias)
+        self.proj_q = nn.Linear(dim // channel_scale, dim, bias=qkv_bias)
         
         self.attn_drop = nn.Dropout(attn_drop)
-        self.proj = nn.Linear(dim, dim // 2)
+        self.proj = nn.Linear(dim, dim // channel_scale)
         self.proj_drop = nn.Dropout(proj_drop)
 
         trunc_normal_(self.relative_position_bias_table, std=.02)
@@ -70,7 +71,6 @@ class WindowCrossAttention(nn.Module):
         B_, N, C = kv.shape
 
         qB_, qN, qC = q.shape
-        
         
         kv = self.proj_kv(kv).reshape(B_, N, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
 
@@ -138,7 +138,7 @@ class CrossAttentionBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, skip_connection_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True, channel_scale=2):
         super().__init__()
         self.dim = dim
         self.input_resolution = input_resolution
@@ -148,13 +148,14 @@ class CrossAttentionBlock(nn.Module):
         self.window_size_skip_co = self.window_size * 2
         self.shift_size = shift_size
         self.mlp_ratio = mlp_ratio
+        self.channel_scale = channel_scale
         if min(self.input_resolution) <= self.window_size:
             # if window size is larger than input resolution, we don't partition windows
             self.shift_size = 0
             self.window_size = min(self.input_resolution)
         assert 0 <= self.shift_size < self.window_size, "shift_size must in 0-window_size"
 
-        self.proj_shortcut = nn.Linear(dim, dim // 2)
+        self.proj_shortcut = nn.Linear(dim, dim // self.channel_scale)
         self.upsample_shortcut = nn.UpsamplingBilinear2d(scale_factor=(2,2))
         self.expand = PatchExpand(input_resolution, dim)
 
@@ -163,12 +164,13 @@ class CrossAttentionBlock(nn.Module):
         self.norm1 = norm_layer(dim)
         self.attn = WindowCrossAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
+            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop,
+            channel_scale=channel_scale)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
-        self.norm2 = norm_layer(dim // 2)
-        mlp_hidden_dim = int(dim // 2 * mlp_ratio)
-        self.mlp = Mlp(in_features=dim // 2, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        self.norm2 = norm_layer(dim // self.channel_scale)
+        mlp_hidden_dim = int(dim // self.channel_scale * mlp_ratio)
+        self.mlp = Mlp(in_features=dim // self.channel_scale, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
  
 
@@ -306,7 +308,7 @@ class BasicLayer_up_Xattn(nn.Module):
     def __init__(self, dim, input_resolution, skip_connection_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., norm_layer=nn.LayerNorm, upsample=None, use_checkpoint=False,
-                 use_cross_attention=False, residual_patch_expand=True):
+                 use_cross_attention=False, residual_patch_expand=True, channel_scale=2):
 
         super().__init__()
         self.dim = dim
@@ -318,6 +320,7 @@ class BasicLayer_up_Xattn(nn.Module):
         self.shift_size = window_size // 2
         self.use_cross_attention = use_cross_attention
         self.residual_patch_expand = residual_patch_expand
+        self.channel_scale = channel_scale
 
         # build blocks
         self.blocks = nn.ModuleList()
@@ -332,7 +335,8 @@ class BasicLayer_up_Xattn(nn.Module):
                                             drop=drop, attn_drop=attn_drop,
                                             drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
                                             norm_layer=norm_layer,
-                                            residual_patch_expand=residual_patch_expand)
+                                            residual_patch_expand=residual_patch_expand,
+                                            channel_scale=self.channel_scale)
             else:
                 layer = SwinTransformerBlock(dim=dim // 2, input_resolution=[x * 2 for x in input_resolution],
                                              num_heads=num_heads, window_size=window_size,

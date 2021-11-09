@@ -19,6 +19,7 @@ from .psp_head import PSPHead
 from .sep_aspp_head import DepthwiseSeparableASPPHead
 from .sep_fcn_head import DepthwiseSeparableFCNHead
 from .uper_head import UPerHead
+from .cross_attention_uper_head import CrossAttentionUPerHead
 from .swin_unet_decoder import SwinUNetDecoder
 from .swin_unet_dv2 import SwinUNetDV2
 from .swin_unet_decoder_gtv1 import SwinUNetDecoderGTv1
@@ -28,7 +29,7 @@ from .swin_unet_decoder_gtvdbg2 import SwinUNetDecoderGTvdbg2
 from .swin_unet_decoder_gtvdbg3 import SwinUNetDecoderGTvdbg3
 __all__ = [
     'FCNHead', 'PSPHead', 'ASPPHead', 'PSAHead', 'NLHead', 'GCHead', 'CCHead',
-    'UPerHead', 'DepthwiseSeparableASPPHead', 'ANNHead', 'DAHead', 'OCRHead',
+    'UPerHead', 'CrossAttentionUPerHead', 'DepthwiseSeparableASPPHead', 'ANNHead', 'DAHead', 'OCRHead',
     'EncHead', 'DepthwiseSeparableFCNHead', 'FPNHead', 'EMAHead', 'DNLHead',
     'PointHead', 'APCHead', 'DMHead', 'LRASPPHead',
     'SwinUNetDecoder', 'SwinUNetDecoderGTv1','SwinUNetDecoderGTv2', 'SwinUNetDecoderGTvdbg', 'SwinUNetDecoderGTvdbg2',

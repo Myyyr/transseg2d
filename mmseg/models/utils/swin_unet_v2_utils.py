@@ -299,7 +299,7 @@ class PatchMerging(nn.Module):
         # assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
 
         x = x.view(B, H, W, C)
-
+        
         pad_input = (H % 2 == 1) or (W % 2 == 1)
         if pad_input:
             x = F.pad(x, (0, 0, 0, W % 2, 0, H % 2))
@@ -458,9 +458,11 @@ class BasicLayer(nn.Module):
         # if self.downsample is not None:
         #     x = self.downsample(x)
         # return x
+        
         if self.downsample is not None:
             x_down, padwh = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
+            
             return x_down, Wh, Ww, padwh
         else:
             return x, H, W, [0,0]
