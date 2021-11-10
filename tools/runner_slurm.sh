@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=supg15badez     # job name
+#SBATCH --job-name=supg15tadez     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,9 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=19:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/supg15badez%j.out # output file name
-#SBATCH --error=logs/supg15badez%j.err  # error file name
-#SBATCH -C v100-32g
+#SBATCH --output=logs/supg15tadez%j.out # output file name
+#SBATCH --error=logs/supg15tadez%j.err  # error file name
 
 set -x
 
@@ -141,9 +140,9 @@ CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g15_tiny_patch4_window7_512x51
 
 
 
-# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
