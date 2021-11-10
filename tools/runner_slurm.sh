@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=supg15tadez     # job name
+#SBATCH --job-name=s28g15tadez     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=19:05:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/supg15tadez%j.out # output file name
-#SBATCH --error=logs/supg15tadez%j.err  # error file name
+#SBATCH --output=logs/s28g15tadez%j.out # output file name
+#SBATCH --error=logs/s28g15tadez%j.err  # error file name
 
 set -x
 
@@ -133,8 +133,8 @@ module load python/3.7.10
 
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_512x512_160k_ade20k.py"
 
-CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py"
-# CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py"
+CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py"
 
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py"
 
