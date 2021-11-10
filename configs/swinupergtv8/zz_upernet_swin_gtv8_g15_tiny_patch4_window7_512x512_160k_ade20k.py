@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/upernet_swin_gtv8.py', '../_base_/datasets/cityscapes_769x769.py',
+    '../_base_/models/upernet_swin_gtv8.py', '../_base_/datasets/ade20k.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
@@ -12,15 +12,15 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        gt_num=10
+        gt_num=15
     ),
     decode_head=dict(
         in_channels=[96, 192, 384, 768],
-        num_classes=19
+        num_classes=150
     ),
     auxiliary_head=dict(
         in_channels=384,
-        num_classes=19
+        num_classes=150
     ))
 
 # AdamW optimizer, no weight decay for position embedding & layer norm in backbone
