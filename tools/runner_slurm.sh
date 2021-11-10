@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=supg10badez     # job name
+#SBATCH --job-name=dbgsupg10badez     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=19:00:00              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/supg10badez%j.out # output file name
-#SBATCH --error=logs/supg10badez%j.err  # error file name
+#SBATCH --time=00:05:00              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/dbgsupg10badez%j.out # output file name
+#SBATCH --error=logs/dbgsupg10badez%j.err  # error file name
 
 set -x
 
