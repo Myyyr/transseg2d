@@ -18,7 +18,7 @@ model = dict(
         num_classes=19
     ),
     auxiliary_head=dict(
-        in_channels=384,
+        in_channels=512,
         num_classes=19
     ))
 
