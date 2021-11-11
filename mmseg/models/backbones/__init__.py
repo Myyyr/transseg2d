@@ -34,6 +34,7 @@ from .swin_unet_v2_cross_attention_dbg import SwinUNetV2CrossAttentionDbg
 from .swin_unet_v2_cross_attention_upsample import SwinUNetV2CrossAttentionUpsample
 from .swin_unet_v2_cross_attention_upsample_dbg import SwinUNetV2CrossAttentionUpsampleDbg
 from .swin_unet_v2_bilinear_upsampling import SwinUNetV2BilinearUpsampling
+from .swin_unet_v2_unet_transformer import SwinUNetV2UNetTransformer
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
@@ -41,5 +42,5 @@ __all__ = [
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG',
     'SwinUNetV2CrossAttention', 'SwinUNetV2CrossAttentionUpsample', 'SwinUNetV2BilinearUpsampling', 'SwinUNetV2GTV8Visu',
-    'SwinUNetV2CrossAttentionUpsampleDbg'
+    'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer'
 ]
