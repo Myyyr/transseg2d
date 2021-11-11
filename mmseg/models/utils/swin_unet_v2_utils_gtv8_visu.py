@@ -244,7 +244,7 @@ class WindowAttention(nn.Module):
         attn = self.attn_drop(attn)     
 
         torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/"+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
-        exit(0)
+        # exit(0)
 
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
@@ -981,6 +981,7 @@ class SwinTransformerSys(nn.Module):
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
         x = self.up_x4(x, Wh, Ww)
 
+        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/pred.pt")
         return x
 
     def flops(self):
