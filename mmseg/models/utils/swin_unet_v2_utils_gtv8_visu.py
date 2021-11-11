@@ -241,7 +241,7 @@ class WindowAttention(nn.Module):
 
         attn = self.attn_drop(attn)     
 
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/att.pt")
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/att_"+str(self.name)+"_.pt")
         exit(0)
 
 
