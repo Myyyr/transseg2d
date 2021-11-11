@@ -92,7 +92,7 @@ class WindowCrossAttention(nn.Module):
         #     attn = attn.view(-1, self.num_heads, N, N)
         #     attn = self.softmax(attn)
         # else:
-        #     attn = self.softmax(attn)
+        attn = self.softmax(attn)   
     
         attn = self.attn_drop(attn)
 
