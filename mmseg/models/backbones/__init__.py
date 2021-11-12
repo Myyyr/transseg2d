@@ -37,6 +37,7 @@ from .swin_unet_v2_bilinear_upsampling import SwinUNetV2BilinearUpsampling
 from .swin_unet_v2_unet_transformer import SwinUNetV2UNetTransformer
 
 from .mix_transformer import *
+from .mix_transformer_gt import *
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
