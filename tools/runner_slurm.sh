@@ -141,8 +141,8 @@ module load python/3.7.10
 # ..............................................
 # CONFIG="configs/swinunetv2/zz_swinunetv2_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
 # CONFIG="configs/swinunetv2/zz_swinunetv2_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
-# CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
-CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
+CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
+# CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
 
 
 PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
