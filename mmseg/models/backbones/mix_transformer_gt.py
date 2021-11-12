@@ -139,11 +139,12 @@ class Attention(nn.Module):
 
         x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
-        B_, N_, C = x_windows.shape
+        B, N_, C = x_windows.shape
 
-        print("\n--------------------")
-        print('x_windows',x_windows.shape)
-        print('B, N_, self.num_heads, C // self.num_heads', B, N_, self.num_heads, C // self.num_heads)
+        # print("\n--------------------")
+        # print('x_windows',x_windows.shape)
+        # print('B, N_, self.num_heads, C // self.num_heads', B, N_, self.num_heads, C // self.num_heads)
+
 
         q = self.q(x_windows).reshape(B, N_, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
