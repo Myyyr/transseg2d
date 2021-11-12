@@ -44,7 +44,7 @@ class SegFormerHead(BaseDecodeHead):
 
         c1_in_channels, c2_in_channels, c3_in_channels, c4_in_channels = self.in_channels
 
-        decoder_params = kwargs['decoder_params']
+        # decoder_params = kwargs['decoder_params']
         embedding_dim = decoder_params['embed_dim']
 
         self.linear_c4 = MLP(input_dim=c4_in_channels, embed_dim=embedding_dim)
