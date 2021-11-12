@@ -165,8 +165,12 @@ class Attention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
 
+        print('\n----------------')
+        print('x', x.shape)
         x = window_reverse(x, self.window_size, Hp, Wp)
+        print('x', x.shape)
         x = x[:,:Hp-pad_b, :Wp-pad_r, :]
+        print('x', x.shape)
 
         return x
 
