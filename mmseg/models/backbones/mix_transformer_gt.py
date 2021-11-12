@@ -131,9 +131,9 @@ class Attention(nn.Module):
         B, N, C = x.shape
 
         # Let's window this x
-        print("\n--------------------")
+        # print("\n--------------------")
         x = x.view(B, H, W, C)
-        print("x", x.shape)
+        # print("x", x.shape)
         pad_l = pad_t = 0
         pad_r = (self.window_size - W % self.window_size) % self.window_size
         pad_b = (self.window_size - H % self.window_size) % self.window_size
@@ -144,7 +144,7 @@ class Attention(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
         B, N_, C = x_windows.shape
 
-        print('x_windows',x_windows.shape)
+        # print('x_windows',x_windows.shape)
         # print('B, N_, self.num_heads, C // self.num_heads', B, N_, self.num_heads, C // self.num_heads)
 
 
@@ -168,14 +168,14 @@ class Attention(nn.Module):
         x = self.proj_drop(x)
 
 
-        print('x', x.shape)
+        # print('x', x.shape)
         x = window_reverse(x, self.window_size, Hp, Wp)
-        print('x', x.shape)
+        # print('x', x.shape)
         x = x[:,:Hp-pad_b, :Wp-pad_r, :]
         x = rearrange(x, 'b h w c -> b (h w) c')
 
-        print('x', x.shape)
-        exit(0)
+        # print('x', x.shape)
+        # exit(0)
 
         return x
 
