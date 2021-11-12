@@ -113,6 +113,7 @@ class UNetTransformerAttn(nn.Module):
         # relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
         #attn = attn + relative_position_bias.unsqueeze(0)
 
+
         x = (attn @ v).transpose(1, 2).reshape(qB, qN, qC)
         x = self.proj(x)
 
@@ -139,26 +140,34 @@ class UNetTransformerBlock(nn.Module):
         self.sig = nn.Sigmoid()
  
 
-    def forward(self, x, skip):
+    def forward(self, x, skip, padwh):
         H, W = self.input_resolution
         B, L, C = x.shape
-
+        
         H_d, W_d = self.skip_connection_resolution
         B_d, L_d, C_d = skip.shape
 
         x = x.view(B, H, W, C).permute(0,3,1,2).contiguous()
         skip = skip.view(B_d, H_d, W_d, C_d).permute(0,3,1,2).contiguous()
 
+        # Padding skip co
+        p_skip = F.pad(skip, (0, padwh[0], 0, padwh[1]))
 
         self.attn.input_resolution = (H,W)
         x = self.attn(q=x,
                       k=x,
-                      v=skip)
+                      v=p_skip)
 
         x = self.conv_out(x)
         x = self.norm(x)
         x = self.sig(x)
         x = self.up(x)
+
+        # Unpad result
+        if padwh[0] != 0 or padwh[1] != 0:
+            x = x[:,:,:(x.shape[2]-padwh[1]),:(x.shape[3]-padwh[0])]
+        if x.shape[2] < skip.shape[2] or x.shape[3] < skip.shape[3]:
+            x = F.pad(x, (0, skip.shape[3]-x.shape[3], 0, skip.shape[2]-x.shape[2]))
 
         skip = (x * skip).permute(0, 2, 3, 1).view(B_d, -1, C_d)
 
@@ -364,7 +373,7 @@ class SwinTransformerUNetTransformerUpsampleSys(nn.Module):
                 cross_attention_block = self.layers_unet_transformer[inx]
                 cross_attention_block.input_resolution = (Wh, Ww)
                 cross_attention_block.skip_connection_resolution = (Wh_d, Ww_d)
-                skip_co = cross_attention_block(x, skip_co)
+                skip_co = cross_attention_block(x, skip_co, padwh)
 
             x, Wh, Ww = self.layers_patch_expand[inx](x, Wh, Ww, padwh)
 
