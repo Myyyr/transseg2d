@@ -102,7 +102,7 @@ class Attention(nn.Module):
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
 
-        delf.window_size = window_size
+        self.window_size = window_size
 
         self.sr_ratio = sr_ratio
         if sr_ratio > 1:
