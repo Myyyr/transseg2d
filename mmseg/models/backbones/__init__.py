@@ -44,5 +44,5 @@ __all__ = [
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG',
     'SwinUNetV2CrossAttention', 'SwinUNetV2CrossAttentionUpsample', 'SwinUNetV2BilinearUpsampling', 'SwinUNetV2GTV8Visu',
-    'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer'
+    'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer', 'mit_b4'
 ]
