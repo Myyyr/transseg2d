@@ -170,7 +170,8 @@ class Attention(nn.Module):
         print('x', x.shape)
         x = window_reverse(x, self.window_size, Hp, Wp)
         print('x', x.shape)
-        x = x[:,:Hp-pad_b, :Wp-pad_r, :]
+        x = x[:,:Hp-pad_b, :Wp-pad_r, :].reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
+
         print('x', x.shape)
 
         return x
