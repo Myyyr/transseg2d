@@ -27,11 +27,12 @@ from .swin_unet_decoder_gtv2 import SwinUNetDecoderGTv2
 from .swin_unet_decoder_gtvdbg import SwinUNetDecoderGTvdbg
 from .swin_unet_decoder_gtvdbg2 import SwinUNetDecoderGTvdbg2
 from .swin_unet_decoder_gtvdbg3 import SwinUNetDecoderGTvdbg3
+from .segformer_head import SegFormerHead
 __all__ = [
     'FCNHead', 'PSPHead', 'ASPPHead', 'PSAHead', 'NLHead', 'GCHead', 'CCHead',
     'UPerHead', 'CrossAttentionUPerHead', 'DepthwiseSeparableASPPHead', 'ANNHead', 'DAHead', 'OCRHead',
     'EncHead', 'DepthwiseSeparableFCNHead', 'FPNHead', 'EMAHead', 'DNLHead',
     'PointHead', 'APCHead', 'DMHead', 'LRASPPHead',
     'SwinUNetDecoder', 'SwinUNetDecoderGTv1','SwinUNetDecoderGTv2', 'SwinUNetDecoderGTvdbg', 'SwinUNetDecoderGTvdbg2',
-    'SwinUNetDecoderGTvdbg3', 'SwinUNetDV2'
+    'SwinUNetDecoderGTvdbg3', 'SwinUNetDV2', 'SegFormerHead'
 ]

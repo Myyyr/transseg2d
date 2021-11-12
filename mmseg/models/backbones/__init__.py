@@ -36,6 +36,8 @@ from .swin_unet_v2_cross_attention_upsample_dbg import SwinUNetV2CrossAttentionU
 from .swin_unet_v2_bilinear_upsampling import SwinUNetV2BilinearUpsampling
 from .swin_unet_v2_unet_transformer import SwinUNetV2UNetTransformer
 
+from .mix_transformer import *
+
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
     'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3', 'SwinTransformer','NoSwinTransformer', 
