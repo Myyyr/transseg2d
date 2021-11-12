@@ -61,6 +61,9 @@ class SegFormerHead(BaseDecodeHead):
 
         self.linear_pred = nn.Conv2d(embedding_dim, self.num_classes, kernel_size=1)
 
+    def init_weights(self, pretrained=None):
+        super().init_weights()
+
     def forward(self, inputs):
         x = self._transform_inputs(inputs)  # len=4, 1/4,1/8,1/16,1/32
         c1, c2, c3, c4 = x
