@@ -16,6 +16,7 @@ from mmseg.utils import get_root_logger
 from mmcv.runner import load_checkpoint
 import math
 
+from einops import rearrange
 
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
@@ -170,9 +171,11 @@ class Attention(nn.Module):
         print('x', x.shape)
         x = window_reverse(x, self.window_size, Hp, Wp)
         print('x', x.shape)
-        x = x[:,:Hp-pad_b, :Wp-pad_r, :].reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
+        x = x[:,:Hp-pad_b, :Wp-pad_r, :]
+        x = rearrange(x, 'b h w c -> b (h w) c')
 
         print('x', x.shape)
+        exit(0)
 
         return x
 
