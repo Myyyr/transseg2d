@@ -166,7 +166,7 @@ class Attention(nn.Module):
         x = self.proj_drop(x)
 
         x = window_reverse(x, self.window_size, Hp, Wp)
-        x = x[:,:Hp-pad_b, :Wp-pad_r]
+        x = x[:,:Hp-pad_b, :Wp-pad_r, :]
 
         return x
 
