@@ -5,8 +5,8 @@
 #SBATCH --output=logs/test%j.out # output file name
 #SBATCH --error=logs/test%j.err  # error file name
 
-# source /opt/server-env.sh 
-# conda activate open-mmlab
+source /opt/server-env.sh 
+conda activate open-mmlab
 # module purge
 # module load cuda/10.1
 
