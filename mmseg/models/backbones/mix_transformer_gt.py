@@ -288,13 +288,14 @@ class Block(nn.Module):
         gt = gt + self.drop_path(gt)
 
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
-        # print("\n-------------------------")
+        print("\n############################")
         # print(x.shape)
-        # print(gt.shape)
+        print(gt.shape)
         B, ngt, c = gt.shape
         nw = B//x.shape[0]
         gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
-        
+        print(gt.shape)
+
         gt = gt + self.drop_path(self.mlp(self.norm2(gt), int(nw**0.5), int(nw**0.5)))
 
         gt = self.gt_attn(gt, pe)
