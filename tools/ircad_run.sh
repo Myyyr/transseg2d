@@ -1,4 +1,7 @@
 #!/bin/bash
+#SBATCH --job-name=test     # job name
+#SBATCH --output=logs/test%j.out # output file name
+#SBATCH --error=logs/test%j.err  # error file name
 #SBATCH -p public
 #SBATCH --gpus=4
 #SBATCH --chdir=/mnt/volatilraid/userrd/
