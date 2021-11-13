@@ -6,8 +6,9 @@
 #SBATCH --error=logs/test%j.err  # error file name
 
 source /opt/server-env.sh 
-conda activate open-mmlab
-# module purge
+module purge
+module load anaconda/2019.07
+# conda activate open-mmlab
 # module load cuda/10.1
 
 
