@@ -43,5 +43,5 @@ PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 
 
 
-srun python -u tools/train.py $CONFIG --options model.pretrained=$PRET --gpus 4 --launcher="pytorch" --seed 0 --deterministic ${@:3}
+srun python -u tools/train.py $CONFIG --options model.pretrained=$PRET --gpus 4 --launcher="slurm" --seed 0 --deterministic ${@:3}
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic ${@:3}
