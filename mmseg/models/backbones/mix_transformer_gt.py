@@ -293,9 +293,10 @@ class Block(nn.Module):
         # print(gt.shape)
         B, ngt, c = gt.shape
         nw = B//x.shape[0]
+        gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
+        
         gt = gt + self.drop_path(self.mlp(self.norm2(gt), int(nw**0.5), int(nw**0.5)))
 
-        gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
         gt = self.gt_attn(gt, pe)
         gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
         self.gt_attn(gt, pe)
@@ -535,9 +536,9 @@ class DWConv(nn.Module):
 
     def forward(self, x, H, W):
         B, N, C = x.shape
-        print("\n--------------------------")
-        print(x.shape)
-        print(B, C, H, W)
+        # print("\n--------------------------")
+        # print(x.shape)
+        # print(B, C, H, W)
         x = x.transpose(1, 2).view(B, C, H, W)
         x = self.dwconv(x)
         x = x.flatten(2).transpose(1, 2)
