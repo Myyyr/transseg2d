@@ -202,8 +202,7 @@ class Attention(nn.Module):
 
         if len(gt.shape) != 3:
             gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-        print("gt", gt.shape)
-        print("x_windows", x_windows.shape)
+
         # exit(0)
         x_windows = torch.cat([gt, x_windows], dim=1) # x_windows of shape (num_windows*B, G+N_, C)
         B, N_, C = x_windows.shape
@@ -214,7 +213,7 @@ class Attention(nn.Module):
         if self.sr_ratio > 1:
             x_ = x_windows[:,self.gt_num:,:].permute(0, 2, 1).reshape(B, C, self.window_size, self.window_size)
             x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-            x_ = torch.cat([gt, x], dim=1)
+            x_ = torch.cat([gt, x_], dim=1)
             x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         else:
