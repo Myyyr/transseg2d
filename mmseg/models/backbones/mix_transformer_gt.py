@@ -218,7 +218,7 @@ class Attention(nn.Module):
         if self.sr_ratio > 1:
             # x_ = self.proj(x_windows[:,self.gt_num:,:])
             x_ = x_windows[:,self.gt_num:,:]
-            x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size*self.sr_ratio, self.window_size*self.sr_ratio)
+            x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size, self.window_size)
             x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
             x_ = torch.cat([gt, x_], dim=1)
             x_ = self.norm(x_)
