@@ -293,13 +293,13 @@ class Block(nn.Module):
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
         B, ngt, c = gt.shape
         nw = B//x.shape[0]
-        gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
+        if self.gt_num!=0:
+            gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
+            gt = gt + self.drop_path(self.mlp(self.norm2(gt), None, None))
 
-        gt = gt + self.drop_path(self.mlp(self.norm2(gt), None, None))
-
-        gt = self.gt_attn(gt, pe)
-        gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
-        self.gt_attn(gt, pe)
+            gt = self.gt_attn(gt, pe)
+            gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
+            self.gt_attn(gt, pe)
 
         return x, gt
 
