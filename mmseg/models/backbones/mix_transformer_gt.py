@@ -288,7 +288,10 @@ class Block(nn.Module):
         gt = gt + self.drop_path(gt)
 
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
-        gt = gt + self.drop_path(self.mlp(self.norm2(gt), H, W))
+        print("\n-------------------------")
+        print(x.shape)
+        print(gt.shape)
+        gt = gt + self.drop_path(self.mlp(self.norm2(gt), self.window_size, self.window_size))
 
         B, ngt, c = gt.shape
         nw = self.window_size*self.window_size
