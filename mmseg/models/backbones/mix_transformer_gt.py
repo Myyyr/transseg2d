@@ -229,14 +229,11 @@ class Attention(nn.Module):
         x = self.proj_drop(x)
 
 
-        # print('x', x.shape)
         x_ = window_reverse(x[:,self.gt_num:,:], self.window_size, Hp, Wp)
-        # print('x', x.shape)
         x_ = x_[:,:Hp-pad_b, :Wp-pad_r, :]
         x_ = rearrange(x_, 'b h w c -> b (h w) c')
         # x[:,self.gt_num:,:] = x_
 
-        # print('x', x.shape)
         # exit(0)
 
         return x_, x[:,:self.gt_num,:]
@@ -288,13 +285,9 @@ class Block(nn.Module):
         gt = gt + self.drop_path(gt)
 
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
-        print("\n############################")
-        # print(x.shape)
-        print(gt.shape)
         B, ngt, c = gt.shape
         nw = B//x.shape[0]
         gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
-        print(gt.shape)
 
         gt = gt + self.drop_path(self.mlp(self.norm2(gt), int(nw**0.5), int(nw**0.5)))
 
@@ -537,9 +530,6 @@ class DWConv(nn.Module):
 
     def forward(self, x, H, W):
         B, N, C = x.shape
-        print("\n--------------------------")
-        print(x.shape)
-        print(B, C, H, W)
         x = x.transpose(1, 2).view(B, C, H, W)
         x = self.dwconv(x)
         x = x.flatten(2).transpose(1, 2)
