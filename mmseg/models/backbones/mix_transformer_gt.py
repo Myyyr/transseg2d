@@ -169,7 +169,7 @@ class Attention(nn.Module):
             self.sr = nn.Conv2d(dim, dim, kernel_size=sr_ratio, stride=sr_ratio)
             self.norm = nn.LayerNorm(dim)
 
-            self.proj = nn.Linear(dim, dim*sr_ratio*sr_ratio)
+            # self.proj = nn.Linear(dim, dim*sr_ratio*sr_ratio)
 
         self.apply(self._init_weights)
 
