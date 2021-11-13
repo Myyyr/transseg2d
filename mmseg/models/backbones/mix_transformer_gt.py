@@ -228,16 +228,16 @@ class Attention(nn.Module):
 
 
         # print('x', x.shape)
-        x_ = window_reverse(x, self.window_size, Hp, Wp)
+        x_ = window_reverse(x[:,self.gt_num:,:], self.window_size, Hp, Wp)
         # print('x', x.shape)
         x_ = x_[:,:Hp-pad_b, :Wp-pad_r, :]
         x_ = rearrange(x_, 'b h w c -> b (h w) c')
-        x[:,self.gt_num:,:] = x_
+        # x[:,self.gt_num:,:] = x_
 
         # print('x', x.shape)
         # exit(0)
 
-        return x
+        return x_, x[:,:self.gt_num,:]
 
 
 class Block(nn.Module):
@@ -260,6 +260,10 @@ class Block(nn.Module):
         self.window_size=window_size
         self.apply(self._init_weights)
 
+        self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
+                                            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
+                                            proj_drop=drop)
+
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
             trunc_normal_(m.weight, std=.02)
@@ -275,11 +279,22 @@ class Block(nn.Module):
             if m.bias is not None:
                 m.bias.data.zero_()
 
-    def forward(self, x, H, W):
-        x = x + self.drop_path(self.attn(self.norm1(x), H, W))
+    def forward(self, x, H, W, gt, pe):
+        x = self.norm1(x)
+        x, gt = self.attn(x, H, W, gt)
+        x = x + self.drop_path(x)
+        gt = gt + self.drop_path(gt)
+
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
-        gt = x[:,:self.gt_num,:]
-        x = x[:,self.gt_num:,:]
+        gt = gt + self.drop_path(self.mlp(self.norm2(gt), H, W))
+
+        B, ngt, c = gt.shape
+        nw = self.window_size*self.window_size
+        gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
+        gt = self.gt_attn(gt, pe)
+        gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
+        self.gt_attn(gt, pe)
+
         return x, gt
 
 
@@ -388,22 +403,22 @@ class MixVisionTransformerGT(nn.Module):
         self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
         ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
         self.pe1 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[0]))
-        trunc_normal_(self.pe, std=.02)
+        trunc_normal_(self.pe1, std=.02)
 
         self.global_token2 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
         ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
         self.pe2 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[1]))
-        trunc_normal_(self.pe, std=.02)
+        trunc_normal_(self.pe2, std=.02)
 
         self.global_token3 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
         ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
         self.pe3 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[2]))
-        trunc_normal_(self.pe, std=.02)
+        trunc_normal_(self.pe3, std=.02)
 
         self.global_token4 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
         ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
         self.pe4 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[3]))
-        trunc_normal_(self.pe, std=.02)
+        trunc_normal_(self.pe4, std=.02)
 
 
     def _init_weights(self, m):
@@ -464,32 +479,36 @@ class MixVisionTransformerGT(nn.Module):
 
         # stage 1
         x, H, W = self.patch_embed1(x)
+        gt = self.global_token1
         for i, blk in enumerate(self.block1):
-            x = blk(x, H, W)
+            x, gt = blk(x, H, W, gt, self.pe1)
         x = self.norm1(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 2
         x, H, W = self.patch_embed2(x)
+        gt = self.global_token2
         for i, blk in enumerate(self.block2):
-            x = blk(x, H, W)
+            x, gt = blk(x, H, W, gt, self.pe2)
         x = self.norm2(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 3
         x, H, W = self.patch_embed3(x)
+        gt = self.global_token3
         for i, blk in enumerate(self.block3):
-            x = blk(x, H, W)
+            x, gt = blk(x, H, W, gt, self.pe3)
         x = self.norm3(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 4
         x, H, W = self.patch_embed4(x)
+        gt = self.global_token4
         for i, blk in enumerate(self.block4):
-            x = blk(x, H, W)
+            x, gt = blk(x, H, W, gt, self.pe4)
         x = self.norm4(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
