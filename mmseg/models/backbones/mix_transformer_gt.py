@@ -289,7 +289,7 @@ class Block(nn.Module):
         nw = B//x.shape[0]
         gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
 
-        gt = gt + self.drop_path(self.mlp(self.norm2(gt), int(nw**0.5)*ngt, int(nw**0.5)*ngt))
+        gt = gt + self.drop_path(self.mlp(self.norm2(gt), int(nw**0.5)*ngt, int(nw**0.5)))
 
         gt = self.gt_attn(gt, pe)
         gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
