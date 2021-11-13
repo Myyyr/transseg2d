@@ -535,7 +535,9 @@ class DWConv(nn.Module):
 
     def forward(self, x, H, W):
         B, N, C = x.shape
-
+        print("\n--------------------------")
+        print(x.shape)
+        print(B, C, H, W)
         x = x.transpose(1, 2).view(B, C, H, W)
         x = self.dwconv(x)
         x = x.flatten(2).transpose(1, 2)
