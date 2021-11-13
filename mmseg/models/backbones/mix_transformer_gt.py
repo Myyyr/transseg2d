@@ -16,7 +16,7 @@ from mmseg.utils import get_root_logger
 from mmcv.runner import load_checkpoint
 import math
 
-from einops import rearrange
+from einops import rearrange, repeat
 
 
 
