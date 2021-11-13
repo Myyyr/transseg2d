@@ -12,15 +12,19 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        gt_num=10
+        gt_num=10,
+        norm_cfg=dict(type='BN', requires_grad=True)
     ),
     decode_head=dict(
         in_channels=[128, 256, 512, 1024],
-        num_classes=19
+        num_classes=19,
+        norm_cfg=dict(type='BN', requires_grad=True)
     ),
     auxiliary_head=dict(
         in_channels=512,
-        num_classes=19
+        num_classes=19,
+        norm_cfg=dict(type='BN', requires_grad=True)
+
     ))
 
 # AdamW optimizer, no weight decay for position embedding & layer norm in backbone
@@ -36,4 +40,4 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=2)
+data=dict(samples_per_gpu=4)
