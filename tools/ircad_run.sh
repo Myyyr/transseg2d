@@ -12,7 +12,7 @@ module load anaconda/2019.07
 # module load cuda/10.1
 
 
-ln -s /scratch/lthemyr/cityscapes data/
+# ln -s /scratch/lthemyr/cityscapes data/
 
 
 
