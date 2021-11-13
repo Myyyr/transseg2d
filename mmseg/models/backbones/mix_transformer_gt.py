@@ -203,7 +203,7 @@ class Attention(nn.Module):
         if len(gt.shape) != 3:
             gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
         print("gt", gt.shape)
-        print("x", x.shape)
+        print("x_windows", x_windows.shape)
         exit(0)
         x_windows = torch.cat([gt, x_windows], dim=1) # x_windows of shape (num_windows*B, G+N_, C)
         B, N_, C = x_windows.shape
