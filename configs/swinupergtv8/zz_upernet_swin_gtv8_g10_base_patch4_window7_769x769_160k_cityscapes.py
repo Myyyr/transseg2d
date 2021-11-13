@@ -12,9 +12,8 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        gt_num=10,
-        norm_cfg=dict(type='BN', requires_grad=True)
-    ),
+        gt_num=10    
+        ),
     decode_head=dict(
         in_channels=[128, 256, 512, 1024],
         num_classes=19,
