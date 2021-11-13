@@ -169,7 +169,7 @@ class Attention(nn.Module):
             self.sr = nn.Conv2d(dim, dim, kernel_size=sr_ratio, stride=sr_ratio)
             self.norm = nn.LayerNorm(dim)
 
-            self.proj = nn.Linear(dim, dim*sr_ratio)
+            self.proj = nn.Linear(dim, dim*sr_ratio*sr_ratio)
 
         self.apply(self._init_weights)
 
@@ -215,15 +215,15 @@ class Attention(nn.Module):
 
         q = self.q(x_windows).reshape(B, N_, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
-        if self.sr_ratio > 1:
-            x_ = self.proj(x_windows[:,self.gt_num:,:])
-            x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size*self.sr_ratio, self.window_size*self.sr_ratio)
-            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-            x_ = torch.cat([gt, x_], dim=1)
-            x_ = self.norm(x_)
-            kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
-        else:
-            kv = self.kv(x_windows).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+        # if self.sr_ratio > 1:
+        #     x_ = self.proj(x_windows[:,self.gt_num:,:])
+        #     x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size*self.sr_ratio, self.window_size*self.sr_ratio)
+        #     x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+        #     x_ = torch.cat([gt, x_], dim=1)
+        #     x_ = self.norm(x_)
+        #     kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+        # else:
+        kv = self.kv(x_windows).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         k, v = kv[0], kv[1]
 
         attn = (q @ k.transpose(-2, -1)) * self.scale
@@ -591,6 +591,14 @@ class mit_gt_b4(MixVisionTransformerGT):
 
 @BACKBONES.register_module()
 class mit_gt10_b4(MixVisionTransformerGT):
+    def __init__(self, **kwargs):
+        super(mit_gt10_b4, self).__init__(
+            patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
+            drop_rate=0.0, drop_path_rate=0.1, gt_num=10)
+
+@BACKBONES.register_module()
+class mit_gt0_b4(MixVisionTransformerGT):
     def __init__(self, **kwargs):
         super(mit_gt10_b4, self).__init__(
             patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
