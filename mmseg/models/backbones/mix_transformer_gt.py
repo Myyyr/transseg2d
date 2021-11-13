@@ -50,7 +50,8 @@ class Mlp(nn.Module):
 
     def forward(self, x, H, W):
         x = self.fc1(x)
-        x = self.dwconv(x, H, W)
+        if H!=None and W!=None:
+            x = self.dwconv(x, H, W)
         x = self.act(x)
         x = self.drop(x)
         x = self.fc2(x)
@@ -210,14 +211,14 @@ class Attention(nn.Module):
 
         q = self.q(x_windows).reshape(B, N_, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
-        if self.sr_ratio > 1:
-            x_ = x_windows[:,self.gt_num:,:].permute(0, 2, 1).reshape(B, C, self.window_size, self.window_size)
-            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-            x_ = torch.cat([gt, x_], dim=1)
-            x_ = self.norm(x_)
-            kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
-        else:
-            kv = self.kv(x_windows).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+        # if self.sr_ratio > 1:
+        #     x_ = x_windows[:,self.gt_num:,:].permute(0, 2, 1).reshape(B, C, self.window_size, self.window_size)
+        #     x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+        #     x_ = torch.cat([gt, x_], dim=1)
+        #     x_ = self.norm(x_)
+        #     kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+        # else:
+        kv = self.kv(x_windows).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         k, v = kv[0], kv[1]
 
         attn = (q @ k.transpose(-2, -1)) * self.scale
@@ -289,7 +290,7 @@ class Block(nn.Module):
         nw = B//x.shape[0]
         gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
 
-        gt = gt + self.drop_path(self.mlp(self.norm2(gt), int(nw**0.5)*ngt, int(nw**0.5)))
+        gt = gt + self.drop_path(self.mlp(self.norm2(gt), None, None))
 
         gt = self.gt_attn(gt, pe)
         gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
