@@ -11,6 +11,8 @@ module purge
 module load cuda/10.1
 
 
+ln -s /scratch/lthemyr/cityscapes data/
+
 
 
 # ..............................................
