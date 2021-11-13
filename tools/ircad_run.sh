@@ -1,6 +1,5 @@
 #!/bin/bash
 #SBATCH --job-name=test     # job name
-#SBATCH --chdir=/mnt/volatilraid/userrd/
 #SBATCH -p public
 #SBATCH --gpus=4
 #SBATCH --output=logs/test%j.out # output file name
