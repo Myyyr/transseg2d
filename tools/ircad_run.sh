@@ -1,13 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=test     # job name
-#SBATCH --output=logs/test%j.out # output file name
-#SBATCH --error=logs/test%j.err  # error file name
+#SBATCH --chdir=/mnt/volatilraid/userrd/
 #SBATCH -p public
 #SBATCH --gpus=4
-#SBATCH --chdir=/mnt/volatilraid/userrd/
+#SBATCH --output=logs/test%j.out # output file name
+#SBATCH --error=logs/test%j.err  # error file name
 
 source /opt/server-env.sh 
-conda activate open-mmlab
+# conda activate open-mmlab
+module purge
+module load cuda/10.1
 
 
 
