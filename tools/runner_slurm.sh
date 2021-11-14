@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sg10bcitcc     # job name
+#SBATCH --job-name=sbcitcc     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/sg10bcitcc%j.out # output file name
-#SBATCH --error=logs/sg10bcitcc%j.err  # error file name
+#SBATCH --output=logs/sbcitcc%j.out # output file name
+#SBATCH --error=logs/sbcitcc%j.err  # error file name
 #SBATCH -C v100-32g
 
 set -x
@@ -129,8 +129,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv8/zswinunetv2gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 # CONFIG="configs/swinunetv2gtv8/zswinunetv2gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 # ..............................................
-# CONFIG="configs/orininal_swin/zz_upernet_swin_base_patch4_window7_769x769_160k_cityscapes.py"
-CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes.py"
+CONFIG="configs/orininal_swin/zz_upernet_swin_base_patch4_window7_769x769_160k_cityscapes.py"
+# CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes.py"
 
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_512x512_160k_ade20k.py"
 
@@ -154,7 +154,7 @@ CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x76
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
 
-RESUME="work_dirs/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes/latest.pth"
+RESUME="work_dirs/zz_upernet_swin_base_patch4_window7_769x769_160k_cityscapes/latest.pth"
 
 
 
