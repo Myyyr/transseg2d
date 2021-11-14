@@ -169,6 +169,8 @@ class Attention(nn.Module):
             self.sr = nn.Conv2d(dim, dim, kernel_size=sr_ratio, stride=sr_ratio)
             self.norm = nn.LayerNorm(dim)
 
+            self.upbi = nn.Upsample(scale_factor=sr_ratio, mode='bilinear')
+
             # self.proj = nn.Linear(dim, dim*sr_ratio*sr_ratio)
 
         self.apply(self._init_weights)
@@ -219,6 +221,7 @@ class Attention(nn.Module):
             # x_ = self.proj(x_windows[:,self.gt_num:,:])
             x_ = x_windows[:,self.gt_num:,:]
             x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size, self.window_size)
+            x_ = self.upbi(x_)
             x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
             x_ = torch.cat([gt, x_], dim=1)
             x_ = self.norm(x_)
