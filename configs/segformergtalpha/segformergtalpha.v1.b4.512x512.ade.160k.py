@@ -4,7 +4,7 @@ _base_ = [
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_160k_adamw.py'
 ]
-# SegFormer classique
+# SegFormer Window version
 # model settings
 norm_cfg = dict(type='SyncBN', requires_grad=True)
 find_unused_parameters = True
