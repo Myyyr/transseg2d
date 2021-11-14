@@ -39,6 +39,8 @@ from .swin_unet_v2_gtv8_cross_attention_upsample import SwinUNetV2GTV8CrossAtten
 
 from .mix_transformer import *
 from .mix_transformer_gt import *
+from .mix_transformer_gt_alpha import *
+
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
