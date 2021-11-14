@@ -127,9 +127,9 @@ class Attention(nn.Module):
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
         if self.sr_ratio > 1:
-            x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
+            x_ = x.permute(0, 2, 1).contiguous().reshape(B, C, H, W)
             x_ = nn.functional.interpolate(x_, scale_factor=self.sr_ratio, mode='bilinear')
-            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1).contiguous()
             x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         else:
