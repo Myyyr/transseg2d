@@ -128,7 +128,7 @@ class Attention(nn.Module):
 
         if self.sr_ratio > 1:
             x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
-            x_ = nn.functional.upsample(x_, scale_factor=self.sr_ratio, mode='bilinear')
+            x_ = nn.functional.interpolate(x_, scale_factor=self.sr_ratio, mode='bilinear')
             x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
             x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
