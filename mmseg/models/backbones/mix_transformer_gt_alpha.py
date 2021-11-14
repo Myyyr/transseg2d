@@ -208,7 +208,7 @@ class Block(nn.Module):
         x = x.view(B, H * W, C)
 
 
-        x = x + self.drop_path()
+        x = x + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
         return x
