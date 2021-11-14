@@ -124,8 +124,8 @@ def window_partition(x, window_size):
         windows: (num_windows*B, window_size, window_size, C)
     """
     B, H, W, C = x.shape
-    x = x.view(B, H // window_size, window_size, W // window_size, window_size, C)
-    windows = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(-1, window_size, window_size, C)
+    x = x.view(B, H // window_size[0], window_size[0], W // window_size[1], window_size[1], C)
+    windows = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(-1, window_size[0], window_size[1], C)
     return windows
 
 def window_reverse(windows, window_size, H, W):
@@ -139,14 +139,14 @@ def window_reverse(windows, window_size, H, W):
     Returns:
         x: (B, H, W, C)
     """
-    B = int(windows.shape[0] / (H * W / window_size / window_size))
-    x = windows.view(B, H // window_size, W // window_size, window_size, window_size, -1)
+    B = int(windows.shape[0] / (H * W / window_size[0] / window_size[1]))
+    x = windows.view(B, H // window_size[0], W // window_size[1], window_size[0], window_size[1], -1)
     x = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(B, H, W, -1)
     return x
 
 
 class Attention(nn.Module):
-    def __init__(self, dim, window_size=7, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1, gt_num=1):
+    def __init__(self, dim, window_size=(7,7), num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1, gt_num=1):
         super().__init__()
         assert dim % num_heads == 0, f"dim {dim} should be divided by num_heads {num_heads}."
 
@@ -194,17 +194,18 @@ class Attention(nn.Module):
 
     def forward(self, x, H, W, gt):
         B, N, C = x.shape
-
+        if self.window_size[0]==0:
+            self.window_size = (H,W)
         # Let's window this x
         x = x.view(B, H, W, C)
         pad_l = pad_t = 0
-        pad_r = (self.window_size - W % self.window_size) % self.window_size
-        pad_b = (self.window_size - H % self.window_size) % self.window_size
+        pad_b = (self.window_size[0] - H % self.window_size[0]) % self.window_size[0]
+        pad_r = (self.window_size[1] - W % self.window_size[1]) % self.window_size[1]
         x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
         _, Hp, Wp, _ = x.shape
 
         x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
-        x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
+        x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
         B, N_, C = x_windows.shape
 
         if len(gt.shape) != 3:
@@ -220,7 +221,7 @@ class Attention(nn.Module):
         if self.sr_ratio > 1:
             # x_ = self.proj(x_windows[:,self.gt_num:,:])
             x_ = x_windows[:,self.gt_num:,:]
-            x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size, self.window_size)
+            x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size[0], self.window_size[1])
             x_ = self.upbi(x_)
             x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
             x_ = torch.cat([gt, x_], dim=1)
@@ -252,14 +253,14 @@ class Attention(nn.Module):
 class Block(nn.Module):
 
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, sr_ratio=1, window_size=8, gt_num=1):
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, sr_ratio=1, window_size=(8,8), gt_num=1):
         super().__init__()
         self.gt_num=gt_num
         self.norm1 = norm_layer(dim)
         self.attn = Attention(
             dim, window_size=window_size,
             num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale,
-            attn_drop=attn_drop, proj_drop=drop, sr_ratio=sr_ratio, gt_num=gt_num)
+            attn_drop=attn_drop, proj_drop=drop, sr_ratio=sr_ratio, gt_num=gt_num,)
         # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
@@ -356,7 +357,7 @@ class MixVisionTransformerGT(nn.Module):
     def __init__(self, img_size=224, patch_size=16, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
                  num_heads=[1, 2, 4, 8], mlp_ratios=[4, 4, 4, 4], qkv_bias=False, qk_scale=None, drop_rate=0.,
                  attn_drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
-                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], gt_num=1):
+                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], gt_num=1, window_size=(8,8)):
         super().__init__()
         self.num_classes = num_classes
         self.depths = depths
@@ -378,7 +379,7 @@ class MixVisionTransformerGT(nn.Module):
         self.block1 = nn.ModuleList([Block(
             dim=embed_dims[0], num_heads=num_heads[0], mlp_ratio=mlp_ratios[0], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[0], gt_num=gt_num)
+            sr_ratio=sr_ratios[0], gt_num=gt_num, window_size=window_size)
             for i in range(depths[0])])
         self.norm1 = norm_layer(embed_dims[0])
 
@@ -386,7 +387,7 @@ class MixVisionTransformerGT(nn.Module):
         self.block2 = nn.ModuleList([Block(
             dim=embed_dims[1], num_heads=num_heads[1], mlp_ratio=mlp_ratios[1], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[1], gt_num=gt_num)
+            sr_ratio=sr_ratios[1], gt_num=gt_num, window_size=window_size)
             for i in range(depths[1])])
         self.norm2 = norm_layer(embed_dims[1])
 
@@ -394,7 +395,7 @@ class MixVisionTransformerGT(nn.Module):
         self.block3 = nn.ModuleList([Block(
             dim=embed_dims[2], num_heads=num_heads[2], mlp_ratio=mlp_ratios[2], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[2], gt_num=gt_num)
+            sr_ratio=sr_ratios[2], gt_num=gt_num, window_size=window_size)
             for i in range(depths[2])])
         self.norm3 = norm_layer(embed_dims[2])
 
@@ -402,7 +403,7 @@ class MixVisionTransformerGT(nn.Module):
         self.block4 = nn.ModuleList([Block(
             dim=embed_dims[3], num_heads=num_heads[3], mlp_ratio=mlp_ratios[3], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[3], gt_num=gt_num)
+            sr_ratio=sr_ratios[3], gt_num=gt_num, window_size=window_size)
             for i in range(depths[3])])
         self.norm4 = norm_layer(embed_dims[3])
 
@@ -609,6 +610,14 @@ class mit_gt0_b4(MixVisionTransformerGT):
             patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
             qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
             drop_rate=0.0, drop_path_rate=0.1, gt_num=0)
+
+@BACKBONES.register_module()
+class mit_gt0_b4(MixVisionTransformerGT):
+    def __init__(self, **kwargs):
+        super(mit_gt0_b4, self).__init__(
+            patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
+            drop_rate=0.0, drop_path_rate=0.1, gt_num=0, window_size=(0,0))
 
 
 @BACKBONES.register_module()

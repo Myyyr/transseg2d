@@ -71,7 +71,7 @@ class ClassicAttention(nn.Module):
         proj_drop (float, optional): Dropout ratio of output. Default: 0.0
     """
 
-    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
+    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., lid=0):
 
         super().__init__()
         self.dim = dim
@@ -89,6 +89,7 @@ class ClassicAttention(nn.Module):
         self.proj_drop = nn.Dropout(proj_drop)
 
         self.softmax = nn.Softmax(dim=-1)
+        self.lid = lid
 
 
     def forward(self, x, pe):
@@ -114,6 +115,7 @@ class ClassicAttention(nn.Module):
         # attn = attn
 
         attn = self.softmax(attn)
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/"+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
@@ -241,9 +243,9 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/"+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
         attn = self.attn_drop(attn)     
 
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/"+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
         # exit(0)
 
 
