@@ -199,7 +199,7 @@ class Block(nn.Module):
         x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
-        attn_windows = self.attn(x_windows, Hp, Wp)
+        attn_windows = self.attn(x_windows, self.window_size, self.window_size)
         x = window_reverse(attn_windows, self.window_size, Hp, Wp)
 
         if pad_r > 0 or pad_b > 0:
