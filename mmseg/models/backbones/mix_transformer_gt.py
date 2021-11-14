@@ -251,7 +251,8 @@ class Attention(nn.Module):
 
         # exit(0)
 
-        return x_, x[:,:self.gt_num,:]
+        return x, None
+        # return x_, x[:,:self.gt_num,:]
 
 
 class Block(nn.Module):
