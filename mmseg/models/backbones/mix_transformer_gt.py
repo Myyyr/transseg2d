@@ -194,18 +194,19 @@ class Attention(nn.Module):
 
     def forward(self, x, H, W, gt):
         B, N, C = x.shape
-        if self.window_size[0]==0:
-            self.window_size = (H,W)
-        # Let's window this x
-        x = x.view(B, H, W, C)
-        pad_l = pad_t = 0
-        pad_b = (self.window_size[0] - H % self.window_size[0]) % self.window_size[0]
-        pad_r = (self.window_size[1] - W % self.window_size[1]) % self.window_size[1]
-        x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
-        _, Hp, Wp, _ = x.shape
+        # if self.window_size[0]==0:
+        #     self.window_size = (H,W)
+        # # Let's window this x
+        # x = x.view(B, H, W, C)
+        # pad_l = pad_t = 0
+        # pad_b = (self.window_size[0] - H % self.window_size[0]) % self.window_size[0]
+        # pad_r = (self.window_size[1] - W % self.window_size[1]) % self.window_size[1]
+        # x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
+        # _, Hp, Wp, _ = x.shape
 
-        x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
-        x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
+        # x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
+        # x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
+        x_windows = x
         B, N_, C = x_windows.shape
 
         if self.gt_num != 0:
@@ -220,8 +221,9 @@ class Attention(nn.Module):
 
         if self.sr_ratio > 1:
             # x_ = self.proj(x_windows[:,self.gt_num:,:])
-            x_ = x_windows[:,self.gt_num:,:]
-            x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size[0], self.window_size[1])
+            # x_ = x_windows[:,self.gt_num:,:]
+            # x_ = x_.permute(0, 2, 1).reshape(B, C, self.window_size[0], self.window_size[1])
+            x_ = x_.permute(0, 2, 1).reshape(B, C, H, W)
             # x_ = self.upbi(x_)
             x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
             if self.gt_num != 0:
@@ -241,9 +243,9 @@ class Attention(nn.Module):
         x = self.proj_drop(x)
 
 
-        x_ = window_reverse(x[:,self.gt_num:,:], self.window_size, Hp, Wp)
-        x_ = x_[:,:Hp-pad_b, :Wp-pad_r, :]
-        x_ = rearrange(x_, 'b h w c -> b (h w) c')
+        # x_ = window_reverse(x[:,self.gt_num:,:], self.window_size, Hp, Wp)
+        # x_ = x_[:,:Hp-pad_b, :Wp-pad_r, :]
+        # x_ = rearrange(x_, 'b h w c -> b (h w) c')
         # x[:,self.gt_num:,:] = x_
 
         # exit(0)
