@@ -270,9 +270,9 @@ class Block(nn.Module):
         self.window_size=window_size
         self.apply(self._init_weights)
 
-        self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
-                                            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
-                                            proj_drop=drop)
+        # self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
+        #                                     qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
+        #                                     proj_drop=drop)
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -412,25 +412,25 @@ class MixVisionTransformerGT(nn.Module):
 
         self.apply(self._init_weights)
 
-        self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
+        self.global_token1 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
         ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
-        self.pe1 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[0]))
-        trunc_normal_(self.pe1, std=.02)
+        self.pe1 = None #nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[0]))
+        # trunc_normal_(self.pe1, std=.02)
 
-        self.global_token2 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
+        self.global_token2 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
         ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
-        self.pe2 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[1]))
-        trunc_normal_(self.pe2, std=.02)
+        self.pe2 = None #nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[1]))
+        # trunc_normal_(self.pe2, std=.02)
 
-        self.global_token3 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
+        self.global_token3 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
         ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
-        self.pe3 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[2]))
-        trunc_normal_(self.pe3, std=.02)
+        self.pe3 = None #nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[2]))
+        # trunc_normal_(self.pe3, std=.02)
 
-        self.global_token4 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
+        self.global_token4 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
         ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
-        self.pe4 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[3]))
-        trunc_normal_(self.pe4, std=.02)
+        self.pe4 = None #nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], embed_dims[3]))
+        # trunc_normal_(self.pe4, std=.02)
 
 
     def _init_weights(self, m):
