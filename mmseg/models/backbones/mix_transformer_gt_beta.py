@@ -134,7 +134,6 @@ class Attention(nn.Module):
 
         self.apply(self._init_weights)
 
-        self.gt_num=gt_num
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
