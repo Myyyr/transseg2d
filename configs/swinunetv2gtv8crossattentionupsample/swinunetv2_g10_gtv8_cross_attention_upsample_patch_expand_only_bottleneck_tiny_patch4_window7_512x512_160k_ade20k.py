@@ -13,7 +13,7 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150,
-        use_cross_attention_by_layer=[True, True, True, True],
+        use_cross_attention_by_layer=[True, False, False, False],
         residual_patch_expand=True,
         gt_num=10
     ),
@@ -48,7 +48,7 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=8)
+data=dict(samples_per_gpu=2)
 
 
 
