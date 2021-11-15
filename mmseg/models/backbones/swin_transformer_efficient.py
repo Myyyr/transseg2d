@@ -139,7 +139,7 @@ class WindowAttention(nn.Module):
         q   = qkv[0] # make torchscript happy (cannot use tensor as tuple)
 
         if self.sr_ratio > 1:
-            x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
+            x_ = x.permute(0, 2, 1).reshape(B_, C, H, W)
             x_ = rearrange(x_, 'b c (h a) (w b) -> b c h a w b', a=self.sr_ratio, b=self.sr_ratio)
             x_ = rearrange(x_, 'b c h a w b -> b (c a b) h w')
             x_ = rearrange(x_, 'b c h w -> b (h w) c')
