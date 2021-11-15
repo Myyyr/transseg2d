@@ -1,12 +1,12 @@
 _base_ = [
-    '../_base_/models/swin_unet_v2_cross_attention_upsample.py', '../_base_/datasets/ade20k.py',
+    '../_base_/models/swin_unet_v2_gtv8_cross_attention_upsample.py', '../_base_/datasets/cityscapes_769x769.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
     backbone=dict(
-        embed_dim=96,
-        depths=[2, 2, 6, 2],
-        num_heads=[3, 6, 12, 24],
+        embed_dim=128,
+        depths=[2, 2, 18, 2],
+        num_heads=[4, 8, 16, 32],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
@@ -14,12 +14,13 @@ model = dict(
         use_checkpoint=False,
         num_classes=150,
         use_cross_attention_by_layer=[True, True, True, True],
-        residual_patch_expand=False,
+        residual_patch_expand=True,
+        gt_num=1
     ),
     decode_head=dict(
-        embed_dim=96,
-        depths=[2, 2, 6, 2],
-        num_heads=[3, 6, 12, 24],
+        embed_dim=128,
+        depths=[2, 2, 18, 2],
+        num_heads=[4, 8, 16, 32],
         window_size=7,
         ape=False,
         drop_path_rate=0.3,
