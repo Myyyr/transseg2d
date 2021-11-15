@@ -146,9 +146,9 @@ class WindowAttention(nn.Module):
             x_ = self.proj_eff(x_)
             # x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
             x_ = self.norm(x_)
-            kv = self.qkv(x_).reshape(B, -1, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+            kv = self.qkv(x_).reshape(B_, -1, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         else:
-            kv = self.qkv(x).reshape(B, -1, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
+            kv = self.qkv(x).reshape(B_, -1, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         k, v = kv[1], kv[2]
 
         q = q * self.scale
