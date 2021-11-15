@@ -221,6 +221,7 @@ class WindowAttention(nn.Module):
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
         torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
         torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
+        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
