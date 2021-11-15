@@ -140,8 +140,8 @@ class WindowAttention(nn.Module):
 
         if self.sr_ratio > 1:
             x_ = x.permute(0, 2, 1).reshape(B_, C, H, W)
-            x_ = rearrange(x_, 'b c (h a) (w b) -> b c h a w b', a=self.sr_ratio, b=self.sr_ratio)
-            x_ = rearrange(x_, 'b c h a w b -> b (c a b) h w')
+            x_ = rearrange(x_, 'b c (h x) (w y) -> b c h x w y', x=self.sr_ratio, y=self.sr_ratio)
+            x_ = rearrange(x_, 'b c h x w y -> b (c x y) h w')
             x_ = rearrange(x_, 'b c h w -> b (h w) c')
             x_ = self.proj_eff(x_)
             # x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
