@@ -41,6 +41,9 @@ from .mix_transformer import *
 from .mix_transformer_gt import *
 from .mix_transformer_gt_alpha import *
 
+from .swin_transformer_efficient import SwinTransformerEff
+
+
 
 __all__ = [
     'ResNet', 'ResNetV1c', 'ResNetV1d', 'ResNeXt', 'HRNet', 'FastSCNN',
@@ -48,5 +51,5 @@ __all__ = [
     'SwinUNetEncoder', 'SwinUNetEncoderGTv1', 'SwinUNetEncoderGTv2', 'SwinUNetEncoderGTvdbg', 'SwinUNetEncoderGTvdbg2'
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG',
     'SwinUNetV2CrossAttentionUpsample', 'SwinUNetV2BilinearUpsampling', 'SwinUNetV2GTV8Visu',
-    'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer', 'mit_b4', 'SwinUNetV2GTV8CrossAttentionUpsample'
+    'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer', 'mit_b4', 'SwinUNetV2GTV8CrossAttentionUpsample','SwinTransformerEff'
 ]
