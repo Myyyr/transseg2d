@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sug10bcit160     # job name
+#SBATCH --job-name=subcit160     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=30:00:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/sug10bcit160%j.out # output file name
-#SBATCH --error=logs/sug10bcit160%j.err  # error file name
+#SBATCH --output=logs/subcit160%j.out # output file name
+#SBATCH --error=logs/subcit160%j.err  # error file name
 #SBATCH -C v100-32g
 
 set -x
@@ -145,8 +145,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
 # CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
 # ..............................................
-CONFIG="configs/swinunetv2gtv8/zzz_swinunetv2gtv8_g10_base_patch4_window7_769x769_160k_cityscapes_good.py"
-# CONFIG="configs/swinunetv2/zzz_swinunetv2_base_patch4_window7_769x769_160k_cityscapes_good.py" 
+# CONFIG="configs/swinunetv2gtv8/zzz_swinunetv2gtv8_g10_base_patch4_window7_769x769_160k_cityscapes_good.py"
+CONFIG="configs/swinunetv2/zzz_swinunetv2_base_patch4_window7_769x769_160k_cityscapes_good.py" 
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
