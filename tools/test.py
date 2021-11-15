@@ -12,6 +12,15 @@ from mmseg.datasets import build_dataloader, build_dataset
 from mmseg.models import build_segmentor
 
 
+def get_n_params(model):
+    pp=0
+    for p in list(model.parameters()):
+        nn=1
+        for s in list(p.size()):
+            nn = nn*s
+        pp += nn
+    return pp
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description='mmseg test (and eval) a model')
@@ -112,6 +121,14 @@ def main():
     # build the model and load checkpoint
     cfg.model.train_cfg = None
     model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
+    
+    print('\n\n\n')
+    print('#######################')
+    print('PARAMS :', get_n_params(model))
+    print('#######################')
+    print('\n\n\n')
+
+
     checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
     model.CLASSES = checkpoint['meta']['CLASSES']
     model.PALETTE = checkpoint['meta']['PALETTE']
