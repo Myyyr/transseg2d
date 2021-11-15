@@ -126,7 +126,7 @@ class WindowAttention(nn.Module):
             self.proj_eff = nn.Linear(dim*sr_ratio*sr_ratio, dim)
             self.norm = nn.LayerNorm(dim)
 
-    def forward(self, x, mask=None):
+    def forward(self, x, H, W, mask=None):
         """ Forward function.
 
         Args:
@@ -255,7 +255,7 @@ class SwinTransformerBlock(nn.Module):
 
         # W-MSA/SW-MSA
         # attn_windows = self.attn(x_windows, mask=attn_mask)  # nW*B, window_size*window_size, C
-        attn_windows = self.attn(x)  # nW*B, window_size*window_size, C
+        attn_windows = self.attn(x, H, W)  # nW*B, window_size*window_size, C
 
         # merge windows
         # attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
