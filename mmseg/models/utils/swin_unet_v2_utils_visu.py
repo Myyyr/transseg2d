@@ -826,7 +826,7 @@ class SwinTransformerSys(nn.Module):
         x = self.up_x4(x, Wh, Ww)
         torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun/pred.pt")
 
-
+        exit(0)
         return x
 
     def flops(self):
