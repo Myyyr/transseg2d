@@ -138,7 +138,8 @@ class CrossAttentionBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, skip_connection_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True, channel_scale=2):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, residual_patch_expand=True, channel_scale=2,
+                 cross_attention_weight=1.0):
         super().__init__()
         self.dim = dim
         self.input_resolution = input_resolution
@@ -149,6 +150,7 @@ class CrossAttentionBlock(nn.Module):
         self.shift_size = shift_size
         self.mlp_ratio = mlp_ratio
         self.channel_scale = channel_scale
+        self.cross_attention_weight = cross_attention_weight
         if min(self.input_resolution) <= self.window_size:
             # if window size is larger than input resolution, we don't partition windows
             self.shift_size = 0
@@ -261,8 +263,8 @@ class CrossAttentionBlock(nn.Module):
 
 
         # FFN
-        x = self.drop_path(x) + shortcut
-        x = x + self.drop_path(self.mlp(self.norm2(x)))
+        x = self.drop_path(x)*self.cross_attention_weight + shortcut
+        x = x + self.drop_path(self.mlp(self.norm2(x)))*self.cross_attention_weight
 
         return x, H_d, W_d
 
@@ -308,7 +310,7 @@ class BasicLayer_up_Xattn(nn.Module):
     def __init__(self, dim, input_resolution, skip_connection_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., norm_layer=nn.LayerNorm, upsample=None, use_checkpoint=False,
-                 use_cross_attention=False, residual_patch_expand=True, channel_scale=2):
+                 use_cross_attention=False, residual_patch_expand=True, channel_scale=2, cross_attention_weight=1.0):
 
         super().__init__()
         self.dim = dim
@@ -321,6 +323,7 @@ class BasicLayer_up_Xattn(nn.Module):
         self.use_cross_attention = use_cross_attention
         self.residual_patch_expand = residual_patch_expand
         self.channel_scale = channel_scale
+        self.cross_attention_weight = cross_attention_weight
 
         # build blocks
         self.blocks = nn.ModuleList()
@@ -336,7 +339,8 @@ class BasicLayer_up_Xattn(nn.Module):
                                             drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
                                             norm_layer=norm_layer,
                                             residual_patch_expand=residual_patch_expand,
-                                            channel_scale=self.channel_scale)
+                                            channel_scale=self.channel_scale,
+                                            cross_attention_weight=self.cross_attention_weight)
             else:
                 layer = SwinTransformerBlock(dim=dim // 2, input_resolution=[x * 2 for x in input_resolution],
                                              num_heads=num_heads, window_size=window_size,
@@ -676,7 +680,7 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first", use_cross_attention_by_layer=[True, True, True, True],
-                 residual_patch_expand=True, **kwargs):
+                 residual_patch_expand=True, cross_attention_weight=1.0, **kwargs):
 
         super().__init__()
 
@@ -694,6 +698,7 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
         self.final_upsample = final_upsample
         self.use_cross_attention_by_layer = use_cross_attention_by_layer
         self.residual_patch_expand = residual_patch_expand
+        self.cross_attention_weight = cross_attention_weight
 
         # split image into non-overlapping patches
         self.patch_embed = PatchEmbed(
@@ -769,7 +774,8 @@ class SwinTransformerCrossAttentionUpsampleSys(nn.Module):
                                                            attn_drop=attn_drop_rate,
                                                            drop_path=dpr[sum(depths[:(self.num_layers-1-i_layer)]):sum(depths[:(self.num_layers-1-i_layer) + 1])],
                                                            norm_layer=norm_layer,
-                                                           residual_patch_expand=self.residual_patch_expand)
+                                                           residual_patch_expand=self.residual_patch_expand,
+                                                           cross_attention_weight=self.cross_attention_weight)
             patch_expand = PatchExpand(input_resolution=(patches_resolution[0] // (2 ** (self.num_layers-1-i_layer)),
                                                          patches_resolution[1] // (2 ** (self.num_layers-1-i_layer))),
                                        dim=int(embed_dim * 2 ** (self.num_layers-1-i_layer + 1)),

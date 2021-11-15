@@ -25,7 +25,7 @@ class SwinUNetV2GTV8CrossAttentionUpsample(nn.Module):
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, final_upsample="expand_first",
                  use_cross_attention_by_layer=[True, True, True, True],
-                 residual_patch_expand=True,
+                 residual_patch_expand=True, cross_attention_weight=1.0,
                  gt_num=1,
                  **kwargs):
         super().__init__()
@@ -55,6 +55,7 @@ class SwinUNetV2GTV8CrossAttentionUpsample(nn.Module):
                                                                       final_upsample=final_upsample,
                                                                       use_cross_attention_by_layer=use_cross_attention_by_layer,
                                                                       residual_patch_expand=residual_patch_expand,
+                                                                      cross_attention_weight=cross_attention_weight,
                                                                       gt_num=gt_num)
 
         

@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/swin_unet_v2_gtv8_cross_attention_upsample.py', '../_base_/datasets/ade20k.py',
+    '../_base_/models/swin_unet_v2_gtv8_cross_attention_upsample.py', '../_base_/datasets/ade20kdbg.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
@@ -15,7 +15,8 @@ model = dict(
         num_classes=150,
         use_cross_attention_by_layer=[True, True, True, True],
         residual_patch_expand=True,
-        gt_num=10
+        gt_num=10,
+        cross_attention_weight=0.2
     ),
     decode_head=dict(
         embed_dim=96,

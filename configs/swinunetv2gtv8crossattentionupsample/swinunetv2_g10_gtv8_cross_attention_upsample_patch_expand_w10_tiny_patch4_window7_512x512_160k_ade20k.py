@@ -15,7 +15,8 @@ model = dict(
         num_classes=150,
         use_cross_attention_by_layer=[True, True, True, True],
         residual_patch_expand=True,
-        gt_num=10
+        gt_num=10,
+        cross_attention_weight=0.1
     ),
     decode_head=dict(
         embed_dim=96,
@@ -48,7 +49,7 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=8)
+data=dict(samples_per_gpu=2)
 
 
 
