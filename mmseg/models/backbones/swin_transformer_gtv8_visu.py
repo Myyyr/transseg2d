@@ -204,9 +204,6 @@ class WindowAttention(nn.Module):
         self.register_buffer("relative_position_index", relative_position_index)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
-        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
-        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
-        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
 
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
@@ -233,6 +230,9 @@ class WindowAttention(nn.Module):
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
+        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
+        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
+        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
@@ -252,6 +252,9 @@ class WindowAttention(nn.Module):
             attn = self.softmax(attn)
         else:
             attn = self.softmax(attn)
+
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+
 
         attn = self.attn_drop(attn)     
 

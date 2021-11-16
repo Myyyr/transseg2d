@@ -247,7 +247,7 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
             
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
         attn = self.attn_drop(attn)     
 
         # exit(0)
