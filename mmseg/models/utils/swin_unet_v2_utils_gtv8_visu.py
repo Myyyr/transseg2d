@@ -961,7 +961,7 @@ class SwinTransformerSys(nn.Module):
                 x = torch.cat([x,x_downsample[3-inx]],-1)
                 x = self.concat_back_dim[inx](x)
                 # x = layer_up(x)
-                x, Wh, Ww = layer_up(x, Wh, Ww, padwh)
+                x, Wh, Ww = layer_up(x, Wh, Ww, padwh, idim)
 
         x = self.norm_up(x)  # B L C
   
