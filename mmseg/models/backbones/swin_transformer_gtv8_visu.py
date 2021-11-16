@@ -85,7 +85,7 @@ class ClassicAttention(nn.Module):
         proj_drop (float, optional): Dropout ratio of output. Default: 0.0
     """
 
-    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
+    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., lid=0):
 
         super().__init__()
         self.dim = dim
@@ -103,9 +103,10 @@ class ClassicAttention(nn.Module):
         self.proj_drop = nn.Dropout(proj_drop)
 
         self.softmax = nn.Softmax(dim=-1)
+        self.lid = lid
 
 
-    def forward(self, x, pe):
+    def forward(self, x, pe,idim='0'):
         """
         Args:
             x: input features with shape of (num_windows*B, N, C)
@@ -134,6 +135,8 @@ class ClassicAttention(nn.Module):
         # attn = attn
 
         attn = self.softmax(attn)
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
@@ -172,7 +175,7 @@ class WindowAttention(nn.Module):
         proj_drop (float, optional): Dropout ratio of output. Default: 0.0
     """
 
-    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., gt_num=1):
+    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0., gt_num=1, lid="0"):
 
         super().__init__()
         self.dim = dim
@@ -201,6 +204,10 @@ class WindowAttention(nn.Module):
         self.register_buffer("relative_position_index", relative_position_index)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
+        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
+        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
+        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
+
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
@@ -208,7 +215,9 @@ class WindowAttention(nn.Module):
         trunc_normal_(self.relative_position_bias_table, std=.02)
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, x, mask=None, gt=None):
+        self.lid=lid
+
+    def forward(self, x, mask=None, gt=None,idim='0'):
         """ Forward function.
 
         Args:
@@ -276,7 +285,7 @@ class SwinTransformerBlock(nn.Module):
 
     def __init__(self, dim, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, id_layer=0):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, id_layer=0,lid="0"):
         super().__init__()
         self.dim = dim
         self.gt_num = gt_num
@@ -289,7 +298,7 @@ class SwinTransformerBlock(nn.Module):
         self.norm1 = norm_layer(dim)
         self.attn = WindowAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num)
+            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop, gt_num=gt_num,lid=lid)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
@@ -301,9 +310,9 @@ class SwinTransformerBlock(nn.Module):
 
         self.gt_attn = ClassicAttention(dim=dim, window_size=(45*gt_num//2**id_layer, 45*gt_num//2**id_layer), num_heads=num_heads, 
                                             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
-                                            proj_drop=drop)
+                                            proj_drop=drop,lid=lid)
 
-    def forward(self, x, mask_matrix, gt, pe):
+    def forward(self, x, mask_matrix, gt, pe,idim):
         """ Forward function.
 
         Args:
@@ -339,12 +348,12 @@ class SwinTransformerBlock(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
         # W-MSA/SW-MSA
-        attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C
+        attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt,idim=idim)  # nW*B, window_size*window_size, C
 
         tmp, ngt, c = gt.shape
         nw = tmp//B
         gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
-        gt = self.gt_attn(gt, pe)
+        gt = self.gt_attn(gt, pe,idim)
         gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
 
         # merge windows
@@ -444,7 +453,7 @@ class BasicLayer(nn.Module):
                  drop_path=0.,
                  norm_layer=nn.LayerNorm,
                  downsample=None,
-                 use_checkpoint=False, gt_num=1, id_layer=0):
+                 use_checkpoint=False, gt_num=1, id_layer=0, lid="0"):
         super().__init__()
         self.window_size = window_size
         self.shift_size = window_size // 2
@@ -468,7 +477,7 @@ class BasicLayer(nn.Module):
                 drop=drop,
                 attn_drop=attn_drop,
                 drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
-                norm_layer=norm_layer, gt_num=gt_num,id_layer=id_layer)
+                norm_layer=norm_layer, gt_num=gt_num,id_layer=id_layer, lid=lid+str(i))
             for i in range(depth)])
 
         # patch merging layer
@@ -481,7 +490,7 @@ class BasicLayer(nn.Module):
         self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
         trunc_normal_(self.pe, std=.02)
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W,idim):
         """ Forward function.
 
         Args:
@@ -516,7 +525,7 @@ class BasicLayer(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x, attn_mask)
             else:
-                x, gt = blk(x, attn_mask, gt, self.pe)
+                x, gt = blk(x, attn_mask, gt, self.pe,idim)
         if self.downsample is not None:
             x_down = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
@@ -663,7 +672,7 @@ class SwinTransformerGTV8(nn.Module):
                 drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                 norm_layer=norm_layer,
                 downsample=PatchMerging if (i_layer < self.num_layers - 1) else None,
-                use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer)
+                use_checkpoint=use_checkpoint, gt_num=gt_num, id_layer=i_layer, lid="E"+str(i_layer))
             self.layers.append(layer)
 
         num_features = [int(embed_dim * 2 ** i) for i in range(self.num_layers)]
