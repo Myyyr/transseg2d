@@ -135,7 +135,7 @@ class ClassicAttention(nn.Module):
         # attn = attn
 
         attn = self.softmax(attn)
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
 
         attn = self.attn_drop(attn)
 
@@ -204,9 +204,9 @@ class WindowAttention(nn.Module):
         self.register_buffer("relative_position_index", relative_position_index)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
-        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
-        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
-        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
+        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
+        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
+        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
 
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
@@ -733,7 +733,7 @@ class SwinTransformerGTV8Visu(nn.Module):
 
     def forward(self, x):
         """Forward function."""
-        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.idim)+"x.pt")
+        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(self.idim)+"x.pt")
 
         x = self.patch_embed(x)
 
@@ -758,7 +758,7 @@ class SwinTransformerGTV8Visu(nn.Module):
                 out = x_out.view(-1, H, W, self.num_features[i]).permute(0, 3, 1, 2).contiguous()
                 outs.append(out)
 
-        # torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.idim)+"pred.pt")
+        # torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(self.idim)+"pred.pt")
         self.idim += 1
 
         if self.idim == 10:
