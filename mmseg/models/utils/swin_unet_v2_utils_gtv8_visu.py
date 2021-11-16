@@ -7,6 +7,8 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 import numpy as np
 
 from einops import repeat
+
+import os
 # MERGING STRAT : TRANSFORMER
 
 class Mlp(nn.Module):
@@ -92,7 +94,7 @@ class ClassicAttention(nn.Module):
         self.lid = lid
 
 
-    def forward(self, x, pe):
+    def forward(self, x, pe,idim):
         """
         Args:
             x: input features with shape of (num_windows*B, N, C)
@@ -116,7 +118,7 @@ class ClassicAttention(nn.Module):
         # attn = attn
 
         attn = self.softmax(attn)
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
@@ -198,7 +200,7 @@ class WindowAttention(nn.Module):
 
         self.lid=lid
 
-    def forward(self, x, mask=None, gt=None):
+    def forward(self, x, mask=None, gt=None,idim=idim):
         """
         Args:
             x: input features with shape of (num_windows*B, N, C)
@@ -219,9 +221,9 @@ class WindowAttention(nn.Module):
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
-        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
-        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
-        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
+        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
+        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
+        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
@@ -329,7 +331,7 @@ class SwinTransformerBlock(nn.Module):
 
  
 
-    def forward(self, x, mask_matrix, gt, pe):
+    def forward(self, x, mask_matrix, gt, pe,idim):
         H, W = self.input_resolution
         B, L, C = x.shape
         # L = 128 * 256
@@ -363,14 +365,14 @@ class SwinTransformerBlock(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
         # W-MSA/SW-MSA
-        attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
+        attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt,idim=idim)  # nW*B, window_size*window_size, C | nW*B, nGt, C
         tmp, ngt, c = gt.shape
         nw = tmp//B
         gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
         # gt = gt.view(B, nw*ngt, C)
         # bigt, _ = self.gru(gt)
         # gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
-        gt = self.gt_attn(gt, pe)
+        gt = self.gt_attn(gt, pe,idim)
 
         # gt = self.projgru(gt)
         # gt = gt.mean(dim=1)
@@ -609,7 +611,7 @@ class BasicLayer(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x, gt= blk(x, attn_mask, gt, self.pe)
+                x, gt= blk(x, attn_mask, gt, self.pe,idim)
         # if self.downsample is not None:
         #     x = self.downsample(x)
         # return x
@@ -688,7 +690,7 @@ class BasicLayer_up(nn.Module):
         else:
             self.upsample = None
 
-    def forward(self, x, H, W, padwh):
+    def forward(self, x, H, W, padwh,idim):
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -715,7 +717,7 @@ class BasicLayer_up(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x, gt = blk(x, attn_mask, gt, self.pe)
+                x, gt = blk(x, attn_mask, gt, self.pe,idim)
         # if self.upsample is not None:
         #     x = self.upsample(x)
         if self.upsample is not None:
@@ -817,7 +819,7 @@ class SwinTransformerSys(nn.Module):
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, final_upsample="expand_first", gt_num=1, **kwargs):
+                 use_checkpoint=False, final_upsample="expand_first", gt_num=1,**kwargs):
         super().__init__()
 
         print("SwinTransformerSys expand initial----depths:{};depths_decoder:{};drop_path_rate:{};num_classes:{}".format(depths,
@@ -905,6 +907,8 @@ class SwinTransformerSys(nn.Module):
 
         self.apply(self._init_weights)
 
+        self.idim = 0
+
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
             trunc_normal_(m.weight, std=.02)
@@ -923,7 +927,7 @@ class SwinTransformerSys(nn.Module):
         return {'relative_position_bias_table'}
 
     #Encoder and Bottleneck
-    def forward_features(self, x):
+    def forward_features(self, x, idim):
         x = self.patch_embed(x)
         Wh, Ww = x.size(2), x.size(3)
         if self.ape:
@@ -936,7 +940,7 @@ class SwinTransformerSys(nn.Module):
             # x_downsample.append(x)
             x_downsample.append(x)
             # x = layer(x)
-            x, Wh, Ww, padwh = layer(x, Wh, Ww)
+            x, Wh, Ww, padwh = layer(x, Wh, Ww, idim)
             padswh.append(padwh)
 
         x = self.norm(x)  # B L C
@@ -944,7 +948,7 @@ class SwinTransformerSys(nn.Module):
         return x, x_downsample, Wh, Ww, padswh
 
     #Dencoder and Skip connection
-    def forward_up_features(self, x, x_downsample, Wh, Ww, padswh):
+    def forward_up_features(self, x, x_downsample, Wh, Ww, padswh, idim):
         # exit(0)
         # Wh, Ww = x.size(2), x.size(3)
         for inx, layer_up in enumerate(self.layers_up):
@@ -952,7 +956,7 @@ class SwinTransformerSys(nn.Module):
                 padwh = padswh[-(inx+2)]
             else: padwh = [0,0]
             if inx == 0:
-                x, Wh, Ww = layer_up(x, Wh, Ww, padwh)
+                x, Wh, Ww = layer_up(x, Wh, Ww, padwh, idim)
             else:
                 x = torch.cat([x,x_downsample[3-inx]],-1)
                 x = self.concat_back_dim[inx](x)
@@ -979,14 +983,19 @@ class SwinTransformerSys(nn.Module):
     def forward(self, x):
         # print("\n-------->x", x.shape, "<----------\n")
         # x, x_downsample = self.forward_features(x)
-        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/x.pt")
+
+        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.idim)+"x.pt")
         # exit(0)
-        x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
-        x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
+        x, x_downsample, Wh, Ww, padswh = self.forward_features(x, self.idim)
+        x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh, self.idim)
         x = self.up_x4(x, Wh, Ww)
 
-        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/pred.pt")
-        exit(0)
+        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.idim)+"pred.pt")
+        self.idim += 1
+
+        if self.idim == 10:
+            print("Nice Job !")
+            exit(0)
         return x
 
     def flops(self):
