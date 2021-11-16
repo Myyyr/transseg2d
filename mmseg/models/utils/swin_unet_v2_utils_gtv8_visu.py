@@ -993,9 +993,9 @@ class SwinTransformerSys(nn.Module):
         torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/sun_gt10/"+str(self.idim)+"pred.pt")
         self.idim += 1
 
-        if self.idim == 10:
-            print("Nice Job !")
-            exit(0)
+        # if self.idim == 10:
+        #     print("Nice Job !")
+        #     exit(0)
         return x
 
     def flops(self):
