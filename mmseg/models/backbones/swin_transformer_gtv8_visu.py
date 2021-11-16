@@ -135,7 +135,7 @@ class ClassicAttention(nn.Module):
         # attn = attn
 
         attn = self.softmax(attn)
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+        torch.save(attn, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
 
         attn = self.attn_drop(attn)
 
@@ -230,9 +230,9 @@ class WindowAttention(nn.Module):
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
-        torch.save(q, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
-        torch.save(k, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
-        torch.save(v, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
+        torch.save(q, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_Q_"+str(self.lid)+"_.pt")
+        torch.save(k, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_K_"+str(self.lid)+"_.pt")
+        torch.save(v, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_V_"+str(self.lid)+"_.pt")
 
         q = q * self.scale
         attn = (q @ k.transpose(-2, -1))
@@ -253,7 +253,7 @@ class WindowAttention(nn.Module):
         else:
             attn = self.softmax(attn)
 
-        torch.save(attn, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
+        torch.save(attn, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(idim)+str(self.__class__.__name__)+"_"+str(self.lid)+"_.pt")
 
 
         attn = self.attn_drop(attn)     
@@ -736,7 +736,7 @@ class SwinTransformerGTV8Visu(nn.Module):
 
     def forward(self, x):
         """Forward function."""
-        torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(self.idim)+"x.pt")
+        torch.save(x, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(self.idim)+"x.pt")
 
         x = self.patch_embed(x)
 
@@ -761,7 +761,7 @@ class SwinTransformerGTV8Visu(nn.Module):
                 out = x_out.view(-1, H, W, self.num_features[i]).permute(0, 3, 1, 2).contiguous()
                 outs.append(out)
 
-        # torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(self.idim)+"pred.pt")
+        # torch.save(x, "/share/DEEPLEARNING/themyr_l/visu/img/cit/"+str(self.idim)+"pred.pt")
         self.idim += 1
 
         # if self.idim == 10:
