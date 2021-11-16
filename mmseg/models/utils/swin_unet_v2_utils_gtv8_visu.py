@@ -200,7 +200,7 @@ class WindowAttention(nn.Module):
 
         self.lid=lid
 
-    def forward(self, x, mask=None, gt=None,idim=idim):
+    def forward(self, x, mask=None, gt=None,idim='0'):
         """
         Args:
             x: input features with shape of (num_windows*B, N, C)
