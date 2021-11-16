@@ -764,9 +764,9 @@ class SwinTransformerGTV8Visu(nn.Module):
         # torch.save(x, "/etudiants/siscol/t/themyr_l/visu/img/cit/"+str(self.idim)+"pred.pt")
         self.idim += 1
 
-        if self.idim == 10:
-            print("Nice Job !")
-            exit(0)
+        # if self.idim == 10:
+        #     print("Nice Job !")
+        #     exit(0)
 
         return tuple(outs)
 
