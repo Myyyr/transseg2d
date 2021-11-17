@@ -13,7 +13,7 @@ model = dict(
     pretrained='pretrained/mit_b4.pth',
     backbone=dict(
         type='SegFormerGTGamma',
-        gt_num=10
+        
         ),
     decode_head=dict(
         type='SegFormerHead',
