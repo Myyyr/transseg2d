@@ -90,6 +90,7 @@ class Block(nn.Module):
         self.gt_num = gt_num
 
     def forward(self, x, H, W, gt):
+        B, N, C = x.shape
         if self.gt_num != 0:
             if len(gt.shape) != 3:
                 gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
