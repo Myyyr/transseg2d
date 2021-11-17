@@ -98,7 +98,7 @@ class Block(nn.Module):
         x = x + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
-        gt = gt + self.drop_path(gt)
+        # gt = gt + self.drop_path(gt)
 
         return x, gt
 
