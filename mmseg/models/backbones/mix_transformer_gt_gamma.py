@@ -441,7 +441,7 @@ class SegFormerGTGamma(nn.Module):
 
     def init_weights(self, pretrained=None):
         if isinstance(pretrained, str):
-            self.mix.init(pretrained)
+            self.mix.init_weights(pretrained)
 
     def forward(self, x):
         return self.mix(x)
