@@ -112,7 +112,7 @@ class ClassicAttention(nn.Module):
         return x
 
 class Attention(nn.Module):
-    def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1, gt_num=1):
+    def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1):
         super().__init__()
         assert dim % num_heads == 0, f"dim {dim} should be divided by num_heads {num_heads}."
 
@@ -134,7 +134,7 @@ class Attention(nn.Module):
 
         self.apply(self._init_weights)
 
-        self.gt_num=gt_num
+        # self.gt_num=gt_num
 
 
     def _init_weights(self, m):
@@ -155,25 +155,25 @@ class Attention(nn.Module):
     def forward(self, x, H, W, gt):
         B, N_, C = x.shape
 
-        gt_num = self.gt_num
-        if self.gt_num != 0:
-            if len(gt.shape) != 3:
-                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-            x = torch.cat([gt, x], dim=1)
+        # gt_num = self.gt_num
+        # if self.gt_num != 0:
+        #     if len(gt.shape) != 3:
+        #         gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+        #     x = torch.cat([gt, x], dim=1)
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
         if self.sr_ratio > 1:
-            if self.gt_num != 0:
-                x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
-                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-                x_ = self.norm(x_)
-                x_ = torch.cat([gt, x_], dim=1)
-            else:
-                x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
-                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-                x_ = self.norm(x_)
+            # if self.gt_num != 0:
+            #     x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
+            #     x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+            #     x_ = self.norm(x_)
+            #     x_ = torch.cat([gt, x_], dim=1)
+            # else:
+            x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
+            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+            x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         else:
             kv = self.kv(x).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
@@ -187,16 +187,16 @@ class Attention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
 
-        if gt_num!=0:
-            return x[:,gt_num:,:], x[:,:gt_num,:]
-        else:
-            return x, gt
+        # if gt_num!=0:
+        #     return x[:,gt_num:,:], x[:,:gt_num,:]
+        # else:
+        return x, gt
 
 
 class Block(nn.Module):
 
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, sr_ratio=1, gt_num=1):
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, sr_ratio=1):
         super().__init__()
         self.norm1 = norm_layer(dim)
         self.attn = Attention(
@@ -211,7 +211,7 @@ class Block(nn.Module):
 
         self.apply(self._init_weights)
 
-        self.gt_num = gt_num
+        # self.gt_num = gt_num
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -234,13 +234,13 @@ class Block(nn.Module):
         x = x + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
-        if self.gt_num != 0:
-            gt = gt + self.drop_path(gt)
-            # B, ngt, c = gt.shape
-            # nw = B//x.shape[0]
-            # gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
-            gt = self.norm2(gt)
-            # gt = self.gt_attn(gt, pe)
+        # if self.gt_num != 0:
+        #     gt = gt + self.drop_path(gt)
+        #     # B, ngt, c = gt.shape
+        #     # nw = B//x.shape[0]
+        #     # gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
+        #     gt = self.norm2(gt)
+        #     # gt = self.gt_attn(gt, pe)
             # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
 
         return x, gt
@@ -293,7 +293,7 @@ class MixVisionTransformerGTBeta(nn.Module):
     def __init__(self, img_size=224, patch_size=16, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
                  num_heads=[1, 2, 4, 8], mlp_ratios=[4, 4, 4, 4], qkv_bias=False, qk_scale=None, drop_rate=0.,
                  attn_drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
-                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], gt_num=1):
+                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1]):
         super().__init__()
         self.num_classes = num_classes
         self.depths = depths
@@ -347,41 +347,41 @@ class MixVisionTransformerGTBeta(nn.Module):
 
         self.apply(self._init_weights)
 
-        if gt_num != 0:
+        # if gt_num != 0:
 
-            self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
-            # ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
-            self.pe1 = nn.Parameter(torch.zeros(gt_num, embed_dims[0]))
-            trunc_normal_(self.pe1, std=.02)
+        #     self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
+        #     # ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
+        #     self.pe1 = nn.Parameter(torch.zeros(gt_num, embed_dims[0]))
+        #     trunc_normal_(self.pe1, std=.02)
 
-            self.global_token2 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
-            # ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
-            self.pe2 = nn.Parameter(torch.zeros(gt_num, embed_dims[1]))
-            trunc_normal_(self.pe2, std=.02)
+        #     self.global_token2 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
+        #     # ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
+        #     self.pe2 = nn.Parameter(torch.zeros(gt_num, embed_dims[1]))
+        #     trunc_normal_(self.pe2, std=.02)
 
-            self.global_token3 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
-            # ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
-            self.pe3 = nn.Parameter(torch.zeros(gt_num, embed_dims[2]))
-            trunc_normal_(self.pe3, std=.02)
+        #     self.global_token3 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
+        #     # ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
+        #     self.pe3 = nn.Parameter(torch.zeros(gt_num, embed_dims[2]))
+        #     trunc_normal_(self.pe3, std=.02)
 
-            self.global_token4 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
-            # ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
-            self.pe4 = nn.Parameter(torch.zeros(gt_num, embed_dims[3]))
-            trunc_normal_(self.pe4, std=.02)
+        #     self.global_token4 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
+        #     # ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
+        #     self.pe4 = nn.Parameter(torch.zeros(gt_num, embed_dims[3]))
+        #     trunc_normal_(self.pe4, std=.02)
 
-        if gt_num == 0:
+        # if gt_num == 0:
 
-            self.global_token1 = None
-            self.pe1 = None
+        #     self.global_token1 = None
+        #     self.pe1 = None
 
-            self.global_token2 = None
-            self.pe2 = None
+        #     self.global_token2 = None
+        #     self.pe2 = None
 
-            self.global_token3 = None
-            self.pe3 = None
+        #     self.global_token3 = None
+        #     self.pe3 = None
 
-            self.global_token4 = None
-            self.pe4 = None
+        #     self.global_token4 = None
+        #     self.pe4 = None
 
 
 
@@ -443,36 +443,36 @@ class MixVisionTransformerGTBeta(nn.Module):
 
         # stage 1
         x, H, W = self.patch_embed1(x)
-        gt = self.global_token1
+        # gt = self.global_token1
         for i, blk in enumerate(self.block1):
-            x,gt = blk(x, H, W,gt,self.pe1)
+            x,gt = blk(x, H, W,None,None)
         x = self.norm1(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 2
         x, H, W = self.patch_embed2(x)
-        gt = self.global_token2
+        # gt = self.global_token2
         for i, blk in enumerate(self.block2):
-            x,gt = blk(x, H, W,gt,self.pe2)
+            x,gt = blk(x, H, W,None,None)
         x = self.norm2(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 3
         x, H, W = self.patch_embed3(x)
-        gt = self.global_token3
+        # gt = self.global_token3
         for i, blk in enumerate(self.block3):
-            x,gt = blk(x, H, W,gt,self.pe3)
+            x,gt = blk(x, H, W,None,None)
         x = self.norm3(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 4
         x, H, W = self.patch_embed4(x)
-        gt = self.global_token4
+        # gt = self.global_token4
         for i, blk in enumerate(self.block4):
-            x,gt = blk(x, H, W,gt,self.pe4)
+            x,gt = blk(x, H, W,None,None)
         x = self.norm4(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
@@ -560,7 +560,7 @@ class mit_gt0_beta_b4(MixVisionTransformerGTBeta):
         super(mit_gt0_beta_b4, self).__init__(
             patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
             qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
-            drop_rate=0.0, drop_path_rate=0.1, gt_num=0)
+            drop_rate=0.0, drop_path_rate=0.1)
 
 
 @BACKBONES.register_module()
