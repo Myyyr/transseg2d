@@ -43,8 +43,12 @@ class Attention(nn.Module):
         self.gt_num = gt_num
 
     def forward(self, x, H, W, gt):
-        # B, N_, C = x.shape
+        B, N_, C = x.shape
         gt_num = self.gt_num
+        if self.gt_num != 0:
+            if len(gt.shape) != 3:
+                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+            x = torch.cat([gt, x], dim=1)
 
         
         B, N, C = x.shape
@@ -91,10 +95,7 @@ class Block(nn.Module):
 
     def forward(self, x, H, W, gt):
         B, N, C = x.shape
-        if self.gt_num != 0:
-            if len(gt.shape) != 3:
-                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-            x = torch.cat([gt, x], dim=1)
+        
         skip = x
         skip_gt = gt
         x = self.norm1(x)
@@ -103,7 +104,10 @@ class Block(nn.Module):
         x = skip + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
-        gt = skip_gt + self.drop_path(gt)
+        # if self.gt_num != 0:
+        #     if len(skip_gt.shape) != 3:
+        #         skip_gt = repeat(gt, "g c -> b g c", b=B)
+        # gt = skip_gt + self.drop_path(gt)
 
         return x, gt
 
