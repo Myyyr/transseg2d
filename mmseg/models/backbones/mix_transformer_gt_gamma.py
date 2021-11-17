@@ -43,13 +43,10 @@ class Attention(nn.Module):
         self.gt_num = gt_num
 
     def forward(self, x, H, W, gt):
-        B, N_, C = x.shape
+        # B, N_, C = x.shape
         gt_num = self.gt_num
 
-        if gt_num != 0:
-            if len(gt.shape) != 3:
-                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-            x = torch.cat([gt, x], dim=1)
+        
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
@@ -93,6 +90,10 @@ class Block(nn.Module):
         self.gt_num = gt_num
 
     def forward(self, x, H, W, gt):
+        if self.gt_num != 0:
+            if len(gt.shape) != 3:
+                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+            x = torch.cat([gt, x], dim=1)
         skip = x
         skip_gt = gt
         x = self.norm1(x)
