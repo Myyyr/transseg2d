@@ -22,7 +22,7 @@ from einops import repeat, rearrange
 
 
 class Attention(nn.Module):
-    def __init__(self, attn, gt_num=1):
+    def __init__(self, attn):
         super().__init__()
 
         self.dim = attn.dim
@@ -40,30 +40,30 @@ class Attention(nn.Module):
             self.sr = attn.sr
             self.norm = attn.norm
 
-        self.gt_num = gt_num
+        # self.gt_num = gt_num
 
-    def forward(self, x, H, W, gt):
+    def forward(self, x, H, W):
         B, N_, C = x.shape
         gt_num = self.gt_num
 
-        if gt_num != 0:
-            if len(gt.shape) != 3:
-                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-            x = torch.cat([gt, x], dim=1)
+        # if gt_num != 0:
+        #     if len(gt.shape) != 3:
+        #         gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+        #     x = torch.cat([gt, x], dim=1)
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
         if self.sr_ratio > 1:
-            if gt_num != 0:
-                x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
-                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-                x_ = self.norm(x_)
-                x_ = torch.cat([gt, x_], dim=1)
-            else:
-                x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
-                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-                x_ = self.norm(x_)
+            # if gt_num != 0:
+            #     x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
+            #     x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+            #     x_ = self.norm(x_)
+            #     x_ = torch.cat([gt, x_], dim=1)
+            # else:
+            x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
+            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+            x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
 
         else:
@@ -78,7 +78,7 @@ class Attention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
 
-        return x[:,gt_num:,:], x[:,:gt_num,:]
+        return x
 
 
 class Block(nn.Module):
@@ -90,17 +90,18 @@ class Block(nn.Module):
         self.drop_path = block.drop_path
         self.norm2 = block.norm2
         self.mlp = block.mlp
-        self.gt_num = gt_num
+        # self.gt_num = gt_num
 
-    def forward(self, x, H, W, gt):
+    def forward(self, x, H, W):
         x = self.norm1(x)
-        x, gt = self.attn(x, H, W, gt)
+        # x, gt = self.attn(x, H, W, gt)
+        x =self.attn(x, H, W)
         x = x + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
         # gt = gt + self.drop_path(gt)
 
-        return x, gt
+        return x#, gt
 
 
 
@@ -112,29 +113,29 @@ class SegFormerGTGamma(nn.Module):
     """docstring for SegFormerGTGamma"""
     def __init__(self, gt_num = 1):
         super(SegFormerGTGamma, self).__init__()
-        self.gt_num = gt_num
+        # self.gt_num = gt_num
         embed_dims=[64, 128, 320, 512]
 
 
-        self.global_token1 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
-        # ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
-        # self.pe1 = nn.Parameter(torch.zeros(gt_num, embed_dims[0]))
-        # trunc_normal_(self.pe1, std=.02)
+        # self.global_token1 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
+        # # ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
+        # # self.pe1 = nn.Parameter(torch.zeros(gt_num, embed_dims[0]))
+        # # trunc_normal_(self.pe1, std=.02)
 
-        self.global_token2 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
-        # ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
-        # self.pe2 = nn.Parameter(torch.zeros(gt_num, embed_dims[1]))
-        # trunc_normal_(self.pe2, std=.02)
+        # self.global_token2 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
+        # # ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
+        # # self.pe2 = nn.Parameter(torch.zeros(gt_num, embed_dims[1]))
+        # # trunc_normal_(self.pe2, std=.02)
 
-        self.global_token3 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
-        # ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
-        # self.pe3 = nn.Parameter(torch.zeros(gt_num, embed_dims[2]))
-        # trunc_normal_(self.pe3, std=.02)
+        # self.global_token3 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
+        # # ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
+        # # self.pe3 = nn.Parameter(torch.zeros(gt_num, embed_dims[2]))
+        # # trunc_normal_(self.pe3, std=.02)
 
-        self.global_token4 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
-        # ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
-        # self.pe4 = nn.Parameter(torch.zeros(gt_num, embed_dims[3]))
-        # trunc_normal_(self.pe4, std=.02)
+        # self.global_token4 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
+        # # ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
+        # # self.pe4 = nn.Parameter(torch.zeros(gt_num, embed_dims[3]))
+        # # trunc_normal_(self.pe4, std=.02)
 
 
 
@@ -154,19 +155,19 @@ class SegFormerGTGamma(nn.Module):
         self.patch_embed4 = mix.patch_embed4
 
         # transformer encoder
-        self.block1 = nn.ModuleList([Block(mix.block1[i], self.gt_num)
+        self.block1 = nn.ModuleList([Block(mix.block1[i])
             for i in range(depths[0])])
         self.norm1 = mix.norm1
 
-        self.block2 = nn.ModuleList([Block(mix.block2[i], self.gt_num)
+        self.block2 = nn.ModuleList([Block(mix.block2[i])
             for i in range(depths[1])])
         self.norm2 = mix.norm2
 
-        self.block3 = nn.ModuleList([Block(mix.block3[i], self.gt_num)
+        self.block3 = nn.ModuleList([Block(mix.block3[i])
             for i in range(depths[2])])
         self.norm3 = mix.norm3
 
-        self.block4 = nn.ModuleList([Block(mix.block4[i], self.gt_num)
+        self.block4 = nn.ModuleList([Block(mix.block4[i])
             for i in range(depths[3])])
         self.norm4 = mix.norm4
 
@@ -176,36 +177,36 @@ class SegFormerGTGamma(nn.Module):
 
         # stage 1
         x, H, W = self.patch_embed1(x)
-        gt = self.global_token1
+        # gt = self.global_token1
         for i, blk in enumerate(self.block1):
-            x, gt = blk(x, H, W, gt)
+            x = blk(x, H, W)
         x = self.norm1(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 2
         x, H, W = self.patch_embed2(x)
-        gt = self.global_token2
+        # gt = self.global_token2
         for i, blk in enumerate(self.block2):
-            x, gt = blk(x, H, W, gt)
+            x = blk(x, H, W)
         x = self.norm2(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 3
         x, H, W = self.patch_embed3(x)
-        gt = self.global_token3
+        # gt = self.global_token3
         for i, blk in enumerate(self.block3):
-            x, gt = blk(x, H, W, gt)
+            x = blk(x, H, W)
         x = self.norm3(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
 
         # stage 4
         x, H, W = self.patch_embed4(x)
-        gt = self.global_token4
+        # gt = self.global_token4
         for i, blk in enumerate(self.block4):
-            x, gt = blk(x, H, W, gt)
+            x = blk(x, H, W)
         x = self.norm4(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         outs.append(x)
