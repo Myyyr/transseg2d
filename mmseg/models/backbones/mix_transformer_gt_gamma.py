@@ -92,7 +92,7 @@ class Block(nn.Module):
         self.mlp = block.mlp
         self.gt_num = gt_num
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, gt):
         skip = x
         skip_gt = gt
         x = self.norm1(x)
