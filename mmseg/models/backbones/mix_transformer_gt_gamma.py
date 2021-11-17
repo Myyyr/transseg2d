@@ -59,6 +59,7 @@ class Attention(nn.Module):
             if gt_num != 0:
                 print("x", x.shape)
                 print("x[:,gt_num:,:]", x[:,gt_num:,:].shape)
+                exit(0)
                 x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
                 x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
                 x_ = self.norm(x_)
