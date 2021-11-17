@@ -374,7 +374,7 @@ class DWConv(nn.Module):
 
 
 
-@BACKBONES.register_module()
+# @BACKBONES.register_module()
 class mit_b0(MixVisionTransformer):
     def __init__(self, **kwargs):
         super(mit_b0, self).__init__(
@@ -383,7 +383,7 @@ class mit_b0(MixVisionTransformer):
             drop_rate=0.0, drop_path_rate=0.1)
 
 
-@BACKBONES.register_module()
+# @BACKBONES.register_module()
 class mit_b1(MixVisionTransformer):
     def __init__(self, **kwargs):
         super(mit_b1, self).__init__(
@@ -392,7 +392,7 @@ class mit_b1(MixVisionTransformer):
             drop_rate=0.0, drop_path_rate=0.1)
 
 
-@BACKBONES.register_module()
+# @BACKBONES.register_module()
 class mit_b2(MixVisionTransformer):
     def __init__(self, **kwargs):
         super(mit_b2, self).__init__(
@@ -401,7 +401,7 @@ class mit_b2(MixVisionTransformer):
             drop_rate=0.0, drop_path_rate=0.1)
 
 
-@BACKBONES.register_module()
+# @BACKBONES.register_module()
 class mit_b3(MixVisionTransformer):
     def __init__(self, **kwargs):
         super(mit_b3, self).__init__(
@@ -410,7 +410,7 @@ class mit_b3(MixVisionTransformer):
             drop_rate=0.0, drop_path_rate=0.1)
 
 
-@BACKBONES.register_module()
+# @BACKBONES.register_module()
 class mit_b4(MixVisionTransformer):
     def __init__(self, **kwargs):
         super(mit_b4, self).__init__(
@@ -419,7 +419,7 @@ class mit_b4(MixVisionTransformer):
             drop_rate=0.0, drop_path_rate=0.1)
 
 
-@BACKBONES.register_module()
+# @BACKBONES.register_module()
 class mit_b5(MixVisionTransformer):
     def __init__(self, **kwargs):
         super(mit_b5, self).__init__(
@@ -430,7 +430,7 @@ class mit_b5(MixVisionTransformer):
 
 
 
-
+@BACKBONES.register_module()
 class SegFormerGTGamma(nn.Module):
     """docstring for SegFormerGTGamma"""
     def __init__(self, gt_num = 1):
