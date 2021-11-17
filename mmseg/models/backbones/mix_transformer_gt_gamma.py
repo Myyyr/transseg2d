@@ -97,6 +97,11 @@ class SegFormerGTGamma(nn.Module):
             drop_rate=0.0, drop_path_rate=0.1)
 
 
+
+    def init_weights(self, pretrained=None):
+        if isinstance(pretrained, str):
+            self.mix.init_weights(pretrained)
+
         self.patch_embed1 = self.mix.patch_embed1
         self.patch_embed2 = self.mix.patch_embed2
         self.patch_embed3 = self.mix.patch_embed3 
@@ -123,12 +128,6 @@ class SegFormerGTGamma(nn.Module):
         self.block4 = nn.ModuleList([Block(self.mix.block4[i])
             for i in range(depths[0])])
         self.norm4 = self.mix.norm4
-
-
-
-    def init_weights(self, pretrained=None):
-        if isinstance(pretrained, str):
-            self.mix.init_weights(pretrained)
 
     def forward_features(self, x):
         B = x.shape[0]
