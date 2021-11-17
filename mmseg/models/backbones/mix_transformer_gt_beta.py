@@ -314,7 +314,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block1 = nn.ModuleList([Block(
             dim=embed_dims[0], num_heads=num_heads[0], mlp_ratio=mlp_ratios[0], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[0], gt_num=gt_num)
+            sr_ratio=sr_ratios[0])
             for i in range(depths[0])])
         self.norm1 = norm_layer(embed_dims[0])
 
@@ -322,7 +322,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block2 = nn.ModuleList([Block(
             dim=embed_dims[1], num_heads=num_heads[1], mlp_ratio=mlp_ratios[1], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[1], gt_num=gt_num)
+            sr_ratio=sr_ratios[1])
             for i in range(depths[1])])
         self.norm2 = norm_layer(embed_dims[1])
 
@@ -330,7 +330,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block3 = nn.ModuleList([Block(
             dim=embed_dims[2], num_heads=num_heads[2], mlp_ratio=mlp_ratios[2], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[2], gt_num=gt_num)
+            sr_ratio=sr_ratios[2])
             for i in range(depths[2])])
         self.norm3 = norm_layer(embed_dims[2])
 
@@ -338,7 +338,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block4 = nn.ModuleList([Block(
             dim=embed_dims[3], num_heads=num_heads[3], mlp_ratio=mlp_ratios[3], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[3], gt_num=gt_num)
+            sr_ratio=sr_ratios[3])
             for i in range(depths[3])])
         self.norm4 = norm_layer(embed_dims[3])
 
