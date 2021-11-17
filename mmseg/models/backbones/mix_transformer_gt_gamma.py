@@ -106,6 +106,7 @@ class SegFormerGTGamma(nn.Module):
     def __init__(self, gt_num = 1):
         super(SegFormerGTGamma, self).__init__()
         self.gt_num = gt_num
+        embed_dims=[64, 128, 320, 512]
 
 
         self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
