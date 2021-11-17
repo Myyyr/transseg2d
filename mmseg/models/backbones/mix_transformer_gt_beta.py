@@ -369,6 +369,20 @@ class MixVisionTransformerGTBeta(nn.Module):
             self.pe4 = nn.Parameter(torch.zeros(gt_num, embed_dims[3]))
             trunc_normal_(self.pe4, std=.02)
 
+        if gt_num == 0:
+
+            self.global_token1 = None
+            self.pe1 = None
+
+            self.global_token2 = None
+            self.pe2 = None
+
+            self.global_token3 = None
+            self.pe3 = None
+
+            self.global_token4 = None
+            self.pe4 = None
+
 
 
     def _init_weights(self, m):
