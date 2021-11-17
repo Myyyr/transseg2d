@@ -17,14 +17,13 @@ from mmcv.runner import load_checkpoint
 import math
 
 
-from mix_transformer import mit_b4
+from .mix_transformer import mit_b4
 
 
 
 class Attention(nn.Module):
     def __init__(self, attn):
         super().__init__()
-        assert dim % num_heads == 0, f"dim {dim} should be divided by num_heads {num_heads}."
 
         self.dim = attn.dim
         self.num_heads = attn.num_heads
