@@ -211,9 +211,6 @@ class Block(nn.Module):
 
         self.apply(self._init_weights)
 
-        self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
-                                        qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
-                                        proj_drop=drop)
         self.gt_num = gt_num
 
     def _init_weights(self, m):
@@ -243,7 +240,7 @@ class Block(nn.Module):
             # nw = B//x.shape[0]
             # gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
             gt = self.norm2(gt)
-            gt = self.gt_attn(gt, pe)
+            # gt = self.gt_attn(gt, pe)
             # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
 
         return x, gt
