@@ -46,9 +46,10 @@ class Attention(nn.Module):
         B, N_, C = x.shape
         gt_num = self.gt_num
 
-        if len(gt.shape) != 3:
-            gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-        x = torch.cat([gt, x], dim=1)
+        if gt_num != 0:
+            if len(gt.shape) != 3:
+                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+            x = torch.cat([gt, x], dim=1)
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
