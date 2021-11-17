@@ -190,7 +190,7 @@ class Attention(nn.Module):
         if gt_num!=0:
             return x[:,gt_num:,:], x[:,:gt_num,:]
         else:
-            return x, _
+            return x, gt
 
 
 class Block(nn.Module):
