@@ -116,17 +116,17 @@ class SegFormerGTGamma(nn.Module):
 
         cur += depths[0]
         self.block2 = nn.ModuleList([Block(self.mix.block2[i])
-            for i in range(depths[0])])
+            for i in range(depths[1])])
         self.norm2 = self.mix.norm2
 
         cur += depths[1]
         self.block3 = nn.ModuleList([Block(self.mix.block3[i])
-            for i in range(depths[0])])
+            for i in range(depths[2])])
         self.norm3 = self.mix.norm3
 
         cur += depths[2]
         self.block4 = nn.ModuleList([Block(self.mix.block4[i])
-            for i in range(depths[0])])
+            for i in range(depths[3])])
         self.norm4 = self.mix.norm4
 
     def forward_features(self, x):
