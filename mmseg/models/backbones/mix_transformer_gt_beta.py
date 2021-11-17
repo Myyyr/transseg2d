@@ -202,7 +202,7 @@ class Block(nn.Module):
         self.attn = Attention(
             dim,
             num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale,
-            attn_drop=attn_drop, proj_drop=drop, sr_ratio=sr_ratio)
+            attn_drop=attn_drop, proj_drop=drop, sr_ratio=sr_ratio, gt_num=gt_num)
         # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
@@ -213,7 +213,7 @@ class Block(nn.Module):
 
         self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
                                         qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
-                                        proj_drop=drop, gt_num=gt_num)
+                                        proj_drop=drop)
         self.gt_num = gt_num
 
     def _init_weights(self, m):
