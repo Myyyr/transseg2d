@@ -55,10 +55,15 @@ class Attention(nn.Module):
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
         if self.sr_ratio > 1:
-            x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
-            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-            x_ = self.norm(x_)
-            x_ = torch.cat([gt, x_], dim=1)
+            if gt_num != 0:
+                x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
+                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+                x_ = self.norm(x_)
+                x_ = torch.cat([gt, x_], dim=1)
+            else:
+                x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
+                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+                x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
 
         else:
