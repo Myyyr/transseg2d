@@ -13,7 +13,7 @@ model = dict(
     pretrained='pretrained/mit_b4.pth',
     backbone=dict(
         type='SegFormerGTGamma',
-        style='pytorch'),
+        ),
     decode_head=dict(
         type='SegFormerHead',
         in_channels=[64, 128, 320, 512],
