@@ -83,10 +83,10 @@ class Attention(nn.Module):
 
 class Block(nn.Module):
 
-    def __init__(self, block, gt_num=1):
+    def __init__(self, block):
         super().__init__()
         self.norm1 = block.norm1
-        self.attn = Attention(block.attn, gt_num)
+        self.attn = Attention(block.attn)
         self.drop_path = block.drop_path
         self.norm2 = block.norm2
         self.mlp = block.mlp
