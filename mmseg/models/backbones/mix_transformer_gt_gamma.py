@@ -116,22 +116,22 @@ class SegFormerGTGamma(nn.Module):
         embed_dims=[64, 128, 320, 512]
 
 
-        self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
+        self.global_token1 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[0]))
         # ws_pe = (45*gt_num//2**0, 45*gt_num//2**0)
         # self.pe1 = nn.Parameter(torch.zeros(gt_num, embed_dims[0]))
         # trunc_normal_(self.pe1, std=.02)
 
-        self.global_token2 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
+        self.global_token2 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[1]))
         # ws_pe = (45*gt_num//2**1, 45*gt_num//2**1)
         # self.pe2 = nn.Parameter(torch.zeros(gt_num, embed_dims[1]))
         # trunc_normal_(self.pe2, std=.02)
 
-        self.global_token3 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
+        self.global_token3 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[2]))
         # ws_pe = (45*gt_num//2**2, 45*gt_num//2**2)
         # self.pe3 = nn.Parameter(torch.zeros(gt_num, embed_dims[2]))
         # trunc_normal_(self.pe3, std=.02)
 
-        self.global_token4 = torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
+        self.global_token4 = None #torch.nn.Parameter(torch.randn(gt_num,embed_dims[3]))
         # ws_pe = (45*gt_num//2**3, 45*gt_num//2**3)
         # self.pe4 = nn.Parameter(torch.zeros(gt_num, embed_dims[3]))
         # trunc_normal_(self.pe4, std=.02)
