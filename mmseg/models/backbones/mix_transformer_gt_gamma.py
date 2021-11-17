@@ -44,7 +44,7 @@ class Attention(nn.Module):
 
     def forward(self, x, H, W):
         B, N_, C = x.shape
-        gt_num = self.gt_num
+        # gt_num = self.gt_num
 
         # if gt_num != 0:
         #     if len(gt.shape) != 3:
