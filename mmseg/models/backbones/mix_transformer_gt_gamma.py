@@ -93,10 +93,11 @@ class Block(nn.Module):
         # self.gt_num = gt_num
 
     def forward(self, x, H, W):
+        skip = x
         x = self.norm1(x)
         # x, gt = self.attn(x, H, W, gt)
         x =self.attn(x, H, W)
-        x = x + self.drop_path(x)
+        x = skip + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
         # gt = gt + self.drop_path(gt)
