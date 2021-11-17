@@ -112,7 +112,7 @@ class ClassicAttention(nn.Module):
         return x
 
 class Attention(nn.Module):
-    def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1):
+    def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1, gt_num=1):
         super().__init__()
         assert dim % num_heads == 0, f"dim {dim} should be divided by num_heads {num_heads}."
 
@@ -134,6 +134,8 @@ class Attention(nn.Module):
 
         self.apply(self._init_weights)
 
+        self.gt_num=gt_num
+
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -152,19 +154,26 @@ class Attention(nn.Module):
 
     def forward(self, x, H, W, gt):
         B, N_, C = x.shape
-        if len(gt.shape) != 3:
-            gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-        gt_num = gt.shape[1]
-        x = torch.cat([gt, x], dim=1)
+
+        gt_num = self.gt_num
+        if self.gt_num != 0:
+            if len(gt.shape) != 3:
+                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+            x = torch.cat([gt, x], dim=1)
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
 
         if self.sr_ratio > 1:
-            x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
-            x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
-            x_ = self.norm(x_)
-            x_ = torch.cat([gt, x_], dim=1)
+            if self.gt_num != 0:
+                x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
+                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+                x_ = self.norm(x_)
+                x_ = torch.cat([gt, x_], dim=1)
+            else:
+                x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
+                x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
+                x_ = self.norm(x_)
             kv = self.kv(x_).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         else:
             kv = self.kv(x).reshape(B, -1, 2, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
@@ -178,13 +187,16 @@ class Attention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
 
-        return x[:,gt_num:,:], x[:,:gt_num,:]
+        if gt_num!=0:
+            return x[:,gt_num:,:], x[:,:gt_num,:]
+        else:
+            return x, _
 
 
 class Block(nn.Module):
 
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, sr_ratio=1):
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, sr_ratio=1, gt_num=1):
         super().__init__()
         self.norm1 = norm_layer(dim)
         self.attn = Attention(
@@ -201,7 +213,8 @@ class Block(nn.Module):
 
         self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
                                         qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
-                                        proj_drop=drop)
+                                        proj_drop=drop, gt_num=gt_num)
+        self.gt_num = gt_num
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -224,13 +237,14 @@ class Block(nn.Module):
         x = x + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
-        gt = gt + self.drop_path(gt)
-        # B, ngt, c = gt.shape
-        # nw = B//x.shape[0]
-        # gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
-        gt = self.norm2(gt)
-        gt = self.gt_attn(gt, pe)
-        # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
+        if self.gt_num != 0:
+            gt = gt + self.drop_path(gt)
+            # B, ngt, c = gt.shape
+            # nw = B//x.shape[0]
+            # gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
+            gt = self.norm2(gt)
+            gt = self.gt_attn(gt, pe)
+            # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
 
         return x, gt
 
@@ -303,7 +317,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block1 = nn.ModuleList([Block(
             dim=embed_dims[0], num_heads=num_heads[0], mlp_ratio=mlp_ratios[0], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[0])
+            sr_ratio=sr_ratios[0], gt_num=gt_num)
             for i in range(depths[0])])
         self.norm1 = norm_layer(embed_dims[0])
 
@@ -311,7 +325,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block2 = nn.ModuleList([Block(
             dim=embed_dims[1], num_heads=num_heads[1], mlp_ratio=mlp_ratios[1], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[1])
+            sr_ratio=sr_ratios[1], gt_num=gt_num)
             for i in range(depths[1])])
         self.norm2 = norm_layer(embed_dims[1])
 
@@ -319,7 +333,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block3 = nn.ModuleList([Block(
             dim=embed_dims[2], num_heads=num_heads[2], mlp_ratio=mlp_ratios[2], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[2])
+            sr_ratio=sr_ratios[2], gt_num=gt_num)
             for i in range(depths[2])])
         self.norm3 = norm_layer(embed_dims[2])
 
@@ -327,7 +341,7 @@ class MixVisionTransformerGTBeta(nn.Module):
         self.block4 = nn.ModuleList([Block(
             dim=embed_dims[3], num_heads=num_heads[3], mlp_ratio=mlp_ratios[3], qkv_bias=qkv_bias, qk_scale=qk_scale,
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer,
-            sr_ratio=sr_ratios[3])
+            sr_ratio=sr_ratios[3], gt_num=gt_num)
             for i in range(depths[3])])
         self.norm4 = norm_layer(embed_dims[3])
 
@@ -521,10 +535,19 @@ class mit_gt_beta_b4(MixVisionTransformerGTBeta):
 @BACKBONES.register_module()
 class mit_gt1_beta_b4(MixVisionTransformerGTBeta):
     def __init__(self, **kwargs):
-        super(mit_gt_beta_b4, self).__init__(
+        super(mit_gt1_beta_b4, self).__init__(
             patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
             qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
             drop_rate=0.0, drop_path_rate=0.1, gt_num=1)
+
+
+@BACKBONES.register_module()
+class mit_gt0_beta_b4(MixVisionTransformerGTBeta):
+    def __init__(self, **kwargs):
+        super(mit_gt0_beta_b4, self).__init__(
+            patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
+            drop_rate=0.0, drop_path_rate=0.1, gt_num=0)
 
 
 @BACKBONES.register_module()
