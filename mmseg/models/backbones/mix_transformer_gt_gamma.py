@@ -27,7 +27,6 @@ class Attention(nn.Module):
 
         self.dim = attn.dim
         self.num_heads = attn.num_heads
-        head_dim = dim // num_heads
         self.scale = attn.scale
 
         self.q = attn.q
