@@ -88,43 +88,45 @@ class Block(nn.Module):
 @BACKBONES.register_module()
 class SegFormerGTGamma(nn.Module):
     """docstring for SegFormerGTGamma"""
-    def __init__(self, gt_num = 1, patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
-            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
-            drop_rate=0.0, drop_path_rate=0.1):
+    def __init__(self, gt_num = 1):
         super(SegFormerGTGamma, self).__init__()
-        self.mix = mit_b4(patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
-            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
-            drop_rate=0.0, drop_path_rate=0.1)
+        # self.mix = mit_b4(patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
+        #     qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
+        #     drop_rate=0.0, drop_path_rate=0.1)
 
 
 
     def init_weights(self, pretrained=None):
+        mix = mit_b4(patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[4, 4, 4, 4],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3], sr_ratios=[8, 4, 2, 1],
+            drop_rate=0.0, drop_path_rate=0.1)
+
         if isinstance(pretrained, str):
-            self.mix.init_weights(pretrained)
+            mix.init_weights(pretrained)
 
         depths=[3, 8, 27, 3]
 
-        self.patch_embed1 = self.mix.patch_embed1
-        self.patch_embed2 = self.mix.patch_embed2
-        self.patch_embed3 = self.mix.patch_embed3 
-        self.patch_embed4 = self.mix.patch_embed4
+        self.patch_embed1 = mix.patch_embed1
+        self.patch_embed2 = mix.patch_embed2
+        self.patch_embed3 = mix.patch_embed3 
+        self.patch_embed4 = mix.patch_embed4
 
         # transformer encoder
-        self.block1 = nn.ModuleList([Block(self.mix.block1[i])
+        self.block1 = nn.ModuleList([Block(mix.block1[i])
             for i in range(depths[0])])
-        self.norm1 = self.mix.norm1
+        self.norm1 = mix.norm1
 
-        self.block2 = nn.ModuleList([Block(self.mix.block2[i])
+        self.block2 = nn.ModuleList([Block(mix.block2[i])
             for i in range(depths[1])])
-        self.norm2 = self.mix.norm2
+        self.norm2 = mix.norm2
 
-        self.block3 = nn.ModuleList([Block(self.mix.block3[i])
+        self.block3 = nn.ModuleList([Block(mix.block3[i])
             for i in range(depths[2])])
-        self.norm3 = self.mix.norm3
+        self.norm3 = mix.norm3
 
-        self.block4 = nn.ModuleList([Block(self.mix.block4[i])
+        self.block4 = nn.ModuleList([Block(mix.block4[i])
             for i in range(depths[3])])
-        self.norm4 = self.mix.norm4
+        self.norm4 = mix.norm4
 
     def forward_features(self, x):
         B = x.shape[0]
