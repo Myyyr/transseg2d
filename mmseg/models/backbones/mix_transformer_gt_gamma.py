@@ -107,7 +107,7 @@ class Block(nn.Module):
         skip_gt = gt
         x = self.norm1(x)
         x, gt = self.attn(x, H, W, gt)
-        x =self.attn(x, H, W)
+        # x =self.attn(x, H, W)
         x = skip + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
