@@ -50,11 +50,11 @@ class Attention(nn.Module):
             gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1)
 
-        print("x", x.shape)
-        print("B, N_, C", B,N_,C)
-        print("gt", gt.shape)
+        # print("x", x.shape)
+        # print("B, N_, C", B,N_,C)
+        # print("gt", gt.shape)
 
-        exit(0)        
+        # exit(0)        
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
@@ -94,7 +94,7 @@ class Block(nn.Module):
     def __init__(self, block, gt_num=1):
         super().__init__()
         self.norm1 = block.norm1
-        self.attn = Attention(block.attn)
+        self.attn = Attention(block.attn, gt_num)
         self.drop_path = block.drop_path
         self.norm2 = block.norm2
         self.mlp = block.mlp
