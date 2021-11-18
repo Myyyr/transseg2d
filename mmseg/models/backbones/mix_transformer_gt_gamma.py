@@ -57,9 +57,9 @@ class Attention(nn.Module):
 
         if self.sr_ratio > 1:
             if gt_num != 0:
-                print("x", x.shape)
-                print("x[:,gt_num:,:]", x[:,gt_num:,:].shape)
-                exit(0)
+                # print("x", x.shape)
+                # print("x[:,gt_num:,:]", x[:,gt_num:,:].shape)
+                # exit(0)
                 x_ = x[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, H, W)
                 x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
                 x_ = self.norm(x_)
@@ -122,7 +122,7 @@ class Block(nn.Module):
 @BACKBONES.register_module()
 class SegFormerGTGamma(nn.Module):
     """docstring for SegFormerGTGamma"""
-    def __init__(self, gt_num = 1):
+    def __init__(self, gt_num = 10):
         super(SegFormerGTGamma, self).__init__()
         self.gt_num = gt_num
         embed_dims=[64, 128, 320, 512]
