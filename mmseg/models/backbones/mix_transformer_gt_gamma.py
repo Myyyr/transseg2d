@@ -45,12 +45,16 @@ class Attention(nn.Module):
     def forward(self, x, H, W, gt):
         B, N_, C = x.shape
         gt_num = self.gt_num
-        if self.gt_num != 0:
-            if len(gt.shape) != 3:
-                gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-            x = torch.cat([gt, x], dim=1)
+        # if self.gt_num != 0:
+        if len(gt.shape) != 3:
+            gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+        x = torch.cat([gt, x], dim=1)
 
-        
+        print("x", x.shape)
+        print("B, N_, C", B,N_,C)
+        print("gt", gt.shape)
+
+        exit(0)        
         B, N, C = x.shape
 
         q = self.q(x).reshape(B, N, self.num_heads, C // self.num_heads).permute(0, 2, 1, 3)
