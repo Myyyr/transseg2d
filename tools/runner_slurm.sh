@@ -149,9 +149,9 @@ module load python/3.7.10
 
 # ..............................................
 
-CONFIG="configs/segformergtgamma/segformer.gt.gamma.g10.b4.512x512.ade.160k.py"
+# CONFIG="configs/segformergtgamma/segformer.gt.gamma.g10.b4.512x512.ade.160k.py"
 CONFIG="configs/segformergtgamma/segformer.gt.gamma.g1.b4.512x512.ade.160k.py"
-CONFIG="configs/segformergtgamma/segformer.gt.gamma.g5.b4.512x512.ade.160k.py"
+# CONFIG="configs/segformergtgamma/segformer.gt.gamma.g5.b4.512x512.ade.160k.py"
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
