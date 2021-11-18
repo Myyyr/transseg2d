@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sfg1     # job name
+#SBATCH --job-name=sfg     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=16:00:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/sfg1%j.out # output file name
-#SBATCH --error=logs/sfg1%j.err  # error file name
+#SBATCH --output=logs/sfg%j.out # output file name
+#SBATCH --error=logs/sfg%j.err  # error file name
 
 set -x
 
@@ -150,8 +150,8 @@ module load python/3.7.10
 # ..............................................
 
 # CONFIG="configs/segformergtgamma/segformer.gt.gamma.g10.b4.512x512.ade.160k.py"
-CONFIG="configs/segformergtgamma/segformer.gt.gamma.g1.b4.512x512.ade.160k.py"
-# CONFIG="configs/segformergtgamma/segformer.gt.gamma.g5.b4.512x512.ade.160k.py"
+# CONFIG="configs/segformergtgamma/segformer.gt.gamma.g1.b4.512x512.ade.160k.py"
+CONFIG="configs/segformergtgamma/segformer.gt.gamma.g5.b4.512x512.ade.160k.py"
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
