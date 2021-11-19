@@ -173,8 +173,6 @@ class Attention(nn.Module):
         if self.gt_num != 0:
             if len(gt.shape) != 3:
                 gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-            
-
             x_windows = torch.cat([gt, x_windows], dim=1)
       
         B, N, C = x_windows.shape
@@ -206,8 +204,17 @@ class Attention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
 
-        return x[:,gt_num:,:], x[:,:gt_num,:]
 
+        gt = x[:,:gt_num,:]
+        x = x[:,gt_num:,:]
+
+        x = x.view(-1, self.window_size, self.window_size, C)
+        x = window_reverse(x, self.window_size, Hp, Wp)  # B H' W' C
+
+        if pad_r > 0 or pad_b > 0:
+            x = x[:, :H, :W, :].contiguous()
+
+        return x, gt
 
 class Block(nn.Module):
 
