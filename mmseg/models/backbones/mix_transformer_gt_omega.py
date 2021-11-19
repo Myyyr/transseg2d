@@ -148,7 +148,7 @@ class ClassicAttention(nn.Module):
 
 
 class Attention(nn.Module):
-    def __init__(self, attn, gt_num=1, , window_size=(8,8)):
+    def __init__(self, attn, gt_num=1, window_size=(8,8)):
         super().__init__()
 
         self.dim = attn.dim
