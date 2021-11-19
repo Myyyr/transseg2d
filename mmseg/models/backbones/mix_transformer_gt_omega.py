@@ -208,7 +208,7 @@ class Attention(nn.Module):
         gt = x[:,:gt_num,:]
         x = x[:,gt_num:,:]
 
-        x = x.view(-1, self.window_size, self.window_size, C)
+        x = x.view(-1, self.window_size[0], self.window_size[1], C)
         x = window_reverse(x, self.window_size, Hp, Wp)  # B H' W' C
 
         if pad_r > 0 or pad_b > 0:
