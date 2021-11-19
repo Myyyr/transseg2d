@@ -253,7 +253,7 @@ class Block(nn.Module):
         x = skip + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
 
-        if self.gt_num != 0 :
+        if self.gt_num != 0 and self.do_gmsa:
             if len(skip_gt.shape) != 3:
                 skip_gt = repeat(skip_gt, "g c -> b g c", b=B)
             gt = skip_gt + self.drop_path(self.gt_mlp1(self.norm2(gt)))
