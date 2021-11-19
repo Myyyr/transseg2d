@@ -157,7 +157,7 @@ class Attention(nn.Module):
         gt_num = self.gt_num
 
 
-        x = x.view(B, H, W, C)
+        x = x.view(B_, H, W, C)
         pad_l = pad_t = 0
         pad_b = (self.window_size[0] - H % self.window_size[0]) % self.window_size[0]
         pad_r = (self.window_size[1] - W % self.window_size[1]) % self.window_size[1]
