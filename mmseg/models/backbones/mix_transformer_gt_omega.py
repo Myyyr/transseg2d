@@ -282,10 +282,10 @@ class Block(nn.Module):
 
 
 @BACKBONES.register_module()
-class SegFormerGTGamma(nn.Module):
-    """docstring for SegFormerGTGamma"""
+class SegFormerGTOmega(nn.Module):
+    """docstring for SegFormerGTOmega"""
     def __init__(self, gt_num = 10):
-        super(SegFormerGTGamma, self).__init__()
+        super(SegFormerGTOmega, self).__init__()
         self.gt_num = gt_num
         self.embed_dims=[64, 128, 320, 512]
         self.num_heads=[1, 2, 5, 8]
