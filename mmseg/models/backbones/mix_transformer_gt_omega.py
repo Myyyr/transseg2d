@@ -213,7 +213,8 @@ class Attention(nn.Module):
 
         if pad_r > 0 or pad_b > 0:
             x = x[:, :H, :W, :].contiguous()
-
+        x = x.view(B, H * W, C)
+        
         return x, gt
 
 class Block(nn.Module):
