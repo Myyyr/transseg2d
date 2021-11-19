@@ -238,6 +238,7 @@ class Block(nn.Module):
         self.do_gmsa = do_gmsa
 
         if do_gmsa:
+            mlp_hidden_dim = int(mlp_ratio*dim)
             self.gt_mlp1 = ClassiqueMlp(in_features=dim, hidden_features=mlp_hidden_dim, 
                                         act_layer=act_layer, drop=drop)
 
