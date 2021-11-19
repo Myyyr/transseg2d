@@ -113,7 +113,7 @@ class ClassicAttention(nn.Module):
         strt = m//2-N//2
         print('x', x.shape)
         print('pe', pe.shape)
-        exit(0)
+        exit(0  )
         pe = pe[strt:strt+N,:]
         x = x + pe
 
@@ -291,22 +291,22 @@ class SegFormerGTOmega(nn.Module):
 
         self.global_token1 = torch.nn.Parameter(torch.randn(gt_num,self.embed_dims[0]))
         ws_pe = (40*gt_num//(2**0), 40*gt_num//(2**0))
-        self.pe1 = nn.Parameter(torch.zeros(gt_num, self.embed_dims[0]))
+        self.pe1 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[0]))
         trunc_normal_(self.pe1, std=.02)
 
         self.global_token2 = torch.nn.Parameter(torch.randn(gt_num,self.embed_dims[1]))
         ws_pe = (40*gt_num//(2**1), 40*gt_num//(2**1))
-        self.pe2 = nn.Parameter(torch.zeros(gt_num, self.embed_dims[1]))
+        self.pe2 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[1]))
         trunc_normal_(self.pe2, std=.02)
 
         self.global_token3 = torch.nn.Parameter(torch.randn(gt_num,self.embed_dims[2]))
         ws_pe = (40*gt_num//(2**2), 40*gt_num//(2**2))
-        self.pe3 = nn.Parameter(torch.zeros(gt_num, self.embed_dims[2]))
+        self.pe3 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[2]))
         trunc_normal_(self.pe3, std=.02)
 
         self.global_token4 = torch.nn.Parameter(torch.randn(gt_num,self.embed_dims[3]))
         ws_pe = (40*gt_num//(2**3), 40*gt_num//(2**3))
-        self.pe4 = nn.Parameter(torch.zeros(gt_num, self.embed_dims[3]))
+        self.pe4 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[3]))
         trunc_normal_(self.pe4, std=.02)
 
 
