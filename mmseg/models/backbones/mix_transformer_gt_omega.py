@@ -167,16 +167,14 @@ class Attention(nn.Module):
         x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
         # x_windows = x
-        # B, N_, C = x_windows.shape
+        B, N_, C = x_windows.shape
 
 
         if self.gt_num != 0:
             if len(gt.shape) != 3:
                 gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
             
-            print('gt',gt.shape)
-            print('x_windows',x_windows.shape)
-            exit(0)
+
             x_windows = torch.cat([gt, x_windows], dim=1)
       
         B, N, C = x_windows.shape
