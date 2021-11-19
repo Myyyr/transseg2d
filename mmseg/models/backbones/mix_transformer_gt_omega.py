@@ -255,7 +255,7 @@ class Block(nn.Module):
 
         if self.gt_num != 0 :
             if len(skip_gt.shape) != 3:
-                skip_gt = repeat(gt, "g c -> b g c", b=B)
+                skip_gt = repeat(skip_gt, "g c -> b g c", b=B)
             gt = skip_gt + self.drop_path(self.gt_mlp1(self.norm2(gt)))
 
 
