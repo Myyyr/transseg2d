@@ -153,7 +153,7 @@ class Attention(nn.Module):
         self.window_size = window_size
 
     def forward(self, x, H, W, gt):
-        B, N_, C = x.shape
+        B_, N_, C = x.shape
         gt_num = self.gt_num
 
 
@@ -213,8 +213,8 @@ class Attention(nn.Module):
 
         if pad_r > 0 or pad_b > 0:
             x = x[:, :H, :W, :].contiguous()
-        x = x.view(B, H * W, C)
-        
+        x = x.view(B_, H * W, C)
+
         return x, gt
 
 class Block(nn.Module):
