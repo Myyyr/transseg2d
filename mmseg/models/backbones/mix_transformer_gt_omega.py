@@ -325,7 +325,7 @@ class SegFormerGTOmega(nn.Module):
 
         do_gmsa = [True]*depths[1]
         do_gmsa[-1] = False
-        self.block2 = nn.ModuleList([Block(mix.block1[i], gt_num=self.gt_num, dim=self.embed_dims[i],
+        self.block2 = nn.ModuleList([Block(mix.block2[i], gt_num=self.gt_num, dim=self.embed_dims[i],
                                            num_heads=self.num_heads[i], mlp_ratio=4., 
                                            qkv_bias=True, drop=0., attn_drop=0.,
                                            window_size=(8,8), do_gmsa=do_gmsa[i])
@@ -334,7 +334,7 @@ class SegFormerGTOmega(nn.Module):
 
         do_gmsa = [True]*depths[2]
         do_gmsa[-1] = False
-        self.block3 = nn.ModuleList([Block(mix.block1[i], gt_num=self.gt_num, dim=self.embed_dims[i],
+        self.block3 = nn.ModuleList([Block(mix.block3[i], gt_num=self.gt_num, dim=self.embed_dims[i],
                                            num_heads=self.num_heads[i], mlp_ratio=4., 
                                            qkv_bias=True, drop=0., attn_drop=0.,
                                            window_size=(8,8), do_gmsa=do_gmsa[i])
@@ -343,7 +343,7 @@ class SegFormerGTOmega(nn.Module):
 
         do_gmsa = [True]*depths[3]
         do_gmsa[-1] = False
-        self.block4 = nn.ModuleList([Block(mix.block1[i], gt_num=self.gt_num, dim=self.embed_dims[i],
+        self.block4 = nn.ModuleList([Block(mix.block4[i], gt_num=self.gt_num, dim=self.embed_dims[i],
                                            num_heads=self.num_heads[i], mlp_ratio=4., 
                                            qkv_bias=True, drop=0., attn_drop=0.,
                                            window_size=(8,8), do_gmsa=do_gmsa[i])
