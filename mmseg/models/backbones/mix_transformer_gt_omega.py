@@ -243,12 +243,12 @@ class Block(nn.Module):
             self.gt_norm2 = norm_layer(dim)
 
     def forward(self, x, H, W, gt, pe):
-        B, N, C = x.shape
         
         skip = x
         skip_gt = gt
         x = self.norm1(x)
         x, gt = self.attn(x, H, W, gt)
+        B = gt.shape[0]
         # x =self.attn(x, H, W)
         x = skip + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x), H, W))
