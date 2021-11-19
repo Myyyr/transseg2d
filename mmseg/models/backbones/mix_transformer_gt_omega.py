@@ -167,7 +167,7 @@ class Attention(nn.Module):
         x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
         # x_windows = x
-        B, N_, C = x_windows.shape
+        # B, N_, C = x_windows.shape
 
 
         if self.gt_num != 0:
