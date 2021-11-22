@@ -181,7 +181,7 @@ class Attention(nn.Module):
 
         if self.sr_ratio > 1:
             if gt_num != 0:
-                x_ = x_windows[:,g  t_num:,:].permute(0, 2, 1).reshape(B, C, self.window_size[0], self.window_size[1])
+                x_ = x_windows[:,gt_num:,:].permute(0, 2, 1).reshape(B, C, self.window_size[0], self.window_size[1])
                 x_ = nn.functional.interpolate(x_, scale=self.sr_ratio, align_corners=True)
                 x_ = self.sr(x_).reshape(B, C, -1).permute(0, 2, 1)
                 x_ = self.norm(x_)
