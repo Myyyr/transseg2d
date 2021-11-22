@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/segformergtomega.py',
+    '../_base_/models/segformergtdelta.py',
     '../_base_/datasets/ade20k_repeat.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_160k_adamw.py'
@@ -12,7 +12,7 @@ model = dict(
     type='EncoderDecoder',
     pretrained='pretrained_models/mit_b4.pth',
     backbone=dict(
-        type='SegFormerGTOmega',
+        type='SegFormerGTDelta',
         gt_num=10
         ),
     decode_head=dict(
