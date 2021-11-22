@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/segformergtomega.py',
+    '../_base_/models/segformergtepsilon.py',
     '../_base_/datasets/ade20k_repeat_dbg.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_160k_adamw.py'
@@ -12,7 +12,7 @@ model = dict(
     type='EncoderDecoder',
     pretrained='pretrained_models/mit_b4.pth',
     backbone=dict(
-        type='SegFormerGTOmega',
+        type='SegFormerGTEpsilon',
         gt_num=10
         ),
     decode_head=dict(
@@ -32,7 +32,7 @@ model = dict(
     test_cfg=dict(mode='whole'))
 
 # optimizer
-optimizer = dict(_delete_=True, type='AdamW', lr=0.00006, betas=(0.9, 0.999), weight_decay=0.01,
+optimizer = dict(_delete_=True, type='AdamW', lr=0.0006, betas=(0.9, 0.999), weight_decay=0.01,
                  paramwise_cfg=dict(custom_keys={'pos_block': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.),
                                                  'head': dict(lr_mult=10.)
