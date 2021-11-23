@@ -23,6 +23,7 @@ from .swin_unet_v2_gtv5 import SwinUNetV2GTV5
 from .swin_unet_v2_gtv6 import SwinUNetV2GTV6
 from .swin_unet_v2_gtv7 import SwinUNetV2GTV7
 from .swin_unet_v2_gtv8 import SwinUNetV2GTV8
+from .swin_unet_v2_gtv8_opti import SwinUNetV2GTV8Opti
 from .swin_unet_v2_gtv8_visu import SwinUNetV2GTV8Visu
 from .no_swin_unet_v2 import NoSwinUNetV2
 from .swin_unet_encoder_gtv1 import SwinUNetEncoderGTv1
@@ -59,5 +60,5 @@ __all__ = [
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'SwinUNetV2Visu','NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG',
     'SwinUNetV2CrossAttentionUpsample', 'SwinUNetV2BilinearUpsampling', 'SwinUNetV2GTV8Visu',
     'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer', 'mit_b4', 'SwinUNetV2GTV8CrossAttentionUpsample','SwinTransformerEff',
-    'SwinTransformerGTV8Visu'
+    'SwinTransformerGTV8Visu', 'SwinUNetV2GTV8Opti'
 ]

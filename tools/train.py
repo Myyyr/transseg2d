@@ -15,6 +15,14 @@ from mmseg.datasets import build_dataset
 from mmseg.models import build_segmentor
 from mmseg.utils import collect_env, get_root_logger
 
+def get_n_params(model):
+    pp=0
+    for p in list(model.parameters()):
+        nn=1
+        for s in list(p.size()):
+            nn = nn*s
+        pp += nn
+    return pp
 
 
 
@@ -135,6 +143,13 @@ def main():
         test_cfg=cfg.get('test_cfg'))
 
     logger.info(model)
+
+    print('\n\n\n')
+    print('#######################')
+    print('PARAMS :', get_n_params(model))
+    print('#######################')
+    print('\n\n\n')
+    exit(0)
 
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
