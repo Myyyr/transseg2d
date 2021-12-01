@@ -149,7 +149,7 @@ def main():
     print('PARAMS :', get_n_params(model))
     print('#######################')
     print('\n\n\n')
-    exit(0)
+    # exit(0)
 
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
