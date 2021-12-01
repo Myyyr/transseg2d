@@ -303,22 +303,22 @@ class SegFormerGTZeta(nn.Module):
         ngt = 16 # 512//(4*8)
 
         ws_pe = (40*gt_num//(2**0), 40*gt_num//(2**0))
-        self.global_token1 = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.embed_dims[0]))
+        self.global_token1 = torch.nn.Parameter(torch.randn(ngt//(2**0),ngt//(2**0),gt_num,self.embed_dims[0]))
         self.pe1 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[0]))
         trunc_normal_(self.pe1, std=.02)
 
         ws_pe = (40*gt_num//(2**1), 40*gt_num//(2**1))
-        self.global_token2 = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.embed_dims[1]))
+        self.global_token2 = torch.nn.Parameter(torch.randn(ngt//(2**1),ngt//(2**1),gt_num,self.embed_dims[1]))
         self.pe2 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[1]))
         trunc_normal_(self.pe2, std=.02)
 
         ws_pe = (40*gt_num//(2**2), 40*gt_num//(2**2))
-        self.global_token3 = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.embed_dims[2]))
+        self.global_token3 = torch.nn.Parameter(torch.randn(ngt//(2**2),ngt//(2**2),gt_num,self.embed_dims[2]))
         self.pe3 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[2]))
         trunc_normal_(self.pe3, std=.02)
 
         ws_pe = (40*gt_num//(2**3), 40*gt_num//(2**3))
-        self.global_token4 = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.embed_dims[3]))
+        self.global_token4 = torch.nn.Parameter(torch.randn(ngt//(2**3),ngt//(2**3),gt_num,self.embed_dims[3]))
         self.pe4 = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], self.embed_dims[3]))
         trunc_normal_(self.pe4, std=.02)
 

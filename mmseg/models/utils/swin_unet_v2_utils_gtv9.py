@@ -71,16 +71,14 @@ class ClassicAttention(nn.Module):
         proj_drop (float, optional): Dropout ratio of output. Default: 0.0
     """
 
-    def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
+    def __init__(self, dim, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
 
         super().__init__()
         self.dim = dim
-        self.window_size = window_size  # Wh, Ww
         self.num_heads = num_heads
         head_dim = dim // num_heads
         self.scale = qk_scale or head_dim ** -0.5
 
-        # self.pe = nn.Parameter(torch.zeros(window_size[0]*window_size[1], dim))
         # trunc_normal_(self.pe, std=.02)
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
@@ -204,8 +202,8 @@ class WindowAttention(nn.Module):
         # add global tokens
         # if gt==None:
         #     gt = self.global_token
-        if len(gt.shape) != 3:
-            gt = repeat(gt, "g c -> b g c", b=B_)# shape of (num_windows*B, G, C)
+        # if len(gt.shape) != 3:
+        #     gt = repeat(gt, "g c -> b g c", b=B_)# shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
 
@@ -287,7 +285,7 @@ class SwinTransformerBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, id_layer=0):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, gt_num=1, id_layer=0, do_gmsa=True):
         super().__init__()
         self.dim = dim
         self.gt_num = gt_num
@@ -312,10 +310,19 @@ class SwinTransformerBlock(nn.Module):
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
+        if do_gmsa:
+            mlp_hidden_dim = int(mlp_ratio*dim)
+
+            self.gt_attn = ClassicAttention(dim=dim, num_heads=num_heads, 
+                                            qkv_bias=qkv_bias, attn_drop=attn_drop, proj_drop=drop)
+            self.gt_mlp2 = ClassiqueMlp(in_features=dim, hidden_features=mlp_hidden_dim, 
+                                        act_layer=act_layer, drop=drop)
+            self.gt_norm1 = norm_layer(dim)
+            self.gt_norm2 = norm_layer(dim)
         
-        self.gt_attn = ClassicAttention(dim=dim, window_size=(45*gt_num//2**id_layer, 45*gt_num//2**id_layer), num_heads=num_heads, 
-                                            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
-                                            proj_drop=drop)
+        # self.gt_attn = ClassicAttention(dim=dim, window_size=(45*gt_num//2**id_layer, 45*gt_num//2**id_layer), num_heads=num_heads, 
+        #                                     qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, 
+        #                                     proj_drop=drop)
 
  
 
@@ -352,25 +359,21 @@ class SwinTransformerBlock(nn.Module):
         x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
+        nHg, nWg = gt.shape[1], gt.shape[2]
+        nHp, nWp = Hp//self.window_size[0], Wp//self.window_size[1]
+        if nHg != nHp or nWg != nWp:
+            gt = rearrange(nn.functional.interpolate(rearrange(gt, 'b h w g c -> b g c h w'), size=(nHp, nWp) ), 'b g c h w -> b h w g c')
+        gt = rearrange(gt, 'b h w g c -> (b h w) g c')
+        skip_gt = gt
+
         # W-MSA/SW-MSA
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
-        tmp, ngt, c = gt.shape
-        nw = tmp//B
-        gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
-        # gt = gt.view(B, nw*ngt, C)
-        # bigt, _ = self.gru(gt)
-        # gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
-        gt = self.gt_attn(gt, pe)
-
-        # gt = self.projgru(gt)
-        # gt = gt.mean(dim=1)
-        # gt = gt[:, torch.randperm(nw), :, :]
-        gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=C)
-
-        # print(gt.shape)
-        # exit(0)
-        # gt = repeat(gt, "b g c -> (b n) g c",n=nw)
-
+        
+        # tmp, ngt, c = gt.shape
+        # nw = tmp//B
+        # gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
+        # gt = self.gt_attn(gt, pe)
+        # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=C)
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
         shifted_x = window_reverse(attn_windows, self.window_size, Hp, Wp)  # B H' W' C
@@ -385,10 +388,24 @@ class SwinTransformerBlock(nn.Module):
             x = x[:, :H, :W, :].contiguous()
         x = x.view(B, H * W, C)
 
-
         # FFN
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
+
+
+        if self.do_gmsa:
+            gt = skip_gt + self.drop_path(gt)
+            gt = gt + self.drop_path(self.mlp(self.norm2(gt)))
+
+
+            # do g msa
+            B, ngt, c = gt.shape
+            nw = B//x.shape[0]
+            gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
+
+            gt = gt + self.drop_path(self.gt_attn(self.gt_norm1(gt), pe))
+            gt = gt + self.drop_path(self.gt_mlp2(self.gt_norm2(gt)))
+            gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
 
         return x, gt
 
@@ -547,7 +564,8 @@ class BasicLayer(nn.Module):
         self.window_size = window_size
         self.shift_size = window_size // 2
 
-        self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
+        ngt = 19//2**id_layer # 512//(4*7)
+        self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.dim))
         self.global_token.requires_grad = True
 
         # build blocks
@@ -652,7 +670,8 @@ class BasicLayer_up(nn.Module):
         self.window_size = window_size
         self.shift_size = window_size // 2
 
-        self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
+        ngt = 19 # 512//(4*7)
+        self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.dim))
         self.global_token.requires_grad = True
 
         # build blocks
