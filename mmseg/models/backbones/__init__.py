@@ -49,6 +49,7 @@ from .mix_transformer_gt_gamma import *
 from .mix_transformer_gt_omega import *
 from .mix_transformer_gt_epsilon import *
 from .mix_transformer_gt_delta import *
+from .mix_transformer_gt_zeta import *
 
 from .swin_transformer_efficient import SwinTransformerEff
 
