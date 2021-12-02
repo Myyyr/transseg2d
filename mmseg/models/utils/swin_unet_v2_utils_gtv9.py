@@ -360,7 +360,7 @@ class SwinTransformerBlock(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
         nHg, nWg = gt.shape[1], gt.shape[2]
-        nHp, nWp = Hp//self.window_size[0], Wp//self.window_size[1]
+        nHp, nWp = Hp//self.window_size, Wp//self.window_size
         if nHg != nHp or nWg != nWp:
             gt = rearrange(nn.functional.interpolate(rearrange(gt, 'b h w g c -> b g c h w'), size=(nHp, nWp) ), 'b g c h w -> b h w g c')
         gt = rearrange(gt, 'b h w g c -> (b h w) g c')
