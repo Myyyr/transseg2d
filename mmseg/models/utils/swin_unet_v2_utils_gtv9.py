@@ -366,7 +366,7 @@ class SwinTransformerBlock(nn.Module):
             ngt=gt.shape[3]
             print('(nHp, nWp)', (nHp, nWp))
             gt = rearrange(gt, 'b h w g c -> (b g) c h w')
-            nn.functional.interpolate(gt, size=(nHp, nWp), mode='bilinear')
+            nn.functional.interpolate(gt, size=(nHp, nWp))
             gt = rearrange(gt, '(b g) c h w -> b h w g c', g=ngt)
             print('gt', gt.shape)
         gt = rearrange(gt, 'b h w g c -> (b h w) g c')
