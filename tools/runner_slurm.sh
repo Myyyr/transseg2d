@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=15:00:00              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
+#SBATCH --qos=qos_gpu-t3
 #SBATCH --output=logs/gsw9g1t%j.out # output file name
 #SBATCH --error=logs/gsw9g1t%j.err  # error file name
 
