@@ -362,19 +362,13 @@ class SwinTransformerBlock(nn.Module):
 
         nHg, nWg = gt.shape[1], gt.shape[2]
         nHp, nWp = Hp//self.window_size, Wp//self.window_size
-        print("\n\n\n\n")
         if (len(gt.shape) > 3):
             if (nHg != nHp or nWg != nWp):
-                print('gt', gt.shape)
                 ngt=gt.shape[3]
-                # print('(nHp, nWp)', (nHp, nWp))
                 gt = rearrange(gt, 'b h w g c -> (b g) c h w')
                 gt = nn.functional.interpolate(gt, size=(nHp, nWp))
                 gt = rearrange(gt, '(b g) c h w -> b h w g c', g=ngt)
-                # print('gt', gt.shape)
             gt = rearrange(gt, 'b h w g c -> (b h w) g c')
-        # print("x_windows", x_windows.shape)
-        # print("gt", gt.shape)
         skip_gt = gt
 
         # W-MSA/SW-MSA
