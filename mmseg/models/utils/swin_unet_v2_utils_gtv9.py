@@ -362,8 +362,9 @@ class SwinTransformerBlock(nn.Module):
 
         nHg, nWg = gt.shape[1], gt.shape[2]
         nHp, nWp = Hp//self.window_size, Wp//self.window_size
-        # print("\n\n\n\n")
+        print("\n\n\n\n")
         if nHg != nHp or nWg != nWp:
+            print('gt', gt.shape)
             ngt=gt.shape[3]
             # print('(nHp, nWp)', (nHp, nWp))
             gt = rearrange(gt, 'b h w g c -> (b g) c h w')
