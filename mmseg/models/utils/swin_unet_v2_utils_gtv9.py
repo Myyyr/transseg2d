@@ -367,7 +367,7 @@ class SwinTransformerBlock(nn.Module):
             gt = rearrange(gt, '(b g) c h w -> b h w g c', g=B)
         gt = rearrange(gt, 'b h w g c -> (b h w) g c')
             print("\n\n\n\n")
-            print("x", x.shape)
+            print("x_windows", x_windows.shape)
             print("gt", gt.shape)
         skip_gt = gt
 
