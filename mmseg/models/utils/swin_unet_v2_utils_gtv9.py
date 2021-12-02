@@ -590,7 +590,7 @@ class BasicLayer(nn.Module):
         else:
             self.downsample = None
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, B):
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -612,6 +612,7 @@ class BasicLayer(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         gt = self.global_token
+        gt = repeat(gt, 'h w g c -> b h w g c', b=B)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
@@ -697,7 +698,7 @@ class BasicLayer_up(nn.Module):
         else:
             self.upsample = None
 
-    def forward(self, x, H, W, padwh):
+    def forward(self, x, H, W, padwh, B):
         Hp = int(np.ceil(H / self.window_size)) * self.window_size
         Wp = int(np.ceil(W / self.window_size)) * self.window_size
         img_mask = torch.zeros((1, Hp, Wp, 1), device=x.device)  # 1 Hp Wp 1
@@ -719,6 +720,7 @@ class BasicLayer_up(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         gt = self.global_token 
+        gt = repeat(gt, 'h w g c -> b h w g c', b=B)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
@@ -932,7 +934,7 @@ class SwinTransformerSys(nn.Module):
         return {'relative_position_bias_table'}
 
     #Encoder and Bottleneck
-    def forward_features(self, x):
+    def forward_features(self, x, B):
         x = self.patch_embed(x)
         Wh, Ww = x.size(2), x.size(3)
         if self.ape:
@@ -945,7 +947,7 @@ class SwinTransformerSys(nn.Module):
             # x_downsample.append(x)
             x_downsample.append(x)
             # x = layer(x)
-            x, Wh, Ww, padwh = layer(x, Wh, Ww)
+            x, Wh, Ww, padwh = layer(x, Wh, Ww, B)
             padswh.append(padwh)
 
         x = self.norm(x)  # B L C
@@ -953,7 +955,7 @@ class SwinTransformerSys(nn.Module):
         return x, x_downsample, Wh, Ww, padswh
 
     #Dencoder and Skip connection
-    def forward_up_features(self, x, x_downsample, Wh, Ww, padswh):
+    def forward_up_features(self, x, x_downsample, Wh, Ww, padswh, B):
         # exit(0)
         # Wh, Ww = x.size(2), x.size(3)
         for inx, layer_up in enumerate(self.layers_up):
@@ -966,7 +968,7 @@ class SwinTransformerSys(nn.Module):
                 x = torch.cat([x,x_downsample[3-inx]],-1)
                 x = self.concat_back_dim[inx](x)
                 # x = layer_up(x)
-                x, Wh, Ww = layer_up(x, Wh, Ww, padwh)
+                x, Wh, Ww = layer_up(x, Wh, Ww, padwh, B)
 
         x = self.norm_up(x)  # B L C
   
@@ -988,8 +990,9 @@ class SwinTransformerSys(nn.Module):
     def forward(self, x):
         # print("\n-------->x", x.shape, "<----------\n")
         # x, x_downsample = self.forward_features(x)
-        x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
-        x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
+        B = x.shape[0]
+        x, x_downsample, Wh, Ww, padswh = self.forward_features(x,B)
+        x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh,B)
         x = self.up_x4(x, Wh, Ww)
 
         return x
