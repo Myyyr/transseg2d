@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/swin_unet_v2_gtv8.py', '../_base_/datasets/ade20kdbg.py',
+    '../_base_/models/swin_unet_v2_gtv9.py', '../_base_/datasets/ade20kdbg.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 model = dict(
