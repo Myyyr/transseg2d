@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=gsw9g1t     # job name
+#SBATCH --job-name=gsw9g1tc     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=15:00:00              # maximum execution time (HH:MM:SS)
+#SBATCH --time=10:00:00              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/gsw9g1t%j.out # output file name
-#SBATCH --error=logs/gsw9g1t%j.err  # error file name
+#SBATCH --output=logs/gsw9g1tc%j.out # output file name
+#SBATCH --error=logs/gsw9g1tc%j.err  # error file name
 
 set -x
 
@@ -159,7 +159,7 @@ CONFIG="configs/swinunetv2gtv9/swinunetv2gtv9.g1.tiny.patch4.window7.512x512.160
 
 
 
-PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
@@ -167,11 +167,13 @@ PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
 
-# RESUME="work_dirs/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes/latest.pth"
+RESUME="work_dirs/swinunetv2gtv9.g1.tiny.patch4.window7.512x512.160k.ade20k.jz/latest.pth"
 
 
 
+# swin
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic ${@:3}
 
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
+#segformer
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic ${@:3}
