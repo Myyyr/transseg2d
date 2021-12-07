@@ -25,6 +25,9 @@ from .swin_unet_v2_gtv6 import SwinUNetV2GTV6
 from .swin_unet_v2_gtv7 import SwinUNetV2GTV7
 from .swin_unet_v2_gtv8 import SwinUNetV2GTV8
 from .swin_unet_v2_gtv9 import SwinUNetV2GTV9
+from .swin_unet_v2_gtv10 import SwinUNetV2GTV10
+
+
 from .swin_unet_v2_gtv8_opti import SwinUNetV2GTV8Opti
 from .swin_unet_v2_gtv8_visu import SwinUNetV2GTV8Visu
 from .no_swin_unet_v2 import NoSwinUNetV2
