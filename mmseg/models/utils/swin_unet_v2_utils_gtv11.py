@@ -7,7 +7,7 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 import numpy as np
 
 from einops import repeat
-# MERGING STRAT : TRANSFORMER
+# WITHOUT PE + WMSA+GMSA chained
 
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
@@ -97,10 +97,10 @@ class ClassicAttention(nn.Module):
         """
         B_, N, C = x.shape
 
-        m = pe.shape[0]
-        strt = m//2-N//2
-        pe = pe[strt:strt+N,:]
-        x = x + pe
+        # m = pe.shape[0]
+        # strt = m//2-N//2
+        # pe = pe[strt:strt+N,:]
+        x = x #+ pe
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
@@ -374,11 +374,6 @@ class SwinTransformerBlock(nn.Module):
         # W-MSA/SW-MSA
         attn_windows, gt = self.attn(x_windows, mask=attn_mask, gt=gt)  # nW*B, window_size*window_size, C | nW*B, nGt, C
         
-        # tmp, ngt, c = gt.shape
-        # nw = tmp//B
-        # gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
-        # gt = self.gt_attn(gt, pe)
-        # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=C)
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
         shifted_x = window_reverse(attn_windows, self.window_size, Hp, Wp)  # B H' W' C
@@ -399,18 +394,21 @@ class SwinTransformerBlock(nn.Module):
 
 
         if self.do_gmsa:
-            gt = skip_gt + self.drop_path(gt)
-            gt = gt + self.drop_path(self.mlp(self.norm2(gt)))
+            # gt = skip_gt + self.drop_path(gt)
+            # gt = gt + self.drop_path(self.mlp(self.norm2(gt)))
 
 
             # do g msa
             B, ngt, c = gt.shape
             nw = B//x.shape[0]
             gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
-
-            gt = gt + self.drop_path(self.gt_attn(self.gt_norm1(gt), pe))
-            gt = gt + self.drop_path(self.gt_mlp2(self.gt_norm2(gt)))
+            gt = self.gt_attn(gt, pe)
+            # gt = gt + self.drop_path(self.gt_attn(self.gt_norm1(gt), pe))
+            # gt = gt + self.drop_path(self.gt_mlp2(self.gt_norm2(gt)))
             gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=c)
+
+            gt = skip_gt + self.drop_path(gt)
+            gt = self.drop_path(self.mlp(self.norm2(gt)))
 
         return x, gt
 
@@ -585,9 +583,9 @@ class BasicLayer(nn.Module):
                                  norm_layer=norm_layer, gt_num=gt_num,id_layer=id_layer)
             for i in range(depth)])
 
-        ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
-        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
-        trunc_normal_(self.pe, std=.02)
+        # ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
+        # self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        # trunc_normal_(self.pe, std=.02)
 
         # patch merging layer
         if downsample is not None:
@@ -623,7 +621,7 @@ class BasicLayer(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x, gt= blk(x, attn_mask, gt, self.pe)
+                x, gt= blk(x, attn_mask, gt, None)
         # if self.downsample is not None:
         #     x = self.downsample(x)
         # return x
@@ -692,9 +690,9 @@ class BasicLayer_up(nn.Module):
                                  norm_layer=norm_layer, gt_num=gt_num, id_layer=id_layer)
             for i in range(depth)])
 
-        ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
-        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
-        trunc_normal_(self.pe, std=.02)
+        # ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
+        # self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        # trunc_normal_(self.pe, std=.02)
 
 
         # patch merging layer
@@ -731,7 +729,7 @@ class BasicLayer_up(nn.Module):
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
             else:
-                x, gt = blk(x, attn_mask, gt, self.pe)
+                x, gt = blk(x, attn_mask, gt, None)
         # if self.upsample is not None:
         #     x = self.upsample(x)
         if self.upsample is not None:
