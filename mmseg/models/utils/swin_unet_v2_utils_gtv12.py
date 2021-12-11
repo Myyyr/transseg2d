@@ -200,10 +200,8 @@ class WindowAttention(nn.Module):
         B_, N_, C = x.shape
 
         # add global tokens
-        # if gt==None:
-        #     gt = self.global_token
-        # if len(gt.shape) != 3:
-        #     gt = repeat(gt, "g c -> b g c", b=B_)# shape of (num_windows*B, G, C)
+        if len(gt.shape) != 3:
+            gt = repeat(gt, "g c -> b g c", b=B_)# shape of (num_windows*B, G, C)
         x = torch.cat([gt, x], dim=1) # x of shape (num_windows*B, G+N_, C)
         B_, N, C = x.shape
 
@@ -612,7 +610,7 @@ class BasicLayer(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         gt = self.global_token
-        gt = repeat(gt, 'g c -> b g c', b=B)
+        # gt = repeat(gt, 'g c -> b g c', b=B)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
@@ -720,7 +718,7 @@ class BasicLayer_up(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         gt = self.global_token 
-        gt = repeat(gt, 'g c -> b g c', b=B)
+        # gt = repeat(gt, 'g c -> b g c', b=B)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
