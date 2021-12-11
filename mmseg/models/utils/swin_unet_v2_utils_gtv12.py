@@ -358,8 +358,8 @@ class SwinTransformerBlock(nn.Module):
         x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
-        nHg, nWg = gt.shape[1], gt.shape[2]
-        nHp, nWp = Hp//self.window_size, Wp//self.window_size
+        # nHg, nWg = gt.shape[1], gt.shape[2]
+        # nHp, nWp = Hp//self.window_size, Wp//self.window_size
         # if (len(gt.shape) > 3):
         #     if (nHg != nHp or nWg != nWp):
         #         ngt=gt.shape[3]
