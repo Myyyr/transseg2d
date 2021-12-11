@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=gs12g8ta     # job name
+#SBATCH --job-name=gs13g8ta     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/gs12g8ta%j.out # output file name
-#SBATCH --error=logs/gs12g8ta%j.err  # error file name
+#SBATCH --output=logs/gs13g8ta%j.out # output file name
+#SBATCH --error=logs/gs13g8ta%j.err  # error file name
 
 set -x
 
@@ -157,7 +157,8 @@ module load python/3.7.10
 
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes.py"
 
-CONFIG="configs/swinunetv2gtv12/swinunetv2gtv12.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
+# CONFIG="configs/swinunetv2gtv12/swinunetv2gtv12.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
+CONFIG="configs/swinunetv2gtv13/swinunetv2gtv13.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 
 
 # CONFIG="configs/swinunetv2gtv9/swinunetv2gtv9.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
