@@ -157,7 +157,7 @@ module load python/3.7.10
 
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes.py"
 
-CONFIG="configs/swinupergtv12/swinunetv2gtv12.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
+CONFIG="configs/swinunetv2gtv12/swinunetv2gtv12.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 
 
 # CONFIG="configs/swinunetv2gtv9/swinunetv2gtv9.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
