@@ -1,15 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=zsg10tcitc     # job name
+#SBATCH --job-name=gs12g8ta     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/zsg10tcitc%j.out # output file name
-#SBATCH --error=logs/zsg10tcitc%j.err  # error file name
-#SBATCH -C v100-32g
+#SBATCH --time=00:05:59              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/gs12g8ta%j.out # output file name
+#SBATCH --error=logs/gs12g8ta%j.err  # error file name
 
 set -x
 
@@ -156,14 +155,16 @@ module load python/3.7.10
 
 # ...............................................
 
-CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes.py"
+# CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes.py"
+
+CONFIG="configs/swinupergtv12/swinunetv2gtv12.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 
 
 # CONFIG="configs/swinunetv2gtv9/swinunetv2gtv9.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 
 
 
-# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
@@ -171,14 +172,14 @@ CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x76
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
 
-RESUME="work_dirs/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes/latest.pth"
+# RESUME="work_dirs/zz_upernet_swin_gtv8_g10_base_patch4_window7_769x769_160k_cityscapes/latest.pth"
 # RESUME="work_dirs/swinunetv2gtv9.g1.tiny.patch4.window7.512x512.160k.ade20k.jz/latest.pth"
 
 
 
 # swin
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
 
 #segformer
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer

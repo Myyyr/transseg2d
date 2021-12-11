@@ -7,7 +7,7 @@ from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 import numpy as np
 
 from einops import repeat
-# WITHOUT PE 
+# WITHOUT PE + GT SAME INIT
 
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
@@ -362,13 +362,13 @@ class SwinTransformerBlock(nn.Module):
 
         nHg, nWg = gt.shape[1], gt.shape[2]
         nHp, nWp = Hp//self.window_size, Wp//self.window_size
-        if (len(gt.shape) > 3):
-            if (nHg != nHp or nWg != nWp):
-                ngt=gt.shape[3]
-                gt = rearrange(gt, 'b h w g c -> (b g) c h w')
-                gt = nn.functional.interpolate(gt, size=(nHp, nWp))
-                gt = rearrange(gt, '(b g) c h w -> b h w g c', g=ngt)
-            gt = rearrange(gt, 'b h w g c -> (b h w) g c')
+        # if (len(gt.shape) > 3):
+        #     if (nHg != nHp or nWg != nWp):
+        #         ngt=gt.shape[3]
+        #         gt = rearrange(gt, 'b h w g c -> (b g) c h w')
+        #         gt = nn.functional.interpolate(gt, size=(nHp, nWp))
+        #         gt = rearrange(gt, '(b g) c h w -> b h w g c', g=ngt)
+        #     gt = rearrange(gt, 'b h w g c -> (b h w) g c')
         skip_gt = gt
 
         # W-MSA/SW-MSA
@@ -564,8 +564,8 @@ class BasicLayer(nn.Module):
         self.window_size = window_size
         self.shift_size = window_size // 2
 
-        ngt = 19//2**id_layer # 512//(4*7)
-        self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.dim))
+        # ngt = 19//2**id_layer # 512//(4*7)
+        self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
         self.global_token.requires_grad = True
 
         # build blocks
@@ -612,7 +612,7 @@ class BasicLayer(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         gt = self.global_token
-        gt = repeat(gt, 'h w g c -> b h w g c', b=B)
+        gt = repeat(gt, 'g c -> b g c', b=B)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
@@ -671,8 +671,8 @@ class BasicLayer_up(nn.Module):
         self.window_size = window_size
         self.shift_size = window_size // 2
 
-        ngt = 19 # 512//(4*7)
-        self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.dim))
+        # ngt = 19 # 512//(4*7)
+        self.global_token = torch.nn.Parameter(torch.randn(gt_num,self.dim))
         self.global_token.requires_grad = True
 
         # build blocks
@@ -720,7 +720,7 @@ class BasicLayer_up(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
 
         gt = self.global_token 
-        gt = repeat(gt, 'h w g c -> b h w g c', b=B)
+        gt = repeat(gt, 'g c -> b g c', b=B)
         for blk in self.blocks:
             blk.input_resolution = (H, W)
             if self.use_checkpoint:
