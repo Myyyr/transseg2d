@@ -671,7 +671,7 @@ class BasicLayer_up(nn.Module):
         self.window_size = window_size
         self.shift_size = window_size // 2
 
-        ngt = 19 # 512//(4*7)
+        ngt = 19//2**id_layer # 512//(4*7)
         self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.dim))
         self.global_token.requires_grad = True
 
