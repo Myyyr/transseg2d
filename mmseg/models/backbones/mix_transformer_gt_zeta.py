@@ -293,6 +293,7 @@ class Block(nn.Module):
         print("gt", gt.shape)
         print("pe", pe.shape)
         print("------------------\n\n\n\n")
+        exit(0)
         skip_gt = gt
 
         

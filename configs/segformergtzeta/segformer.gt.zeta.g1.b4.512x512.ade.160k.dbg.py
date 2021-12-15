@@ -12,7 +12,7 @@ model = dict(
     type='EncoderDecoder',
     pretrained='pretrained_models/mit_b4.pth',
     backbone=dict(
-        type='SegFormerGTDelta',
+        type='SegFormerGTZeta',
         gt_num=1
         ),
     decode_head=dict(
