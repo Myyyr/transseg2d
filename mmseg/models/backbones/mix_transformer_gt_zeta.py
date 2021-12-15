@@ -270,7 +270,7 @@ class Block(nn.Module):
         x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)
 
         nHg, nWg = gt.shape[1], gt.shape[2]
-        nHp, nWp = Hp//self.window_size, Wp//self.window_size
+        nHp, nWp = Hp//self.window_size[0], Wp//self.window_size[1]
 
         print("\n\n\n\n------------------")
         if (len(gt.shape) > 3):
@@ -284,7 +284,7 @@ class Block(nn.Module):
             gt = rearrange(gt, 'b h w g c -> (b h w) g c')
 
         nHg, nWg = pe.shape[0], pe.shape[1]
-        nHp, nWp = Hp//self.window_size, Wp//self.window_size
+        nHp, nWp = Hp//self.window_size[0], Wp//self.window_size[1]
         if (nHg != nHp or nWg != nWp):
             print("here 2")
             pe = rearrange(pe, 'h w g c -> g c h w')
