@@ -13,7 +13,7 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False,
         num_classes=150, 
-        gt_num=1
+        gt_num=10
     ),
     decode_head=dict(
         embed_dim=96,
@@ -50,3 +50,4 @@ data=dict(samples_per_gpu=16)
 
 
 
+# PARAMS : 79337442
