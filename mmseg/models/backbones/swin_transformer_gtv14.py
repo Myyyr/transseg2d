@@ -755,6 +755,7 @@ class SwinTransformerGTV14(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
+        B = x.shape[0]
         """Forward function."""
         x = self.patch_embed(x)
 
@@ -770,7 +771,7 @@ class SwinTransformerGTV14(nn.Module):
         outs = []
         for i in range(self.num_layers):
             layer = self.layers[i]
-            x_out, H, W, x, Wh, Ww = layer(x, Wh, Ww)
+            x_out, H, W, x, Wh, Ww = layer(x, Wh, Ww, B)
 
             if i in self.out_indices:
                 norm_layer = getattr(self, f'norm{i}')
