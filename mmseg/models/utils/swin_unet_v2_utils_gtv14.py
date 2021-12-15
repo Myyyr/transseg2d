@@ -702,8 +702,9 @@ class BasicLayer_up(nn.Module):
                                  norm_layer=norm_layer, gt_num=gt_num, id_layer=id_layer)
             for i in range(depth)])
 
-        ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
-        self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        # ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
+        # self.pe = nn.Parameter(torch.zeros(ws_pe[0]*ws_pe[1], dim))
+        self.pe = nn.Parameter(torch.zeros(ngt,ngt,gt_num,self.dim))
         trunc_normal_(self.pe, std=.02)
 
 
