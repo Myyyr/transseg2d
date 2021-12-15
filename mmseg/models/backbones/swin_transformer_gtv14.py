@@ -484,7 +484,7 @@ class BasicLayer(nn.Module):
 
 
         ngt = 19//2**id_layer # 512//(4*7)
-        self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,self.dim))
+        self.global_token = torch.nn.Parameter(torch.randn(ngt,ngt,gt_num,dim))
         self.global_token.requires_grad = True
 
         # build blocks
@@ -511,7 +511,7 @@ class BasicLayer(nn.Module):
         else:
             self.downsample = None
 
-        self.pe = nn.Parameter(torch.zeros(ngt,ngt,gt_num,self.dim))
+        self.pe = nn.Parameter(torch.zeros(ngt,ngt,gt_num,dim))
         trunc_normal_(self.pe, std=.02)
 
     def forward(self, x, H, W, B):
