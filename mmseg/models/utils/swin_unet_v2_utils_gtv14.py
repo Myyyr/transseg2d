@@ -102,7 +102,11 @@ class ClassicAttention(nn.Module):
         # m = pe.shape[0]
         # strt = m//2-N//2
         # pe = pe[strt:strt+N,:]
+        print("\n\n\n\n\n-----------------------")
+        print("x", x.shape)
+        print("pe", pe.shape)
         x = x + pe
+        print("-----------------------\n\n\n\n\n")
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
