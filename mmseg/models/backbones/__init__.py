@@ -73,5 +73,5 @@ __all__ = [
     , 'SwinUNetEncoderGTvdbg3', 'SwinUNetV2', 'SwinUNetV2Visu','NoSwinUNetV2', 'SwinUNetV2GTV3', 'SwinUNetV2GTV4', 'SwinUNetV2GTV4DBG',
     'SwinUNetV2CrossAttentionUpsample', 'SwinUNetV2BilinearUpsampling', 'SwinUNetV2GTV8Visu',
     'SwinUNetV2CrossAttentionUpsampleDbg', 'SwinUNetV2UNetTransformer', 'mit_b4', 'SwinUNetV2GTV8CrossAttentionUpsample','SwinTransformerEff',
-    'SwinTransformerGTV8Visu', 'SwinUNetV2GTV8Opti', 'SwinTransformerGTV8Opti', 'SwinUNetV2GTV9'
+    'SwinTransformerGTV8Visu', 'SwinUNetV2GTV8Opti', 'SwinTransformerGTV8Opti', 'SwinUNetV2GTV9', 'SwinUNetV2GTV14'
 ]
