@@ -151,9 +151,9 @@ class Attention(nn.Module):
         self.window_size = window_size
 
     def forward(self, x, H, W, gt):
-        print("\n\n\n\n------------------")
-        print("x", x.shape)
-        print("------------------\n\n\n\n")
+        # print("\n\n\n\n------------------")
+        # print("x", x.shape)
+        # print("------------------\n\n\n\n")
         B_, N_, C = x.shape
         gt_num = self.gt_num
         # skip = None
@@ -304,7 +304,7 @@ class Block(nn.Module):
 
         
 
-        x, gt = self.attn(x, H, W, gt)
+        x, gt = self.attn(x_windows, H, W, gt)
 
         x = x.view(-1, self.window_size[0], self.window_size[1], C)
         x = window_reverse(x, self.window_size, Hp, Wp)  # B H' W' C
@@ -330,9 +330,9 @@ class Block(nn.Module):
             # do g msa
             B, ngt, c = gt.shape
             nw = B//x.shape[0]
-            print("gt", gt.shape)
+            # print("gt", gt.shape)
             gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
-            print("gt", gt.shape)
+            # print("gt", gt.shape)
 
             gt = gt + self.drop_path(self.gt_attn(self.gt_norm1(gt), pe))
             gt = gt + self.drop_path(self.gt_mlp2(self.gt_norm2(gt)))
