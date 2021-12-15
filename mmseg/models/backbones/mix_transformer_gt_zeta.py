@@ -150,11 +150,11 @@ class Attention(nn.Module):
         self.gt_num = gt_num
         self.window_size = window_size
 
-    def forward(self, x, H, W, gt):
+    def forward(self, x_windows, H, W, gt):
         # print("\n\n\n\n------------------")
         # print("x", x.shape)
         # print("------------------\n\n\n\n")
-        B_, N_, C = x.shape
+        # B_, N_, C = x_windows.shape
         gt_num = self.gt_num
         # skip = None
 
@@ -170,7 +170,7 @@ class Attention(nn.Module):
         # x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
         # x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
         # # x_windows = x
-        # B, N_, C = x_windows.shape
+        B, N_, C = x_windows.shape
 
 
         if self.gt_num != 0:
