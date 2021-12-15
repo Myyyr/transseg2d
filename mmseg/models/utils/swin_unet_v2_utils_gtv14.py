@@ -377,12 +377,12 @@ class SwinTransformerBlock(nn.Module):
                 gt = rearrange(gt, '(b g) c h w -> b h w g c', g=ngt)
             gt = rearrange(gt, 'b h w g c -> (b h w) g c')
 
-            nHg, nWg = pe.shape[0], pe.shape[1]
-            nHp, nWp = Hp//self.window_size, Wp//self.window_size
-            if (nHg != nHp or nWg != nWp):
-                pe = rearrange(pe, 'h w g c -> g c h w')
-                pe = nn.functional.interpolate(pe, size=(nHp, nWp))
-                pe = rearrange(pe, 'g c h w -> h w g c')
+        nHg, nWg = pe.shape[0], pe.shape[1]
+        nHp, nWp = Hp//self.window_size, Wp//self.window_size
+        if (nHg != nHp or nWg != nWp):
+            pe = rearrange(pe, 'h w g c -> g c h w')
+            pe = nn.functional.interpolate(pe, size=(nHp, nWp))
+            pe = rearrange(pe, 'g c h w -> h w g c')
         skip_gt = gt
 
         # W-MSA/SW-MSA
