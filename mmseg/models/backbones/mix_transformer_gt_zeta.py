@@ -330,7 +330,9 @@ class Block(nn.Module):
             # do g msa
             B, ngt, c = gt.shape
             nw = B//x.shape[0]
+            print("gt", gt.shape)
             gt =rearrange(gt, "(b n) g c -> b (n g) c", n=nw)
+            print("gt", gt.shape)
 
             gt = gt + self.drop_path(self.gt_attn(self.gt_norm1(gt), pe))
             gt = gt + self.drop_path(self.gt_mlp2(self.gt_norm2(gt)))
