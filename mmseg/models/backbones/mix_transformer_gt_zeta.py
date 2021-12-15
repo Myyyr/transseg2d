@@ -271,8 +271,11 @@ class Block(nn.Module):
         nHg, nWg = gt.shape[1], gt.shape[2]
         nHp, nWp = Hp//self.window_size, Wp//self.window_size
 
+        print("\n\n\n\n------------------")
         if (len(gt.shape) > 3):
+            print("here 0")
             if (nHg != nHp or nWg != nWp):
+                print("here 1")
                 ngt=gt.shape[3]
                 gt = rearrange(gt, 'b h w g c -> (b g) c h w')
                 gt = nn.functional.interpolate(gt, size=(nHp, nWp))
@@ -282,9 +285,14 @@ class Block(nn.Module):
         nHg, nWg = pe.shape[0], pe.shape[1]
         nHp, nWp = Hp//self.window_size, Wp//self.window_size
         if (nHg != nHp or nWg != nWp):
+            print("here 2")
             pe = rearrange(pe, 'h w g c -> g c h w')
             pe = nn.functional.interpolate(pe, size=(nHp, nWp))
             pe = rearrange(pe, 'g c h w -> h w g c')
+
+        print("gt", gt.shape)
+        print("pe", pe.shape)
+        print("------------------\n\n\n\n")
         skip_gt = gt
 
         
