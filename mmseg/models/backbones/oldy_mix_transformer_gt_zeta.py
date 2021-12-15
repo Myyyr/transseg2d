@@ -153,30 +153,30 @@ class Attention(nn.Module):
     def forward(self, x, H, W, gt):
         B_, N_, C = x.shape
         gt_num = self.gt_num
-        # skip = None
+        skip = None
 
-        # x = x.view(B_, H, W, C)
-        # pad_l = pad_t = 0
-        # pad_b = (self.window_size[0] - H % self.window_size[0]) % self.window_size[0]
-        # pad_r = (self.window_size[1] - W % self.window_size[1]) % self.window_size[1]
-        # x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
-        # _, Hp, Wp, _ = x.shape
+        x = x.view(B_, H, W, C)
+        pad_l = pad_t = 0
+        pad_b = (self.window_size[0] - H % self.window_size[0]) % self.window_size[0]
+        pad_r = (self.window_size[1] - W % self.window_size[1]) % self.window_size[1]
+        x = F.pad(x, (0, 0, pad_l, pad_r, pad_t, pad_b))
+        _, Hp, Wp, _ = x.shape
 
-        # x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
-        # x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
-        # # x_windows = x
-        # B, N_, C = x_windows.shape
+        x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
+        x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)  # nW*B, window_size*window_size, C
+        # x_windows = x
+        B, N_, C = x_windows.shape
 
 
         if self.gt_num != 0:
-        #     # if len(gt.shape) != 3:
-        #     #     gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
-        #     nHg, nWg = gt.shape[1], gt.shape[2]
-        #     nHp, nWp = Hp//self.window_size[0], Wp//self.window_size[1]
-        #     if nHg != nHp or nWg != nWp:
-        #         gt = rearrange(nn.functional.interpolate(rearrange(gt, 'b h w g c -> b g c h w'), size=(nHp, nWp) ), 'b g c h w -> b h w g c')
-        #     gt = rearrange(gt, 'b h w g c -> (b h w) g c')
-        #     skip = gt
+            # if len(gt.shape) != 3:
+            #     gt = repeat(gt, "g c -> b g c", b=B)# shape of (num_windows*B, G, C)
+            nHg, nWg = gt.shape[1], gt.shape[2]
+            nHp, nWp = Hp//self.window_size[0], Wp//self.window_size[1]
+            if nHg != nHp or nWg != nWp:
+                gt = rearrange(nn.functional.interpolate(rearrange(gt, 'b h w g c -> b g c h w'), size=(nHp, nWp) ), 'b g c h w -> b h w g c')
+            gt = rearrange(gt, 'b h w g c -> (b h w) g c')
+            skip = gt
 
             x_windows = torch.cat([gt, x_windows], dim=1)
       
@@ -215,14 +215,14 @@ class Attention(nn.Module):
         gt = x[:,:gt_num,:]
         x = x[:,gt_num:,:]
 
-        # x = x.view(-1, self.window_size[0], self.window_size[1], C)
-        # x = window_reverse(x, self.window_size, Hp, Wp)  # B H' W' C
+        x = x.view(-1, self.window_size[0], self.window_size[1], C)
+        x = window_reverse(x, self.window_size, Hp, Wp)  # B H' W' C
 
-        # if pad_r > 0 or pad_b > 0:
-        #     x = x[:, :H, :W, :].contiguous()
-        # x = x.view(B_, H * W, C)
+        if pad_r > 0 or pad_b > 0:
+            x = x[:, :H, :W, :].contiguous()
+        x = x.view(B_, H * W, C)
 
-        return x, gt
+        return x, gt, skip
 
 class Block(nn.Module):
 
@@ -286,16 +286,7 @@ class Block(nn.Module):
 
         
 
-        x, gt = self.attn(x, H, W, gt)
-
-        x = x.view(-1, self.window_size[0], self.window_size[1], C)
-        x = window_reverse(x, self.window_size, Hp, Wp)  # B H' W' C
-
-        if pad_r > 0 or pad_b > 0:
-            x = x[:, :H, :W, :].contiguous()
-        x = x.view(B_, H * W, C)
-
-        
+        x, gt, skip_gt = self.attn(x, H, W, gt)
         B = gt.shape[0]
         # x =self.attn(x, H, W)
         x = skip + self.drop_path(x)

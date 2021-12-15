@@ -50,4 +50,5 @@ data=dict(samples_per_gpu=16)
 
 
 
-# PARAMS : 79337442
+# PARAMS 1GT: 79337442
+# PARAMS 1GT: 81421410
