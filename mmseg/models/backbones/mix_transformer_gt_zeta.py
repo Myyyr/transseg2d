@@ -268,6 +268,9 @@ class Block(nn.Module):
         x_windows = window_partition(x, self.window_size)  # nW*B, window_size, window_size, C
         x_windows = x_windows.view(-1, self.window_size[0] * self.window_size[1], C)
 
+        nHg, nWg = gt.shape[1], gt.shape[2]
+        nHp, nWp = Hp//self.window_size, Wp//self.window_size
+
         if (len(gt.shape) > 3):
             if (nHg != nHp or nWg != nWp):
                 ngt=gt.shape[3]
@@ -295,7 +298,7 @@ class Block(nn.Module):
             x = x[:, :H, :W, :].contiguous()
         x = x.view(B_, H * W, C)
 
-        
+
         B = gt.shape[0]
         # x =self.attn(x, H, W)
         x = skip + self.drop_path(x)
@@ -412,6 +415,9 @@ class SegFormerGTZeta(nn.Module):
             for i in range(depths[3])])
         self.norm4 = mix.norm4
 
+        # self.avgpool = nn.AdaptiveAvgPool2d(1)
+        # self.head = nn.Linear(self.embed_dims[3], 1000)
+
     def forward_features(self, x):
         B = x.shape[0]
         outs = []
@@ -460,6 +466,10 @@ class SegFormerGTZeta(nn.Module):
 
     def forward(self, x):
         x = self.forward_features(x)
+        # x = self.head(x)
+
+        # x = self.avgpool(x[-1])  # B C 1
+        # x = torch.flatten(x, 1)
         # x = self.head(x)
 
         return x
