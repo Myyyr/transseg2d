@@ -48,5 +48,5 @@ lr_config = dict(_delete_=True, policy='poly',
 data = dict(samples_per_gpu=1)
 evaluation = dict(interval=16000, metric='mIoU')
 
-# PARAMS GT1 : 130705132
-# PARAMS GT1 : 
+# PARAMS GT1  : 130705132
+# PARAMS GT10 : 133444588
