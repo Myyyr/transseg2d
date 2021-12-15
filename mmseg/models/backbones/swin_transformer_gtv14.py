@@ -488,7 +488,7 @@ class BasicLayer(nn.Module):
         self.global_token.requires_grad = True
 
         # build blocks
-        do_gmsa = [True]*depths
+        do_gmsa = [True]*depth
         do_gmsa[-1] = False
         self.blocks = nn.ModuleList([
             SwinTransformerBlock(
