@@ -1,6 +1,6 @@
 _base_ = [
     '../_base_/models/segformergtzeta.py',
-    '../_base_/datasets/ade20k_repeat.py',
+    '../_base_/datasets/ade20k_repeat_dbg.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_160k_adamw.py'
 ]
@@ -45,5 +45,5 @@ lr_config = dict(_delete_=True, policy='poly',
                  power=1.0, min_lr=0.0, by_epoch=False)
 
 
-data = dict(samples_per_gpu=4)
+data = dict(samples_per_gpu=16)
 evaluation = dict(interval=16000, metric='mIoU')
