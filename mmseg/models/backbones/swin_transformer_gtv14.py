@@ -514,7 +514,7 @@ class BasicLayer(nn.Module):
         self.pe = nn.Parameter(torch.zeros(ngt,ngt,gt_num,self.dim))
         trunc_normal_(self.pe, std=.02)
 
-    def forward(self, x, H, W):
+    def forward(self, x, H, W, B):
         """ Forward function.
 
         Args:
@@ -544,6 +544,7 @@ class BasicLayer(nn.Module):
         attn_mask = attn_mask.masked_fill(attn_mask != 0, float(-100.0)).masked_fill(attn_mask == 0, float(0.0))
         
         gt = self.global_token
+        gt = repeat(gt, 'h w g c -> b h w g c', b=B)
         for blk in self.blocks:
             blk.H, blk.W = H, W
             if self.use_checkpoint:
