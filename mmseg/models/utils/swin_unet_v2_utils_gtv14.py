@@ -105,7 +105,7 @@ class ClassicAttention(nn.Module):
         print("\n\n\n\n\n-----------------------")
         print("x", x.shape)
         print("pe", pe.shape)
-        x = x + pe
+        x = x + pe[None,...]
         print("-----------------------\n\n\n\n\n")
 
         qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
