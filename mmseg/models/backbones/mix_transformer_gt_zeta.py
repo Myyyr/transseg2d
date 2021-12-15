@@ -151,9 +151,14 @@ class Attention(nn.Module):
         self.window_size = window_size
 
     def forward(self, x, H, W, gt):
+        print("\n\n\n\n------------------")
+        print("x", x.shape)
+        print("------------------\n\n\n\n")
         B_, N_, C = x.shape
         gt_num = self.gt_num
         # skip = None
+
+
 
         # x = x.view(B_, H, W, C)
         # pad_l = pad_t = 0
