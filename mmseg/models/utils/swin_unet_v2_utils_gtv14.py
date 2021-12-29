@@ -109,7 +109,7 @@ class ClassicAttention(nn.Module):
 
         # exit(0)
         # attn = attn
-
+        del q, k, x, pe
         attn = self.softmax(attn)
         attn = self.attn_drop(attn)
 
