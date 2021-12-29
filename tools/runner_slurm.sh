@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:05:59              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
+#SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-t3
 #SBATCH --output=logs/swg10ta%j.out # output file name
 #SBATCH --error=logs/swg10ta%j.err  # error file name
 
@@ -170,6 +170,7 @@ module load python/3.7.10
 
 
 CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
+# CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.base.patch4.window7.512x512.160k.ade20k.jz.py"
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
