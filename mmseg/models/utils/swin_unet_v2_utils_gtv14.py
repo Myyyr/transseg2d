@@ -581,7 +581,7 @@ class BasicLayer(nn.Module):
         self.global_token.requires_grad = True
 
         # build blocks
-        do_gmsa = [True]*depths
+        do_gmsa = [True]*depth
         do_gmsa[-1] = False
         self.blocks = nn.ModuleList([
             SwinTransformerBlock(dim=dim, input_resolution=input_resolution,
@@ -690,6 +690,8 @@ class BasicLayer_up(nn.Module):
         self.global_token.requires_grad = True
 
         # build blocks
+        do_gmsa = [True]*depth
+        do_gmsa[-1] = False
         self.blocks = nn.ModuleList([
             SwinTransformerBlock(dim=dim, input_resolution=input_resolution,
                                  num_heads=num_heads, window_size=window_size,
@@ -698,7 +700,7 @@ class BasicLayer_up(nn.Module):
                                  qkv_bias=qkv_bias, qk_scale=qk_scale,
                                  drop=drop, attn_drop=attn_drop,
                                  drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
-                                 norm_layer=norm_layer, gt_num=gt_num, id_layer=id_layer)
+                                 norm_layer=norm_layer, gt_num=gt_num, id_layer=id_layer, do_gmsa=do_gmsa[i])
             for i in range(depth)])
 
         # ws_pe = (45*gt_num//2**id_layer, 45*gt_num//2**id_layer)
