@@ -25,10 +25,11 @@ model = dict(
         norm_cfg=norm_cfg,
         align_corners=False,
         decoder_params=dict(embed_dim=768),
-        loss_decode=dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+        loss_decode=dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0))
     # model training and testing settings
-    train_cfg=dict(),
-    test_cfg=dict(mode='slide', crop_size=(1024,1024), stride=(768,768)))
+    # train_cfg=dict(),
+    # test_cfg=dict(mode='slide', crop_size=(1024,1024), stride=(768,768))
+    )
 
 # optimizer
 optimizer = dict(_delete_=True, type='AdamW', lr=0.00006, betas=(0.9, 0.999), weight_decay=0.01,
