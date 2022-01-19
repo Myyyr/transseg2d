@@ -25,7 +25,7 @@ test_pipeline = [
         flip=False,
         transforms=[
             dict(type='AlignedResize', keep_ratio=True),
-            
+
             dict(type='RandomFlip'),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='ImageToTensor', keys=['img']),
@@ -37,7 +37,7 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type='RepeatDataset',
-        times=500,
+        times=50,
         dataset=dict(
             type=dataset_type,
             data_root=data_root,
