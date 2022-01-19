@@ -1,6 +1,7 @@
 _base_ = [
     '../_base_/models/segformer.py',
-    '../_base_/datasets/cityscapes_769x769.py',
+    # '../_base_/datasets/cityscapes_769x769.py',
+    '../_base_/datasets/ade20k_repeat.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_160k_adamw.py'
 ]
@@ -21,7 +22,7 @@ model = dict(
         feature_strides=[4, 8, 16, 32],
         channels=128,
         dropout_ratio=0.1,
-        num_classes=19,
+        num_classes=150, #19
         norm_cfg=norm_cfg,
         align_corners=False,
         decoder_params=dict(embed_dim=768),

@@ -178,8 +178,8 @@ module load python/3.7.10
 # SEGFORMER
 
 
-# CONFIG="configs/segformer/segformer.b5.769x769.city.160k.py"
-CONFIG="configs/segformer/segformer.b4.512x512.ade.160k.py"
+CONFIG="configs/segformer/segformer.b5.769x769.city.160k.py"
+# CONFIG="configs/segformer/segformer.b4.512x512.ade.160k.py"
 
 
 
