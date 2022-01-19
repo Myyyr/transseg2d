@@ -9,7 +9,7 @@
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/sfb5cit%j.out # output file name
 #SBATCH --error=logs/sfb5cit%j.err  # error file name
-#SBATCH -C v100-32g
+# # # SBATCH -C v100-32g
 
 set -x
 
