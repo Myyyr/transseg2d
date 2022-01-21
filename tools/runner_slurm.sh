@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=sfb5citc     # job name
+#SBATCH --job-name=sfb5citb8     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-dev
-#SBATCH --output=logs/sfb5citc%j.out # output file name
-#SBATCH --error=logs/sfb5citc%j.err  # error file name
+#SBATCH --qos=qos_gpu-t3
+#SBATCH --output=logs/sfb5citb8%j.out # output file name
+#SBATCH --error=logs/sfb5citb8%j.err  # error file name
 #SBATCH -C v100-32g
 
 set -x
@@ -180,9 +180,11 @@ module load python/3.7.10
 # SEGFORMER
 
 
-CONFIG="configs/segformer/segformer.b5.769x769.city.160k.py" # sfb5citc
-RESUME="work_dirs/segformer.b5.769x769.city.160k/latest.pth"
+# CONFIG="configs/segformer/segformer.b5.769x769.city.160k.py" # sfb5citc
+# RESUME="work_dirs/segformer.b5.769x769.city.160k/latest.pth"
 # CONFIG="configs/segformer/segformer.b4.512x512.ade.160k.py"
+
+CONFIG="configs/segformer/segformer.b5.769x769.city.160k.bs8.py" # sfb5citb8
 
 
 
@@ -211,5 +213,5 @@ RESUME="work_dirs/segformer.b5.769x769.city.160k/latest.pth"
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
 
 #segformer
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
