@@ -191,7 +191,7 @@ RESUME="work_dirs/segformer.b5.769x769.city.160k/latest.pth"
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
