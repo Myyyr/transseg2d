@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sfb5citb8c     # job name
+#SBATCH --job-name=zgup1024cit     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/sfb5citb8c%j.out # output file name
-#SBATCH --error=logs/sfb5citb8c%j.err  # error file name
+#SBATCH --output=logs/zgup1024cit%j.out # output file name
+#SBATCH --error=logs/zgup1024cit%j.err  # error file name
 #SBATCH -C v100-32g
 
 set -x
@@ -184,8 +184,13 @@ module load python/3.7.10
 # RESUME="work_dirs/segformer.b5.769x769.city.160k/latest.pth"
 # CONFIG="configs/segformer/segformer.b4.512x512.ade.160k.py"
 
-CONFIG="configs/segformer/segformer.b5.769x769.city.160k.bs8.py" # sfb5citb8
-RESUME="work_dirs/segformer.b5.769x769.city.160k.bs8/latest.pth"
+# CONFIG="configs/segformer/segformer.b5.769x769.city.160k.bs8.py" # sfb5citb8
+# RESUME="work_dirs/segformer.b5.769x769.city.160k.bs8/latest.pth"
+
+
+# ...............................................
+# v8
+CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.py" # zgup1024cit
 
 
 
@@ -194,7 +199,7 @@ RESUME="work_dirs/segformer.b5.769x769.city.160k.bs8/latest.pth"
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
@@ -210,9 +215,9 @@ RESUME="work_dirs/segformer.b5.769x769.city.160k.bs8/latest.pth"
 
 
 # swin
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
 
 #segformer
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
