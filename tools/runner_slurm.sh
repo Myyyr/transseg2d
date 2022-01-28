@@ -175,7 +175,7 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.base.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g10.base.patch4.window7.512x512.160k.ade20k.py"
-CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.py" #dbg
+# CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.py" #dbg
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 # ...............................................
 # SEGFORMER
@@ -192,13 +192,13 @@ CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.
 # ...............................................
 # v8
 # CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.py" # zgup1024cit
+CONFIG="configs/swinupergtv8/upernet_swin_gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+
+RESUME="work_dirs/upernet_swin_gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k_good/latest.pth"
 
 
 
-
-
-
-PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
@@ -218,7 +218,7 @@ PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # swin
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/test.py $CONFIG $PRET --launcher="slurm" --eval mIoU ${@:3}
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/test.py $CONFIG $RESUME --launcher="slurm" --eval mIoU ${@:3}
 
 
 
