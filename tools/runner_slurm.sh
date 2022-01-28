@@ -140,7 +140,7 @@ module load python/3.7.10
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g5_tiny_patch4_window7_512x512_160k_ade20k.py" #X
 
 # ..............................................
-CONFIG="configs/swinunetv2/zz_swinunetv2_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
+# CONFIG="configs/swinunetv2/zz_swinunetv2_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
 # CONFIG="configs/swinunetv2/zz_swinunetv2_tiny_patch4_window7_769x769_160k_cityscapes_good.py" #X
 # CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_160k_cityscapes_good.py"
 # CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g10_tiny_patch4_window7_769x769_80k_cityscapes_good.py"
@@ -176,7 +176,7 @@ CONFIG="configs/swinunetv2/zz_swinunetv2_tiny_patch4_window7_769x769_80k_citysca
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.base.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g10.base.patch4.window7.512x512.160k.ade20k.py"
 # CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.dbg.py" #dbg
-
+CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 # ...............................................
 # SEGFORMER
 
