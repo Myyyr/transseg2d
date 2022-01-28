@@ -1,15 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=zgup1024cit     # job name
+#SBATCH --job-name=dbg     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=19:59:59              # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t3
-#SBATCH --output=logs/zgup1024cit%j.out # output file name
-#SBATCH --error=logs/zgup1024cit%j.err  # error file name
-#SBATCH -C v100-32g
+#SBATCH --time=00:05:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
+#SBATCH --output=logs/dbg%j.out # output file name
+#SBATCH --error=logs/dbg%j.err  # error file name
+# # SBATCH -C v100-32g
 
 set -x
 
@@ -175,6 +175,7 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.base.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g10.base.patch4.window7.512x512.160k.ade20k.py"
+CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.dbg.py" #dbg
 
 # ...............................................
 # SEGFORMER
