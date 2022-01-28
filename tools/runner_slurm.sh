@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:01:00             # maximum execution time (HH:MM:SS)
+#SBATCH --time=00:05:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/dbg%j.out # output file name
 #SBATCH --error=logs/dbg%j.err  # error file name
@@ -175,8 +175,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g10.base.patch4.window7.512x512.160k.ade20k.jz.py"
 # CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g10.base.patch4.window7.512x512.160k.ade20k.py"
-# CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.dbg.py" #dbg
-CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
+CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.py" #dbg
+# CONFIG="configs/swinunetv2gtv14/swinunetv2gtv14.g1.tiny.patch4.window7.512x512.160k.ade20k.jz.py"
 # ...............................................
 # SEGFORMER
 
@@ -216,8 +216,12 @@ PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 
 
 # swin
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic ${@:3}
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/test.py $CONFIG $PRET --launcher="slurm" --eval mIoU ${@:3}
+
+
+
 
 #segformer
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
