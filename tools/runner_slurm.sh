@@ -191,16 +191,16 @@ CONFIG="configs/swinupergtv14/upernet.swin.gtv14.g1.tiny.patch4.window7.512x512.
 
 # ...............................................
 # v8
-CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.py" # zgup1024cit
+# CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.py" # zgup1024cit
 
 
 
 
 
 
-# PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
+PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
