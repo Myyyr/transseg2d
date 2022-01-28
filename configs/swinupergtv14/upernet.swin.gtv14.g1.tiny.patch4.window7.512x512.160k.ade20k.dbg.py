@@ -12,7 +12,7 @@ model = dict(
         drop_path_rate=0.3,
         patch_norm=True,
         use_checkpoint=False,
-        gt_num=10
+        gt_num=1
     ),
     decode_head=dict(
         in_channels=[96, 192, 384, 768],

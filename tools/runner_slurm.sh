@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=00:05:00             # maximum execution time (HH:MM:SS)
+#SBATCH --time=00:01:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/dbg%j.out # output file name
 #SBATCH --error=logs/dbg%j.err  # error file name
