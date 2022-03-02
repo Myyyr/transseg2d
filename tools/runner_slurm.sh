@@ -9,7 +9,7 @@
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/city1024.out # output file name # add %j to id the job
 #SBATCH --error=logs/city1024.err  # error file name # add %j to id the job
-# # SBATCH -C v100-32g
+#SBATCH -C v100-32g
 
 set -x
 
