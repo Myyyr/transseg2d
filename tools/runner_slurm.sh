@@ -200,8 +200,8 @@ CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
-# PRET="pretrained_models/swin_base_patch4_window7_224.pth"
-PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
+PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+## PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
 
