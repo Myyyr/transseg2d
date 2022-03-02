@@ -17,12 +17,12 @@ model = dict(
     decode_head=dict(
         in_channels=[128, 256, 512, 1024],
         num_classes=19,
-        norm_cfg=dict(type='BN', requires_grad=True)
+        norm_cfg=dict(type='SyncBN', requires_grad=True)
     ),
     auxiliary_head=dict(
         in_channels=512,
         num_classes=19,
-        norm_cfg=dict(type='BN', requires_grad=True)
+        norm_cfg=dict(type='SyncBN', requires_grad=True)
 
     ))
 
