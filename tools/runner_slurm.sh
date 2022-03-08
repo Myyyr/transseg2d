@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=city1024     # job name
+#SBATCH --job-name=city1024bs2     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=80:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/city1024.out # output file name # add %j to id the job
-#SBATCH --error=logs/city1024.err  # error file name # add %j to id the job
+#SBATCH --output=logs/city1024bs2.out # output file name # add %j to id the job
+#SBATCH --error=logs/city1024bs2.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
 
 set -x
