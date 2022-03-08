@@ -191,7 +191,8 @@ module load python/3.7.10
 
 # ...............................................
 # v8
-CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.py" # zgup1024cit # city1024
+# CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.py" # zgup1024cit # city1024
+CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.base.patch4.window7.1024x1024.160k.cityscapes.bs2.py" # zgup1024cit # city1024bs2
 # CONFIG="configs/swinupergtv8/upernet_swin_gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
 
 # RESUME="work_dirs/upernet_swin_gtv8_g10_tiny_patch4_window7_512x512_160k_ade20k_good/latest.pth"
