@@ -206,13 +206,17 @@ module load python/3.7.10
 
 
 # CONFIG="configs/orininal_swin/zz.upernet.swin.tiny.patch4.window7.769x769.160k.cityscapes.py"
-CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.tiny.patch4.window7.769x769.160k.cityscapes.py" #X
+# CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.tiny.patch4.window7.769x769.160k.cityscapes.py" #X
+
+CONFIG="configs/swinunetv2gtv8/zzz_swinunetv2gtv8_g10_base_patch4_window7_769x769_160k_cityscapes_good.py"
+# CONFIG="configs/swinunetv2/zzz_swinunetv2_base_patch4_window7_769x769_160k_cityscapes_good.py" 
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
-PRET="pretrained_models/swin_tiny_patch4_window7_224_22k.pth"
+# PRET="pretrained_models/swin_tiny_patch4_window7_224_22k.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
+PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window12_384.pth"
