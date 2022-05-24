@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=city1024bs2     # job name
+#SBATCH --job-name=sutc     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,9 +7,9 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=80:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/city1024bs2.out # output file name # add %j to id the job
-#SBATCH --error=logs/city1024bs2.err  # error file name # add %j to id the job
-#SBATCH -C v100-32g
+#SBATCH --output=logs/sutc.out # output file name # add %j to id the job
+#SBATCH --error=logs/sutc.err  # error file name # add %j to id the job
+### SBATCH -C v100-32g
 
 set -x
 
@@ -206,7 +206,7 @@ module load python/3.7.10
 
 
 CONFIG="configs/orininal_swin/zz.upernet.swin.tiny.patch4.window7.769x769.160k.cityscapes.py"
-CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.tiny.patch4.window7.769x769.160k.cityscapes.py" #X
+# CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.tiny.patch4.window7.769x769.160k.cityscapes.py" #X
 
 
 PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
