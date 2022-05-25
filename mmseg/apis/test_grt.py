@@ -72,7 +72,7 @@ def single_gpu_test_grt(model,
             print(result_m[0].shape)
             print(result.shape)
 
-            exit(0)
+            # exit(0)
 
 
             # print(len(result))
