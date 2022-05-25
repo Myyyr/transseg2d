@@ -65,7 +65,7 @@ def single_gpu_test_grt(model,
             img_tensor = data['img'][0]
             result = data['gt_semantic_seg'][0]
 
-            transform = T.Resize(result.shape)
+            transform = T.Resize(result[0].shape)
             img_tensor = transform(img_tensor)
 
 
