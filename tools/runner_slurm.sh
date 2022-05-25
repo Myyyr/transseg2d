@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=glamsutc     # job name
+#SBATCH --job-name=glamsusa     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=80:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/glamsutc.out # output file name # add %j to id the job
-#SBATCH --error=logs/glamsutc.err  # error file name # add %j to id the job
+#SBATCH --output=logs/glamsusa.out # output file name # add %j to id the job
+#SBATCH --error=logs/glamsusa.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
 
 set -x
@@ -206,15 +206,18 @@ module load python/3.7.10
 
 
 # CONFIG="configs/orininal_swin/zz.upernet.swin.tiny.patch4.window7.769x769.160k.cityscapes.py"
-CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.tiny.patch4.window7.769x769.160k.cityscapes.py" #X
+# CONFIG="configs/swinupergtv8/zz.upernet.swin.gtv8.g10.tiny.patch4.window7.769x769.160k.cityscapes.py" #X
+CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_small_patch4_window7_512x512_160k_ade20k.py"
+
 
 # CONFIG="configs/swinunetv2gtv8/zzz_swinunetv2gtv8_g10_base_patch4_window7_769x769_160k_cityscapes_good.py"
 # CONFIG="configs/swinunetv2/zzz_swinunetv2_base_patch4_window7_769x769_160k_cityscapes_good.py" 
 
 
 # PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
-PRET="pretrained_models/swin_tiny_patch4_window7_224_22k.pth"
+# PRET="pretrained_models/swin_tiny_patch4_window7_224_22k.pth"
 # PRET="pretrained_models/swin_small_patch4_window7_224.pth"
+PRET="pretrained_models/swin_small_patch4_window7_224_22k.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 # PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
 ## PRET="pretrained_models/swin_base_patch4_window7_224_22k.pth"
