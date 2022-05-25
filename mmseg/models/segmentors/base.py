@@ -235,7 +235,8 @@ class BaseSegmentor(nn.Module):
         """
         img = mmcv.imread(img)
         img = img.copy()
-        seg = result[0]
+        # seg = result[0]
+        seg = result
         if palette is None:
             if self.PALETTE is None:
                 palette = np.random.randint(
