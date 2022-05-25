@@ -186,8 +186,10 @@ class CustomDataset(Dataset):
         """
 
         if self.test_mode:
+            print("====== Here =====")
             return self.prepare_test_img(idx)
         else:
+            print("====== Or Here =====")
             return self.prepare_train_img(idx)
 
     def prepare_train_img(self, idx):
