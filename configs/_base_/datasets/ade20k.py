@@ -29,7 +29,7 @@ test_pipeline = [
 
             dict(type='RandomFlip'),
             dict(type='Normalize', **img_norm_cfg),
-            dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
+            dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img', 'gt_semantic_seg']),
         ])
 ]
