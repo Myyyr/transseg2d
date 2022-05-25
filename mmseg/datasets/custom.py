@@ -206,9 +206,11 @@ class CustomDataset(Dataset):
         ann_info = self.get_ann_info(idx)
         results = dict(img_info=img_info, ann_info=ann_info)
         self.pre_pipeline(results)
-        print("\nhere\n",results.keys())
+        # return self.pipeline(results)
+        ret=self.pipeline(results)
+        print("\nhere\n",ret.keys())
         exit(0)
-        return self.pipeline(results)
+        return ret
 
     def prepare_test_img(self, idx):
         """Get testing data after pipeline.
