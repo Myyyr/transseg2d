@@ -51,6 +51,9 @@ def single_gpu_test_grt(model,
         list: The prediction results.
     """
 
+    print("its ok !")
+    exit(0)
+
     model.eval()
     results = []
     dataset = data_loader.dataset
