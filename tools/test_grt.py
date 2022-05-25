@@ -24,7 +24,7 @@ def get_n_params(model):
 def parse_args():
     parser = argparse.ArgumentParser(
         description='mmseg test (and eval) a model')
-    # parser.add_argument('config', help='test config file path')
+    parser.add_argument('config', help='test config file path')
     # parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
         '--aug-test', action='store_true', help='Use Flip and Multi scale aug')
@@ -86,27 +86,27 @@ def main():
     if args.out is not None and not args.out.endswith(('.pkl', '.pickle')):
         raise ValueError('The output file must be a pkl file.')
 
-    # cfg = mmcv.Config.fromfile(args.config)
-    # if args.options is not None:
-    #     cfg.merge_from_dict(args.options)
-    # # set cudnn_benchmark
-    # if cfg.get('cudnn_benchmark', False):
-    #     torch.backends.cudnn.benchmark = True
-    # if args.aug_test:
-    #     # hard code index
-    #     cfg.data.test.pipeline[1].img_ratios = [
-    #         0.5, 0.75, 1.0, 1.25, 1.5, 1.75
-    #     ]
-    #     cfg.data.test.pipeline[1].flip = True
-    # cfg.model.pretrained = None
-    # cfg.data.test.test_mode = True
+    cfg = mmcv.Config.fromfile(args.config)
+    if args.options is not None:
+        cfg.merge_from_dict(args.options)
+    # set cudnn_benchmark
+    if cfg.get('cudnn_benchmark', False):
+        torch.backends.cudnn.benchmark = True
+    if args.aug_test:
+        # hard code index
+        cfg.data.test.pipeline[1].img_ratios = [
+            0.5, 0.75, 1.0, 1.25, 1.5, 1.75
+        ]
+        cfg.data.test.pipeline[1].flip = True
+    cfg.model.pretrained = None
+    cfg.data.test.test_mode = True
 
     # init distributed env first, since logger depends on the dist info.
-    if args.launcher == 'none':
-        distributed = False
-    else:
-        distributed = True
-        init_dist(args.launcher, **cfg.dist_params)
+    # if args.launcher == 'none':
+        # distributed = False
+    # else:
+        # init_dist(args.launcher, **cfg.dist_params)
+    distributed = True
 
     # build the dataloader
     # TODO: support multiple images per gpu (only minor changes are needed)
