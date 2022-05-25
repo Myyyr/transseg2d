@@ -87,8 +87,8 @@ def test_custom_dataset():
                 dict(type='Resize', keep_ratio=True),
                 dict(type='RandomFlip'),
                 dict(type='Normalize', **img_norm_cfg),
-                dict(type='ImageToTensor', keys=['img']),
-                dict(type='Collect', keys=['img']),
+                dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
+                dict(type='Collect', keys=['img', 'gt_semantic_seg']),
             ])
     ]
 
@@ -139,7 +139,7 @@ def test_custom_dataset():
         test_pipeline,
         img_dir=osp.join(osp.dirname(__file__), '../data/pseudo_dataset/imgs'),
         img_suffix='img.jpg',
-        test_mode=True)
+        test_mode=False)
     assert len(test_dataset) == 5
 
     # training data get
