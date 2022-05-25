@@ -208,8 +208,8 @@ class CustomDataset(Dataset):
         self.pre_pipeline(results)
         # return self.pipeline(results)
         ret=self.pipeline(results)
-        print("\nhere\n",ret.keys())
-        exit(0)
+        # print("\nhere\n",ret.keys())
+        # exit(0)
         return ret
 
     def prepare_test_img(self, idx):
