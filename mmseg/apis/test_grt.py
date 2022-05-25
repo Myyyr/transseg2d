@@ -62,11 +62,11 @@ def single_gpu_test_grt(model,
 
         if show or out_dir:
             img_tensor = data['img'][0]
-            result = data['gt_semantic_seg']
-            print(len(result))
+            result = data['gt_semantic_seg'][0]
+            # print(len(result))
             # print(len(result[0]))
-            print(result[0].shape)
-            exit(0)
+            # print(result[0].shape)
+            # exit(0)
             img_metas = data['img_metas'][0].data[0]
             imgs = tensor2imgs(img_tensor, **img_metas[0]['img_norm_cfg'])
             assert len(imgs) == len(img_metas)
