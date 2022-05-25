@@ -51,8 +51,6 @@ def single_gpu_test_grt(model,
         list: The prediction results.
     """
 
-    print("its ok !")
-    exit(0)
 
     model.eval()
     results = []
@@ -64,6 +62,8 @@ def single_gpu_test_grt(model,
 
         if show or out_dir:
             img_tensor = data['img'][0]
+            print(data.keys())
+            exit(0)
             img_metas = data['img_metas'][0].data[0]
             imgs = tensor2imgs(img_tensor, **img_metas[0]['img_norm_cfg'])
             assert len(imgs) == len(img_metas)
