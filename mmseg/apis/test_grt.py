@@ -58,19 +58,20 @@ def single_gpu_test_grt(model,
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
     for i, data in enumerate(data_loader):
-        # with torch.no_grad():
-        #     result = model(return_loss=False, **data)
+        with torch.no_grad():
+            result = model(return_loss=False, **data)
 
         if show or out_dir:
             img_tensor = data['img'][0]
-            result = data['gt_semantic_seg'][0]
+            # result = data['gt_semantic_seg'][0]
 
-            transform = T.Resize(result[0].shape)
-            img_tensor = transform(img_tensor)
+            # transform = T.Resize(result[0].shape)
+            # img_tensor = transform(img_tensor)
 
             print(img_tensor.shape)
             print(result.shape)
 
+            exit(0)
 
 
             # print(len(result))
