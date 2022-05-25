@@ -24,8 +24,8 @@ def get_n_params(model):
 def parse_args():
     parser = argparse.ArgumentParser(
         description='mmseg test (and eval) a model')
-    parser.add_argument('config', help='test config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
+    # parser.add_argument('config', help='test config file path')
+    # parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
         '--aug-test', action='store_true', help='Use Flip and Multi scale aug')
     parser.add_argument('--out', help='output result file in pickle format')
@@ -120,45 +120,45 @@ def main():
 
     # build the model and load checkpoint
     cfg.model.train_cfg = None
-    model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
+    # model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
     
-    print('\n\n\n')
-    print('#######################')
-    print('PARAMS :', get_n_params(model))
-    print('#######################')
-    print('\n\n\n')
+    # print('\n\n\n')
+    # print('#######################')
+    # print('PARAMS :', get_n_params(model))
+    # print('#######################')
+    # print('\n\n\n')
 
 
-    checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
-    model.CLASSES = checkpoint['meta']['CLASSES']
-    model.PALETTE = checkpoint['meta']['PALETTE']
+    # checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
+    # model.CLASSES = checkpoint['meta']['CLASSES']
+    # model.PALETTE = checkpoint['meta']['PALETTE']
 
     efficient_test = False
     if args.eval_options is not None:
         efficient_test = args.eval_options.get('efficient_test', False)
 
     if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
-        outputs = single_gpu_test_grt(model, data_loader, args.show, args.show_dir,
+        # model = MMDataParallel(model, device_ids=[0])
+        outputs = single_gpu_test_grt(None, data_loader, args.show, args.show_dir,
                                   efficient_test)
-    else:
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
-            broadcast_buffers=False)
-        outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-                                 args.gpu_collect, efficient_test)
+    # else:
+    #     model = MMDistributedDataParallel(
+    #         model.cuda(),
+    #         device_ids=[torch.cuda.current_device()],
+    #         broadcast_buffers=False)
+    #     outputs = multi_gpu_test(model, data_loader, args.tmpdir,
+    #                              args.gpu_collect, efficient_test)
 
-    rank, _ = get_dist_info()
-    if rank == 0:
-        if args.out:
-            print(f'\nwriting results to {args.out}')
-            mmcv.dump(outputs, args.out)
-        kwargs = {} if args.eval_options is None else args.eval_options
-        if args.format_only:
-            dataset.format_results(outputs, **kwargs)
-        if args.eval:
-            dataset.evaluate(outputs, args.eval, **kwargs)
+    # rank, _ = get_dist_info()
+    # if rank == 0:
+    #     if args.out:
+    #         print(f'\nwriting results to {args.out}')
+    #         mmcv.dump(outputs, args.out)
+    #     kwargs = {} if args.eval_options is None else args.eval_options
+    #     if args.format_only:
+    #         dataset.format_results(outputs, **kwargs)
+    #     if args.eval:
+    #         dataset.evaluate(outputs, args.eval, **kwargs)
 
 
 if __name__ == '__main__':
