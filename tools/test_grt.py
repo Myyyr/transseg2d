@@ -86,20 +86,20 @@ def main():
     if args.out is not None and not args.out.endswith(('.pkl', '.pickle')):
         raise ValueError('The output file must be a pkl file.')
 
-    cfg = mmcv.Config.fromfile(args.config)
-    if args.options is not None:
-        cfg.merge_from_dict(args.options)
-    # set cudnn_benchmark
-    if cfg.get('cudnn_benchmark', False):
-        torch.backends.cudnn.benchmark = True
-    if args.aug_test:
-        # hard code index
-        cfg.data.test.pipeline[1].img_ratios = [
-            0.5, 0.75, 1.0, 1.25, 1.5, 1.75
-        ]
-        cfg.data.test.pipeline[1].flip = True
-    cfg.model.pretrained = None
-    cfg.data.test.test_mode = True
+    # cfg = mmcv.Config.fromfile(args.config)
+    # if args.options is not None:
+    #     cfg.merge_from_dict(args.options)
+    # # set cudnn_benchmark
+    # if cfg.get('cudnn_benchmark', False):
+    #     torch.backends.cudnn.benchmark = True
+    # if args.aug_test:
+    #     # hard code index
+    #     cfg.data.test.pipeline[1].img_ratios = [
+    #         0.5, 0.75, 1.0, 1.25, 1.5, 1.75
+    #     ]
+    #     cfg.data.test.pipeline[1].flip = True
+    # cfg.model.pretrained = None
+    # cfg.data.test.test_mode = True
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
