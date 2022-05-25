@@ -68,9 +68,9 @@ def single_gpu_test_grt(model,
             # transform = T.Resize(result[0].shape)
             # img_tensor = transform(img_tensor)
 
-            print(img_tensor.shape)
-            print(result_m[0].shape)
-            print(result.shape)
+            # print(img_tensor.shape)
+            # print(result_m[0].shape)
+            # print(result.shape)
 
             # exit(0)
 
