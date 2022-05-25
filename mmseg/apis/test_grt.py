@@ -62,7 +62,9 @@ def single_gpu_test_grt(model,
 
         if show or out_dir:
             img_tensor = data['img'][0]
-            result = data['gt_semantic_seg'][0]
+            result = data['gt_semantic_seg']
+            print(len(results))
+            print(len(results[0]))
             print(results.shape)
             exit(0)
             img_metas = data['img_metas'][0].data[0]
