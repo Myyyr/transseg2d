@@ -186,10 +186,9 @@ class CustomDataset(Dataset):
         """
 
         if self.test_mode:
-            print("====== Here =====")
+            # print("====== Here =====")
             return self.prepare_test_img(idx)
         else:
-            print("====== Or Here =====")
             return self.prepare_train_img(idx)
 
     def prepare_train_img(self, idx):
@@ -207,6 +206,7 @@ class CustomDataset(Dataset):
         ann_info = self.get_ann_info(idx)
         results = dict(img_info=img_info, ann_info=ann_info)
         self.pre_pipeline(results)
+        print("====== Here =====")
         return self.pipeline(results)
 
     def prepare_test_img(self, idx):
