@@ -9,6 +9,7 @@ import torch
 import torch.distributed as dist
 from mmcv.image import tensor2imgs
 from mmcv.runner import get_dist_info
+import torchvision.transforms as T
 
 
 def np2tmp(array, temp_file_name=None):
@@ -63,6 +64,12 @@ def single_gpu_test_grt(model,
         if show or out_dir:
             img_tensor = data['img'][0]
             result = data['gt_semantic_seg'][0]
+
+            transform = T.Resize(result.shape)
+            img_tensor = transform(img_tensor)
+
+
+
             # print(len(result))
             # print(len(result[0]))
             # print(result[0].shape)
