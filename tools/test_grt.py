@@ -7,7 +7,7 @@ from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
 from mmcv.utils import DictAction
 
-from mmseg.apis import multi_gpu_test, single_gpu_test_grt
+from mmseg.apis import multi_gpu_test, single_gpu_test
 from mmseg.datasets import build_dataloader, build_dataset
 from mmseg.models import build_segmentor
 
@@ -102,11 +102,11 @@ def main():
     cfg.data.test.test_mode = True
 
     # init distributed env first, since logger depends on the dist info.
-    # if args.launcher == 'none':
-        # distributed = False
-    # else:
-        # init_dist(args.launcher, **cfg.dist_params)
-    distributed = True
+    if args.launcher == 'none':
+        distributed = False
+    else:
+        distributed = True
+        init_dist(args.launcher, **cfg.dist_params)
 
     # build the dataloader
     # TODO: support multiple images per gpu (only minor changes are needed)
@@ -120,13 +120,13 @@ def main():
 
     # build the model and load checkpoint
     cfg.model.train_cfg = None
-    # model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
+    model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
     
-    # print('\n\n\n')
-    # print('#######################')
-    # print('PARAMS :', get_n_params(model))
-    # print('#######################')
-    # print('\n\n\n')
+    print('\n\n\n')
+    print('#######################')
+    print('PARAMS :', get_n_params(model))
+    print('#######################')
+    print('\n\n\n')
 
 
     # checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
@@ -138,27 +138,27 @@ def main():
         efficient_test = args.eval_options.get('efficient_test', False)
 
     if not distributed:
-        # model = MMDataParallel(model, device_ids=[0])
-        outputs = single_gpu_test_grt(None, data_loader, args.show, args.show_dir,
+        model = MMDataParallel(model, device_ids=[0])
+        outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
                                   efficient_test)
-    # else:
-    #     model = MMDistributedDataParallel(
-    #         model.cuda(),
-    #         device_ids=[torch.cuda.current_device()],
-    #         broadcast_buffers=False)
-    #     outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-    #                              args.gpu_collect, efficient_test)
+    else:
+        model = MMDistributedDataParallel(
+            model.cuda(),
+            device_ids=[torch.cuda.current_device()],
+            broadcast_buffers=False)
+        outputs = multi_gpu_test(model, data_loader, args.tmpdir,
+                                 args.gpu_collect, efficient_test)
 
-    # rank, _ = get_dist_info()
-    # if rank == 0:
-    #     if args.out:
-    #         print(f'\nwriting results to {args.out}')
-    #         mmcv.dump(outputs, args.out)
-    #     kwargs = {} if args.eval_options is None else args.eval_options
-    #     if args.format_only:
-    #         dataset.format_results(outputs, **kwargs)
-    #     if args.eval:
-    #         dataset.evaluate(outputs, args.eval, **kwargs)
+    rank, _ = get_dist_info()
+    if rank == 0:
+        if args.out:
+            print(f'\nwriting results to {args.out}')
+            mmcv.dump(outputs, args.out)
+        kwargs = {} if args.eval_options is None else args.eval_options
+        if args.format_only:
+            dataset.format_results(outputs, **kwargs)
+        if args.eval:
+            dataset.evaluate(outputs, args.eval, **kwargs)
 
 
 if __name__ == '__main__':
