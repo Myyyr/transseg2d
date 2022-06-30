@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=glamupg15     # job name
+#SBATCH --job-name=glamung15     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=80:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/glamupg15.out # output file name # add %j to id the job
-#SBATCH --error=logs/glamupg15.err  # error file name # add %j to id the job
+#SBATCH --output=logs/glamung15.out # output file name # add %j to id the job
+#SBATCH --error=logs/glamung15.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
 
 set -x
@@ -217,8 +217,8 @@ module load python/3.7.10
 # -------------------------------------------------------------------------
 
 
-CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" #X
-# CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" #X
+# CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" #X
+CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" #X
 
 
 
