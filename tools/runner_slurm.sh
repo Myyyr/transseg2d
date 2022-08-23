@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=gtng15     # job name
+#SBATCH --job-name=suntngg10     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=80:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/gtng15.out # output file name # add %j to id the job
-#SBATCH --error=logs/gtng15.err  # error file name # add %j to id the job
+#SBATCH --output=logs/suntngg10.out # output file name # add %j to id the job
+#SBATCH --error=logs/suntngg10.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
 
 set -x
@@ -226,10 +226,10 @@ module load python/3.7.10
 
 #--------------------------------------------------------------------------
 CONFIG="configs/swinunetv2gtv8nogmsa/zswinunetv2gtv8nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
-CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"
 
-CONFIG="configs/swinupergtv8nogmsa/upernet_swin_gtv8_nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
-CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinupergtv8nogmsa/upernet_swin_gtv8_nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+# CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_160k_ade20k.py"
 
 
 PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
@@ -265,3 +265,6 @@ srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --o
 #segformer
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" --seed 0 --deterministic ${@:3} #segformer
+
+
+#
