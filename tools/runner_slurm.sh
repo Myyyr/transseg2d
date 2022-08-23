@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:4                 # number of GPUs per node
 #SBATCH --cpus-per-task=10           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time=80:00:00             # maximum execution time (HH:MM:SS)
-#SBATCH --qos=qos_gpu-t4
+#SBATCH --time=00:10:00             # maximum execution time (HH:MM:SS)
+#SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/suntngg10.out # output file name # add %j to id the job
 #SBATCH --error=logs/suntngg10.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
@@ -225,11 +225,11 @@ module load python/3.7.10
 
 
 #--------------------------------------------------------------------------
-CONFIG="configs/swinunetv2gtv8nogmsa/zswinunetv2gtv8nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
-# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinunetv2gtv8nogmsa/zswinunetv2gtv8nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"	    #suntngg10
+# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunbngg10
 
-# CONFIG="configs/swinupergtv8nogmsa/upernet_swin_gtv8_nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
-# CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_160k_ade20k.py"
+# CONFIG="configs/swinupergtv8nogmsa/upernet_swin_gtv8_nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"	#suptngg10
+# CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_160k_ade20k.py"	#supbngg10
 
 
 PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
