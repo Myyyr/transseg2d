@@ -9,7 +9,7 @@
 #SBATCH --qos=qos_gpu-dev
 #SBATCH --output=logs/suntngg10.out # output file name # add %j to id the job
 #SBATCH --error=logs/suntngg10.err  # error file name # add %j to id the job
-#SBATCH -C v100-32g
+#### SBATCH -C v100-32g
 
 set -x
 
