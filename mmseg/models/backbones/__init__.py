@@ -11,6 +11,7 @@ from .swin_transformer import SwinTransformer
 from .no_swin_transformer import NoSwinTransformer
 from .swin_transformer_gtv7 import SwinTransformerGTV7
 from .swin_transformer_gtv8 import SwinTransformerGTV8
+from .swin_transformer_gtv8_nogmsa import SwinTransformerGTV8nogmsa
 from .swin_transformer_gtv8_opti import SwinTransformerGTV8Opti
 from .swin_transformer_gtv8_visu import SwinTransformerGTV8Visu
 from .swin_transformer_gtv14 import SwinTransformerGTV14
@@ -27,6 +28,7 @@ from .swin_unet_v2_gtv5 import SwinUNetV2GTV5
 from .swin_unet_v2_gtv6 import SwinUNetV2GTV6
 from .swin_unet_v2_gtv7 import SwinUNetV2GTV7
 from .swin_unet_v2_gtv8 import SwinUNetV2GTV8
+from .swin_unet_v2_gtv8_nogmsa import SwinUNetV2GTV8NOGMSA
 from .swin_unet_v2_gtv9 import SwinUNetV2GTV9
 from .swin_unet_v2_gtv10 import SwinUNetV2GTV10
 from .swin_unet_v2_gtv11 import SwinUNetV2GTV11
