@@ -220,10 +220,16 @@ module load python/3.7.10
 
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g10_small_patch4_window7_512x512_160k_ade20k.py" # gspg10
 # CONFIG="configs/swinupergtv8/zz_upernet_swin_gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" # gtpg15
-CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" # gtng15
+# CONFIG="configs/swinunetv2gtv8/zz_swinunetv2gtv8_g15_tiny_patch4_window7_512x512_160k_ade20k.py" # gtng15
 
 
 
+#--------------------------------------------------------------------------
+CONFIG="configs/swinunetv2gtv8nogmsa/zswinunetv2gtv8nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"
+
+CONFIG="configs/swinupergtv8nogmsa/upernet_swin_gtv8_nogmsa_g10_tiny_patch4_window7_512x512_160k_ade20k_good.py"
+CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_160k_ade20k.py"
 
 
 PRET="pretrained_models/swin_tiny_patch4_window7_224.pth"
