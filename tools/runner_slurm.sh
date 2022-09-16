@@ -235,8 +235,8 @@ module load python/3.7.10
 #--------------------------------------------------------------------------
 # CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_240k_ade20k.py"	#supn24
 # CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_320k_ade20k.py"	#supn32
-# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnnd
-CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_debug.py"	#sunnnddbg
+CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnnd
+# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_debug.py"	#sunnnddbg
 
 
 
@@ -264,8 +264,8 @@ PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 
 
 # swin
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic --no-validate ${@:3}
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --no-validate ${@:3}
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic --no-validate ${@:3}
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --no-validate ${@:3}
 
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/test.py $CONFIG $RESUME --launcher="slurm" --eval mIoU ${@:3}
