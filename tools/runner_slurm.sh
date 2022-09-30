@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sunnnddbg     # job name
+#SBATCH --job-name=sunnndlr     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/sunnnddbg.out # output file name # add %j to id the job
-#SBATCH --error=logs/sunnnddbg.err  # error file name # add %j to id the job
+#SBATCH --output=logs/sunnndlr.out # output file name # add %j to id the job
+#SBATCH --error=logs/sunnndlr.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
 
 set -x
@@ -236,7 +236,8 @@ module load python/3.7.10
 # CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_240k_ade20k.py"	#supn24
 # CONFIG="configs/swinupergtv8nogmsa/zz_upernet_swin_gtv8_nogmsa_g10_base_patch4_window7_512x512_320k_ade20k.py"	#supn32
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnnd
-CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_debug.py"	#sunnnddbg
+# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_debug.py"	#sunnnddbg
+CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_lr.py"	#sunnndlr
 
 
 
@@ -264,8 +265,8 @@ PRET="pretrained_models/swin_base_patch4_window7_224.pth"
 
 
 # swin
-# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic --no-validate ${@:3}
-srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --no-validate ${@:3}
+srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --seed 0 --deterministic --no-validate ${@:3}
+# srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --options model.pretrained=$PRET --launcher="slurm" --no-validate ${@:3}
 
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/train.py $CONFIG --resume-from=$RESUME --launcher="slurm" ${@:3} --seed 0 --deterministic --no-validate ${@:3} 
 # srun /gpfslocalsup/pub/idrtools/bind_gpu.sh python -u tools/test.py $CONFIG $RESUME --launcher="slurm" --eval mIoU ${@:3}
