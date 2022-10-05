@@ -390,6 +390,9 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
+        with open("/users/t/themyrl/transseg2d/debug/debug.txt", "a") as f:
+            f.write(str(gt.mean())+" | "+str(gt.std())+" | "+str(gt.min())+" | "+str(gt.max()))
+
         return x, gt
 
     def extra_repr(self) -> str:
@@ -603,6 +606,8 @@ class BasicLayer(nn.Module):
         # if self.downsample is not None:
         #     x = self.downsample(x)
         # return x
+        with open("/users/t/themyrl/transseg2d/debug/debug.txt", "a") as f:
+            f.write("_\n")
         if self.downsample is not None:
             x_down, padwh = self.downsample(x, H, W)
             Wh, Ww = (H + 1) // 2, (W + 1) // 2
@@ -708,6 +713,8 @@ class BasicLayer_up(nn.Module):
                 x, gt = blk(x, attn_mask, gt, self.pe)
         # if self.upsample is not None:
         #     x = self.upsample(x)
+        with open("/users/t/themyrl/transseg2d/debug/debug.txt", "a") as f:
+            f.write("^\n")
         if self.upsample is not None:
             x_down, Wh, Ww = self.upsample(x, H, W, padwh)
             # Wh, Ww = (H) * 2, (W) * 2
@@ -969,6 +976,8 @@ class SwinTransformerSys(nn.Module):
     def forward(self, x):
         # print("\n-------->x", x.shape, "<----------\n")
         # x, x_downsample = self.forward_features(x)
+        with open("/users/t/themyrl/transseg2d/debug/debug48.txt", "a") as f:
+            f.write("#\n")
         x, x_downsample, Wh, Ww, padswh = self.forward_features(x)
         x, Wh, Ww = self.forward_up_features(x,x_downsample, Wh, Ww, padswh)
         x = self.up_x4(x, Wh, Ww)
