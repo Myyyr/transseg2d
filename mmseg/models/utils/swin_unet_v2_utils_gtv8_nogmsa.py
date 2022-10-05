@@ -390,7 +390,7 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
-        with open("/users/t/themyrl/transseg2d/debug/debug.txt", "a") as f:
+        with open("/users/t/themyrl/transseg2d/debug/debug48.txt", "a") as f:
             f.write(str(gt.mean())+" | "+str(gt.std())+" | "+str(gt.min())+" | "+str(gt.max()))
 
         return x, gt
@@ -606,7 +606,7 @@ class BasicLayer(nn.Module):
         # if self.downsample is not None:
         #     x = self.downsample(x)
         # return x
-        with open("/users/t/themyrl/transseg2d/debug/debug.txt", "a") as f:
+        with open("/users/t/themyrl/transseg2d/debug/debug48.txt", "a") as f:
             f.write("_\n")
         if self.downsample is not None:
             x_down, padwh = self.downsample(x, H, W)
@@ -713,7 +713,7 @@ class BasicLayer_up(nn.Module):
                 x, gt = blk(x, attn_mask, gt, self.pe)
         # if self.upsample is not None:
         #     x = self.upsample(x)
-        with open("/users/t/themyrl/transseg2d/debug/debug.txt", "a") as f:
+        with open("/users/t/themyrl/transseg2d/debug/debug48.txt", "a") as f:
             f.write("^\n")
         if self.upsample is not None:
             x_down, Wh, Ww = self.upsample(x, H, W, padwh)
