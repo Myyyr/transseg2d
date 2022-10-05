@@ -19,6 +19,7 @@ def main():
 		if 'global_token' in k:
 			print(k)
 			print(type(it48['state_dict'][k]))
+			print(it48['state_dict'][k].shape)
 
 
 
