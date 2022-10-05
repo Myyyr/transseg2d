@@ -38,8 +38,8 @@ def main2():
 		it64 = f.read()
 
 
-	tmp48 = it48.split("#")[1]
-	tmp64 = it64.split("#")[1]
+	tmp48 = it48.split("#")[1].split("_")
+	tmp64 = it64.split("#")[1].split("_")
 
 
 	print(tmp48)
