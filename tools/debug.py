@@ -44,7 +44,7 @@ def main2():
 
 	tmp48 = it48.split("#")[1]
 	tmp64 = it64.split("#")[1]
-	tmp64 = itgood.split("#")[1]
+	tmpgood = itgood.split("#")[1]
 
 
 	print(tmp48)
