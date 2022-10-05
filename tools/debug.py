@@ -13,6 +13,7 @@ def main():
 
 	print(type(it48))
 	print(it48.keys())
+	print(it48['state_dict'].keys())
 
 
 
