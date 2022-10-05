@@ -391,7 +391,7 @@ class SwinTransformerBlock(nn.Module):
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
         with open("/users/t/themyrl/transseg2d/debug/debug48.txt", "a") as f:
-            f.write(str(gt.mean())+" | "+str(gt.std())+" | "+str(gt.min())+" | "+str(gt.max()))
+            f.write(str(gt.mean().detach().value())+" | "+str(gt.std().detach().value())+" | "+str(gt.min().detach().value())+" | "+str(gt.max().detach().value()))
 
         return x, gt
 
