@@ -16,7 +16,7 @@ def main():
 	# print(it48['state_dict'].keys())
 
 	for k in list(it48['state_dict'].keys()):
-		if 'gt' in k:
+		if 'global_token' in k:
 			print(k)
 
 
