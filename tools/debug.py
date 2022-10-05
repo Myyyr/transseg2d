@@ -38,12 +38,19 @@ def main2():
 		it64 = f.read()
 
 
-	tmp48 = it48.split("#")[1].split("_")
-	tmp64 = it64.split("#")[1].split("_")
+	with open(os.path.join(base_pth, "debug/debuggood.txt"), "r") as f:
+		itgood = f.read()
+
+
+	tmp48 = it48.split("#")[1]
+	tmp64 = it64.split("#")[1]
+	tmp64 = itgood.split("#")[1]
 
 
 	print(tmp48)
 	print(tmp64)
+	print(tmpgood)
+
 
 
 
