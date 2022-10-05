@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sunnndlrh     # job name
+#SBATCH --job-name=sunnndclip     # job name
 #SBATCH --ntasks=8                  # number of MP tasks
 #SBATCH --ntasks-per-node=4          # number of MPI tasks per node
 #SBATCH --gres=gpu:4                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --time=99:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --qos=qos_gpu-t4
-#SBATCH --output=logs/sunnndlrh.out # output file name # add %j to id the job
-#SBATCH --error=logs/sunnndlrh.err  # error file name # add %j to id the job
+#SBATCH --output=logs/sunnndclip.out # output file name # add %j to id the job
+#SBATCH --error=logs/sunnndclip.err  # error file name # add %j to id the job
 #SBATCH -C v100-32g
 
 set -x
@@ -238,7 +238,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnnd
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_debug.py"	#sunnnddbg
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_lr.py"	#sunnndlr
-CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_lrh.py"	#sunnndlrh
+# CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_lrh.py"	#sunnndlrh
+CONFIG="configs/swinunetv2gtv8nogmsaclip/swinunetv2gtv8nogmsaclip_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnndclip
 
 
 
