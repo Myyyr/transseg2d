@@ -18,6 +18,7 @@ def main():
 	for k in list(it48['state_dict'].keys()):
 		if 'global_token' in k:
 			print(k)
+			print(type(it48['state_dict'][k]))
 
 
 
