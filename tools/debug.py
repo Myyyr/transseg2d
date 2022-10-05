@@ -21,6 +21,11 @@ def main():
 			print(type(it48['state_dict'][k]))
 			print(it48['state_dict'][k].shape)
 
+			print("it48", it48['state_dict'][k].mean(), it48['state_dict'][k].std(), it48['state_dict'][k].min(), it48['state_dict'][k].max())
+			print("it64", it64['state_dict'][k].mean(), it64['state_dict'][k].std(), it64['state_dict'][k].min(), it64['state_dict'][k].max())
+
+			print("\n\n\n\n")
+
 
 
 
