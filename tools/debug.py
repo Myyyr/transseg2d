@@ -12,6 +12,7 @@ def main():
 	it64 = torch.load(os.path.join(base_pth, iter_64000))
 
 	print(type(it48))
+	print(it48.keys())
 
 
 
