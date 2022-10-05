@@ -17,7 +17,7 @@ def main():
 
 	for k in list(it48['state_dict'].keys()):
 		if 'gt' in k:
-			print(gt)
+			print(k)
 
 
 
