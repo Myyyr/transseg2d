@@ -2,7 +2,7 @@ import torch
 import os
 
 
-def main():
+def main1():
 	base_pth = "/users/t/themyrl/transseg2d/work_dirs/wacv_3009/"
 
 	iter_48000 = "swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good/iter_48000.pth"
@@ -28,7 +28,26 @@ def main():
 
 
 
+def main2():
+	base_pth = "/users/t/themyrl/transseg2d/"
+
+	with open(os.path.join(base_pth, "debug/debug48.txt"), "r") as f:
+		it48 = f.read()
+
+	with open(os.path.join(base_pth, "debug/debug64.txt"), "r") as f:
+		it64 = f.read()
+
+
+	tmp48 = it48.split("#")[1]
+	tmp64 = it64.split("#")[1]
+
+
+	print(tmp48)
+	print(tmp64)
+
+
+
 
 
 if __name__ == '__main__':
-	main()
+	main2()
