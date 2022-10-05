@@ -11,9 +11,13 @@ def main():
 	it48 = torch.load(os.path.join(base_pth, iter_48000))
 	it64 = torch.load(os.path.join(base_pth, iter_64000))
 
-	print(type(it48))
-	print(it48.keys())
-	print(it48['state_dict'].keys())
+	# print(type(it48))
+	# print(it48.keys())
+	# print(it48['state_dict'].keys())
+
+	for k in list(it48['state_dict'].keys()):
+		if gt in k:
+			print(gt)
 
 
 
