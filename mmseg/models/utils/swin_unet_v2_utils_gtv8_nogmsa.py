@@ -357,14 +357,14 @@ class SwinTransformerBlock(nn.Module):
         tmp, ngt, c = gt.shape
         nw = tmp//B
         # gt =rearrange(gt, "(b n) g c -> b (n g) c", b=B)
-        # gt = gt.view(B, nw*ngt, C)
-        # bigt, _ = self.gru(gt)
-        # gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
+                    # gt = gt.view(B, nw*ngt, C)
+                    # bigt, _ = self.gru(gt)
+                    # gt = torch.cat([bigt[:,-1,:ngt*C], bigt[:,0,ngt*C:]], dim=-1)
         # gt = self.gt_attn(gt, pe)
 
-        # gt = self.projgru(gt)
-        # gt = gt.mean(dim=1)
-        # gt = gt[:, torch.randperm(nw), :, :]
+                    # gt = self.projgru(gt)
+                    # gt = gt.mean(dim=1)
+                    # gt = gt[:, torch.randperm(nw), :, :]
         # gt = rearrange(gt, "b (n g) c -> (b n) g c",g=ngt, c=C)
 
         # print(gt.shape)
