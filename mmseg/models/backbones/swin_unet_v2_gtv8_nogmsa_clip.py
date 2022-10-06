@@ -4,7 +4,7 @@ import torch.utils.checkpoint as checkpoint
 from einops import rearrange
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
-from ..utils.swin_unet_v2_utils_gtv8_nogmsa import *
+from ..utils.swin_unet_v2_utils_gtv8_nogmsa_clip import *
 from ..builder import BACKBONES
 from mmseg.utils import get_root_logger
 from mmcv_custom import load_checkpoint
