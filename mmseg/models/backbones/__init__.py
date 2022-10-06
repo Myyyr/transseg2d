@@ -29,7 +29,7 @@ from .swin_unet_v2_gtv6 import SwinUNetV2GTV6
 from .swin_unet_v2_gtv7 import SwinUNetV2GTV7
 from .swin_unet_v2_gtv8 import SwinUNetV2GTV8
 from .swin_unet_v2_gtv8_nogmsa import SwinUNetV2GTV8NOGMSA
-from .swin_unet_v2_gtv8_nogmsa import SwinUNetV2GTV8NOGMSACLIP
+from .swin_unet_v2_gtv8_nogmsa_clip import SwinUNetV2GTV8NOGMSACLIP
 
 from .swin_unet_v2_gtv9 import SwinUNetV2GTV9
 from .swin_unet_v2_gtv10 import SwinUNetV2GTV10
