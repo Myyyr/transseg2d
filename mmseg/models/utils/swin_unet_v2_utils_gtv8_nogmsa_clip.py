@@ -390,7 +390,7 @@ class SwinTransformerBlock(nn.Module):
         x = shortcut + self.drop_path(x)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
-        torch.clamp(gt, min=-20, max=20)
+        gt = torch.clamp(gt, min=-20, max=20)
 
 
         return x, gt

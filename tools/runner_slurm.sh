@@ -239,7 +239,8 @@ module load python/3.7.10
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_debug.py"	#sunnnddbg
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_lr.py"	#sunnndlr
 # CONFIG="configs/swinunetv2gtv8nogmsa/swinunetv2gtv8nogmsa_g10_base_patch4_window7_512x512_160k_ade20k_good_lrh.py"	#sunnndlrh
-CONFIG="configs/swinunetv2gtv8nogmsaclip/swinunetv2gtv8nogmsaclip_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnndclip
+CONFIG="configs/swinunetv2gtv8nogmsaclip/swinunetv2gtv8nogmsaclip20_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnndclip20
+# CONFIG="configs/swinunetv2gtv8nogmsaclip/swinunetv2gtv8nogmsaclip1_g10_base_patch4_window7_512x512_160k_ade20k_good.py"	#sunnndclip1
 
 
 
